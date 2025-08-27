@@ -1,26 +1,358 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Genesis Reloop - Mythic Tech Theme */
+  --background: 0 0% 0%; /* Pure black */
+  --foreground: 157 100% 97%; /* #E8FFF7 */
+  --card: 168 54% 8%; /* #0B1E1A dark */
+  --card-foreground: 157 100% 97%; /* #E8FFF7 */
+  --popover: 168 54% 8%; /* #0B1E1A */
+  --popover-foreground: 157 100% 97%; /* #E8FFF7 */
+  --primary: 160 100% 38%; /* #00C08B */
+  --primary-foreground: 168 54% 8%; /* #0B1E1A */
+  --secondary: 168 54% 8%; /* #0B1E1A */
+  --secondary-foreground: 157 100% 97%; /* #E8FFF7 */
+  --muted: 163 23% 72%; /* #A7D9C9 */
+  --muted-foreground: 168 54% 8%; /* #0B1E1A */
+  --accent: 163 88% 73%; /* #7EF5CF */
+  --accent-foreground: 168 54% 8%; /* #0B1E1A */
+  --destructive: 348 100% 50%; /* Red */
+  --destructive-foreground: 0 0% 100%;
+  --border: 160 100% 38% / 0.2; /* #00C08B with opacity */
+  --input: 168 54% 8%; /* #0B1E1A */
+  --ring: 160 100% 38%; /* #00C08B */
+  
+  /* Mythic Tech Theme Variables */
+  --mythic-primary: #00C08B;
+  --mythic-secondary: #0B1E1A;
+  --mythic-accent: #7EF5CF;
+  --mythic-text-primary: #E8FFF7;
+  --mythic-text-muted: #A7D9C9;
+  
+  /* Loop Colors */
+  --loop-srl: #00C08B; /* Stabilized Recursive Loop */
+  --loop-crl: #ff0044; /* Corrupted Recursive Loop */
+  --loop-unknown: #666666;
+  
+  /* Flow Colors */
+  --flow-feedstock: #0080ff;
+  --flow-byproduct: #ff6600;
+  --flow-credits: #ffcc00;
+  --flow-reputation: #cc00ff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  font-family: 'Inter', system-ui, sans-serif;
+  position: relative;
+}
+
+/* Mythic Tech Background Pattern - Encrypted Grid & Toroidal Loops */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    /* Toroidal energy loops */
+    radial-gradient(ellipse at 20% 50%, rgba(0, 192, 139, 0.03) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 80%, rgba(126, 245, 207, 0.03) 0%, transparent 40%),
+    radial-gradient(ellipse at 40% 20%, rgba(255, 204, 0, 0.03) 0%, transparent 40%),
+    /* Encrypted grid pattern */
+    linear-gradient(rgba(0, 192, 139, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 192, 139, 0.01) 1px, transparent 1px),
+    /* Cyber organic fractals */
+    repeating-conic-gradient(from 0deg at 50% 50%, 
+      transparent 0deg,
+      rgba(126, 245, 207, 0.02) 10deg,
+      transparent 20deg,
+      rgba(0, 192, 139, 0.02) 30deg,
+      transparent 40deg
+    );
+  background-size: 
+    60% 60%, 60% 60%, 60% 60%,
+    100px 100px, 100px 100px,
+    600px 600px;
+  background-position: 
+    0% 0%, 100% 100%, 50% 50%,
+    0 0, 0 0,
+    center;
+  pointer-events: none;
+  z-index: 0;
+  animation: mythic-flow 60s linear infinite;
+}
+
+@keyframes mythic-flow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--mythic-primary) 0%, var(--mythic-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-gold {
+    background: linear-gradient(135deg, var(--flow-credits) 0%, #ffcc00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-gradient-mythic {
+    background: linear-gradient(135deg, #0B1E1A 0%, #0a3127 50%, #0B1E1A 100%);
+    border: 1px solid rgba(0, 192, 139, 0.1);
+  }
+  
+  .card-shadow {
+    box-shadow: 
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      0 1px 2px 0 rgba(0, 0, 0, 0.05),
+      0 4px 8px -2px rgba(0, 0, 0, 0.05),
+      0 12px 24px -4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .card-shadow-lg {
+    box-shadow: 
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      0 2px 4px 0 rgba(0, 0, 0, 0.05),
+      0 8px 16px -4px rgba(0, 0, 0, 0.1),
+      0 24px 48px -8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .glow-effect {
+    position: relative;
+  }
+  
+  .glow-effect::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #0967d2, #22c55e, #eab308, #0967d2);
+    background-size: 400% 400%;
+    opacity: 0;
+    z-index: -1;
+    border-radius: inherit;
+    animation: glow-rotate 6s ease-in-out infinite;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .glow-effect:hover::after {
+    opacity: 0.8;
+  }
+  
+  @keyframes glow-rotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  /* Flow Animation for SVG Paths */
+  .flow-animation {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;
+    animation: flow 3s linear infinite;
+  }
+  
+  /* Toroidal Network Effect */
+  .toroidal-bg {
+    position: relative;
+    background: #000000;
+    overflow: hidden;
+  }
+  
+  .toroidal-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      /* Toroidal loops */
+      radial-gradient(ellipse at center, transparent 0%, rgba(0, 255, 136, 0.05) 40%, transparent 70%),
+      /* Honeycomb lattice */
+      conic-gradient(from 0deg at 50% 50%, 
+        transparent 0deg,
+        rgba(0, 204, 204, 0.03) 60deg,
+        transparent 120deg,
+        rgba(0, 255, 136, 0.03) 180deg,
+        transparent 240deg,
+        rgba(204, 170, 0, 0.03) 300deg,
+        transparent 360deg
+      );
+    background-size: 100% 100%, 300px 300px;
+    background-position: center;
+    animation: toroidal-rotate 30s linear infinite;
+  }
+  
+  @keyframes toroidal-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Glass Morphism Effect - Polished Obsidian with Neon Veins */
+  .glass {
+    backdrop-filter: blur(12px);
+    background: rgba(11, 30, 26, 0.7);
+    border: 1px solid rgba(0, 192, 139, 0.2);
+    box-shadow: 
+      inset 0 0 20px rgba(0, 192, 139, 0.05),
+      0 0 40px rgba(126, 245, 207, 0.1);
+  }
+  
+  .glass-dark {
+    backdrop-filter: blur(16px);
+    background: rgba(11, 30, 26, 0.9);
+    border: 1px solid rgba(0, 192, 139, 0.1);
+    box-shadow: 
+      inset 0 0 30px rgba(0, 0, 0, 0.5),
+      0 0 60px rgba(0, 192, 139, 0.05);
+  }
+  
+  /* Neon Glow Effects for Different Elements */
+  .glow-srl {
+    box-shadow: 0 0 20px rgba(0, 192, 139, 0.5), inset 0 0 10px rgba(0, 192, 139, 0.2);
+  }
+  
+  .glow-crl {
+    box-shadow: 0 0 20px rgba(255, 0, 68, 0.5), inset 0 0 10px rgba(255, 0, 68, 0.2);
+  }
+  
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(204, 170, 0, 0.5), inset 0 0 10px rgba(204, 170, 0, 0.2);
+  }
+  
+  /* Mythic Typography */
+  .font-mythic {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Data Flow Indicators */
+  .flow-feedstock { color: var(--flow-feedstock); }
+  .flow-byproduct { color: var(--flow-byproduct); }
+  .flow-credits { color: var(--flow-credits); }
+  .flow-reputation { color: var(--flow-reputation); }
+}
+
+/* Custom Scrollbar - Mythic Tech Style */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--mythic-primary) 0%, var(--mythic-accent) 100%);
+  border-radius: 6px;
+  border: 1px solid rgba(11, 30, 26, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--mythic-accent) 0%, var(--mythic-primary) 100%);
+  box-shadow: 0 0 10px rgba(0, 192, 139, 0.5);
+}
+
+/* Animation Classes */
+.animate-in {
+  animation: animate-in 0.5s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+@keyframes animate-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Focus Styles - Mythic Glow */
+.focus-ring {
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.focus-ring:focus {
+  box-shadow: 
+    0 0 0 2px rgba(0, 0, 0, 0.8),
+    0 0 0 4px rgba(0, 255, 136, 0.5),
+    0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+/* Mythic Button Styles */
+.btn-mythic {
+  background: linear-gradient(135deg, rgba(0, 204, 136, 0.1) 0%, rgba(0, 204, 204, 0.1) 100%);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: var(--mythic-emerald);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-mythic::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0, 255, 136, 0.3) 0%, transparent 70%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-mythic:hover {
+  border-color: rgba(0, 255, 136, 0.6);
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+}
+
+.btn-mythic:hover::before {
+  width: 300px;
+  height: 300px;
 }

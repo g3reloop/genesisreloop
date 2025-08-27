@@ -1,0 +1,465 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User and Authentication
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  name           String
+  role           UserRole         @default(SUPPLIER)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  
+  // Relations
+  supplier       Supplier?
+  processor      Processor?
+  buyer          Buyer?
+  collector      Collector?
+  subscriptions  Subscription[]
+  notifications  Notification[]
+}
+
+enum UserRole {
+  SUPPLIER
+  PROCESSOR
+  BUYER
+  COLLECTOR
+  ADMIN
+}
+
+// Supplier (Restaurant, Food Business)
+model Supplier {
+  id                String           @id @default(cuid())
+  userId            String           @unique
+  user              User             @relation(fields: [userId], references: [id])
+  businessName      String
+  address           String
+  contactPhone      String
+  supplierType      SupplierType     @default(SMALL)
+  trustScore        Float            @default(5.0)
+  srlCompliance     Float            @default(0.0)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  
+  // Relations
+  batches           FeedstockBatch[]
+  collections       Collection[]
+  reputationScores  ReputationScore[]
+}
+
+enum SupplierType {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+// Processor (Biogas/Biodiesel Plant)
+model Processor {
+  id              String           @id @default(cuid())
+  userId          String           @unique
+  user            User             @relation(fields: [userId], references: [id])
+  businessName    String
+  processorType   ProcessorType
+  capacity        Float            // tons per day
+  location        String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relations
+  processedBatches ProcessedBatch[]
+}
+
+enum ProcessorType {
+  BIOGAS
+  BIODIESEL
+  BOTH
+}
+
+// Buyer (Secondary Product Purchaser)
+model Buyer {
+  id           String           @id @default(cuid())
+  userId       String           @unique
+  user         User             @relation(fields: [userId], references: [id])
+  businessName String
+  buyerType    BuyerType
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  
+  // Relations
+  orders       SecondaryProductOrder[]
+}
+
+enum BuyerType {
+  BIODIESEL_BUYER
+  GLYCERIN_BUYER
+  DIGESTATE_BUYER
+  CARBON_CREDIT_BUYER
+  OTHER
+}
+
+// Collector (Micro-collection Agent)
+model Collector {
+  id           String           @id @default(cuid())
+  userId       String           @unique
+  user         User             @relation(fields: [userId], references: [id])
+  vehicleType  String
+  capacity     Float            // kg
+  currentLat   Float?
+  currentLng   Float?
+  isActive     Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  
+  // Relations
+  routes       CollectionRoute[]
+  collections  Collection[]
+}
+
+// Feedstock Batch
+model FeedstockBatch {
+  id              String           @id @default(cuid())
+  supplierId      String
+  supplier        Supplier         @relation(fields: [supplierId], references: [id])
+  batchCode       String           @unique
+  feedstockType   FeedstockType
+  quantity        Float            // kg
+  fatContent      Float?           // percentage
+  temperature     Float?           // celsius
+  loopType        LoopType         @default(UNKNOWN)
+  qualityScore    Float?
+  status          BatchStatus      @default(REGISTERED)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relations
+  collection      Collection?
+  processedBatch  ProcessedBatch?
+  traceData       TraceData[]
+  iotReadings     IoTReading[]
+}
+
+enum FeedstockType {
+  UCO              // Used Cooking Oil
+  FOOD_WASTE
+  MIXED
+}
+
+enum LoopType {
+  SRL              // Short Renewable Loop
+  CRL              // Contaminated Renewable Loop
+  UNKNOWN
+}
+
+enum BatchStatus {
+  REGISTERED
+  ASSIGNED
+  COLLECTED
+  IN_TRANSIT
+  DELIVERED
+  PROCESSED
+  REJECTED
+}
+
+// Collection
+model Collection {
+  id               String           @id @default(cuid())
+  batchId          String           @unique
+  batch            FeedstockBatch   @relation(fields: [batchId], references: [id])
+  supplierId       String
+  supplier         Supplier         @relation(fields: [supplierId], references: [id])
+  collectorId      String?
+  collector        Collector?       @relation(fields: [collectorId], references: [id])
+  routeId          String?
+  route            CollectionRoute? @relation(fields: [routeId], references: [id])
+  scheduledTime    DateTime
+  actualPickupTime DateTime?
+  status           CollectionStatus @default(SCHEDULED)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+enum CollectionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// Collection Route
+model CollectionRoute {
+  id            String           @id @default(cuid())
+  collectorId   String
+  collector     Collector        @relation(fields: [collectorId], references: [id])
+  routeCode     String           @unique
+  optimizedPath Json             // Array of coordinates
+  totalDistance Float            // km
+  estimatedTime Int              // minutes
+  status        RouteStatus      @default(ACTIVE)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  
+  // Relations
+  collections   Collection[]
+}
+
+enum RouteStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+// Processed Batch
+model ProcessedBatch {
+  id              String           @id @default(cuid())
+  batchId         String           @unique
+  batch           FeedstockBatch   @relation(fields: [batchId], references: [id])
+  processorId     String
+  processor       Processor        @relation(fields: [processorId], references: [id])
+  processedAt     DateTime         @default(now())
+  primaryOutput   Float            // liters of biodiesel/biogas
+  byproducts      Json             // { glycerin: X, digestate: Y }
+  carbonCredits   Float            // tons CO2 avoided
+  
+  // Relations
+  secondaryProducts SecondaryProduct[]
+  complianceDocs    ComplianceDocument[]
+}
+
+// Secondary Product
+model SecondaryProduct {
+  id              String           @id @default(cuid())
+  processedBatchId String
+  processedBatch  ProcessedBatch   @relation(fields: [processedBatchId], references: [id])
+  productType     SecondaryProductType
+  quantity        Float
+  unit            String
+  price           Float?
+  status          ProductStatus    @default(AVAILABLE)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relations
+  orders          SecondaryProductOrder[]
+}
+
+enum SecondaryProductType {
+  BIODIESEL
+  GLYCERIN
+  DIGESTATE
+  BIOGAS
+  OTHER
+}
+
+enum ProductStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+// Secondary Product Order
+model SecondaryProductOrder {
+  id               String           @id @default(cuid())
+  productId        String
+  product          SecondaryProduct @relation(fields: [productId], references: [id])
+  buyerId          String
+  buyer            Buyer            @relation(fields: [buyerId], references: [id])
+  quantity         Float
+  totalPrice       Float
+  smartContractId  String?
+  status           OrderStatus      @default(PENDING)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+// Carbon Credits
+model CarbonCredit {
+  id              String           @id @default(cuid())
+  batchCode       String
+  co2Avoided      Float            // tons
+  verificationId  String           @unique
+  status          CreditStatus     @default(VERIFIED)
+  price           Float?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relations
+  transactions    CarbonTransaction[]
+}
+
+enum CreditStatus {
+  PENDING
+  VERIFIED
+  TRADED
+  RETIRED
+}
+
+// Carbon Transaction
+model CarbonTransaction {
+  id             String           @id @default(cuid())
+  creditId       String
+  credit         CarbonCredit     @relation(fields: [creditId], references: [id])
+  buyerId        String
+  sellerId       String
+  quantity       Float
+  price          Float
+  transactionHash String?
+  createdAt      DateTime         @default(now())
+}
+
+// Compliance Document
+model ComplianceDocument {
+  id              String           @id @default(cuid())
+  processedBatchId String
+  processedBatch  ProcessedBatch   @relation(fields: [processedBatchId], references: [id])
+  documentType    ComplianceType
+  documentUrl     String
+  isValid         Boolean          @default(true)
+  expiryDate      DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+enum ComplianceType {
+  UK_RTFO
+  EU_RED_II
+  ISCC
+  OTHER
+}
+
+// Reputation Score
+model ReputationScore {
+  id           String           @id @default(cuid())
+  supplierId   String
+  supplier     Supplier         @relation(fields: [supplierId], references: [id])
+  metric       ReputationMetric
+  score        Float
+  reason       String?
+  createdAt    DateTime         @default(now())
+}
+
+enum ReputationMetric {
+  DELIVERY_TIMELINESS
+  QUALITY_CONSISTENCY
+  SRL_COMPLIANCE
+  VOLUME_RELIABILITY
+  COMMUNICATION
+}
+
+// Trace Data (for TraceBot)
+model TraceData {
+  id           String           @id @default(cuid())
+  batchId      String
+  batch        FeedstockBatch   @relation(fields: [batchId], references: [id])
+  timestamp    DateTime         @default(now())
+  location     String
+  temperature  Float?
+  fatContent   Float?
+  weight       Float?
+  sensorId     String?
+  verified     Boolean          @default(false)
+}
+
+// IoT Reading
+model IoTReading {
+  id           String           @id @default(cuid())
+  batchId      String
+  batch        FeedstockBatch   @relation(fields: [batchId], references: [id])
+  sensorId     String
+  readingType  IoTReadingType
+  value        Float
+  unit         String
+  timestamp    DateTime         @default(now())
+}
+
+enum IoTReadingType {
+  FAT_PERCENTAGE
+  WEIGHT
+  TEMPERATURE
+  PH_LEVEL
+  OTHER
+}
+
+// Subscription
+model Subscription {
+  id             String           @id @default(cuid())
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+  planType       SubscriptionPlan
+  status         SubscriptionStatus @default(ACTIVE)
+  startDate      DateTime         @default(now())
+  endDate        DateTime?
+  monthlyFee     Float
+  perBatchFee    Float
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+enum SubscriptionPlan {
+  SMALL_SUPPLIER     // £49/month + £5/batch
+  MEDIUM_SUPPLIER    // £199/month + £0/batch
+  LARGE_SUPPLIER     // £199/month + £0/batch
+  MICRO_COLLECTOR    // £29/month
+  BUYER_STANDARD     // 1.5% transaction fee
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  EXPIRED
+}
+
+// Notification
+model Notification {
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  type        NotificationType
+  title       String
+  message     String
+  data        Json?
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+}
+
+enum NotificationType {
+  BATCH_ASSIGNED
+  COLLECTION_SCHEDULED
+  QUALITY_ALERT
+  COMPLIANCE_UPDATE
+  PAYMENT_RECEIVED
+  REPUTATION_CHANGE
+  CARBON_CREDIT_GENERATED
+  ORDER_PLACED
+  SYSTEM_ALERT
+}
+
+// AI Agent Activity Log
+model AgentActivity {
+  id          String           @id @default(cuid())
+  agentName   String
+  action      String
+  inputData   Json
+  outputData  Json
+  success     Boolean          @default(true)
+  error       String?
+  duration    Int              // milliseconds
+  createdAt   DateTime         @default(now())
+}
