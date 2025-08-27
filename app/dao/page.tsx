@@ -1,45 +1,48 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Shield, Users, PieChart, Vote, TrendingUp, Lock, AlertTriangle, FileText, Timer } from 'lucide-react'
+import { Shield, Users, PieChart, Vote, TrendingUp, Lock, AlertTriangle, FileText, Timer, Plus, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useWeb3 } from '@/hooks/useWeb3'
+
+interface Proposal {
+  id: string
+  title: string
+  board: 'Finance' | 'Ops' | 'Community'
+  status: 'active' | 'passed' | 'rejected'
+  votes: { for: number; against: number }
+  ends: string
+  capex: string
+  type: 'major' | 'micro' | 'policy' | 'emergency'
+}
 
 export default function DAOGovernance() {
   const [selectedTab, setSelectedTab] = useState<'overview' | 'proposals' | 'treasury'>('overview')
+  const [proposals, setProposals] = useState<Proposal[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const { account } = useWeb3()
 
-  const activeProposals = [
-    {
-      id: 'PROP-2024-017',
-      title: 'Fund Brighton Biogas Module (2tpd)',
-      board: 'Finance',
-      status: 'active',
-      votes: { for: 8432, against: 1234 },
-      ends: '2 days',
-      capex: '£180k',
-      type: 'major'
-    },
-    {
-      id: 'PROP-2024-018',
-      title: 'Purchase UCO collection tanker',
-      board: 'Ops',
-      status: 'active',
-      votes: { for: 5621, against: 892 },
-      ends: '12 hours',
-      capex: '£15k',
-      type: 'micro'
-    },
-    {
-      id: 'PROP-2024-019',
-      title: 'Update fair-pay driver rates (+15%)',
-      board: 'Community',
-      status: 'active',
-      votes: { for: 12893, against: 342 },
-      ends: '3 days',
-      capex: '£0',
-      type: 'policy'
+  // Simulate fetching proposals from blockchain/API
+  useEffect(() => {
+    const fetchProposals = async () => {
+      setIsLoading(true)
+      try {
+        // In production, this would fetch from your smart contract or API
+        // For now, we'll simulate an empty state that can be populated
+        await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
+        
+        // Start with empty proposals - in production this would come from blockchain
+        setProposals([])
+      } catch (error) {
+        console.error('Failed to fetch proposals:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
-  ]
+
+    fetchProposals()
+  }, [])
 
   const treasuryStats = {
     total: '£487,320',
@@ -257,10 +260,42 @@ export default function DAOGovernance() {
             className="space-y-6"
           >
             <div className="glass rounded-2xl p-8 border border-mythic-primary-500/20">
-              <h2 className="text-2xl font-bold text-mythic-text-primary mb-6">Active Proposals</h2>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-mythic-text-primary">Active Proposals</h2>
+                <Link
+                  href="/dao/propose"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-mythic-primary-500/20 text-mythic-primary-500 rounded-lg hover:bg-mythic-primary-500/30 transition-all font-semibold"
+                >
+                  <Plus className="h-4 w-4" />
+                  New Proposal
+                </Link>
+              </div>
               
-              <div className="space-y-4">
-                {activeProposals.map((proposal) => (
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center py-16">
+                  <Loader2 className="h-8 w-8 text-mythic-primary-500 animate-spin mb-4" />
+                  <p className="text-mythic-text-muted">Loading proposals...</p>
+                </div>
+              ) : proposals.length === 0 ? (
+                <div className="text-center py-16">
+                  <Vote className="h-12 w-12 text-mythic-text-muted/50 mx-auto mb-4" />
+                  <p className="text-lg text-mythic-text-muted mb-2">No active proposals</p>
+                  <p className="text-sm text-mythic-text-muted/70 mb-6">Be the first to create a proposal for the community</p>
+                  {account ? (
+                    <Link
+                      href="/dao/propose"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200"
+                    >
+                      <FileText className="h-5 w-5" />
+                      Create First Proposal
+                    </Link>
+                  ) : (
+                    <p className="text-sm text-mythic-accent-300">Connect your wallet to create proposals</p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {proposals.map((proposal) => (
                   <div key={proposal.id} className="bg-mythic-dark-900 rounded-lg p-6 border border-mythic-primary-500/10 hover:border-mythic-primary-500/30 transition-all">
                     <div className="flex items-start justify-between mb-4">
                       <div>
@@ -311,29 +346,31 @@ export default function DAOGovernance() {
                     </div>
                     
                     <div className="flex gap-3">
-                      <button className="flex-1 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-all font-semibold">
-                        Vote For
-                      </button>
-                      <button className="flex-1 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all font-semibold">
-                        Vote Against
-                      </button>
+                      {account ? (
+                        <>
+                          <button className="flex-1 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-all font-semibold">
+                            Vote For
+                          </button>
+                          <button className="flex-1 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all font-semibold">
+                            Vote Against
+                          </button>
+                        </>
+                      ) : (
+                        <button 
+                          disabled
+                          className="flex-1 px-4 py-2 bg-mythic-dark-800 text-mythic-text-muted/50 rounded-lg cursor-not-allowed font-semibold"
+                        >
+                          Connect Wallet to Vote
+                        </button>
+                      )}
                       <button className="px-4 py-2 text-mythic-text-muted hover:text-mythic-text-primary transition-colors">
                         View Details
                       </button>
                     </div>
                   </div>
-                ))}
-              </div>
-              
-              <div className="mt-8 text-center">
-                <Link
-                  href="/dao/propose"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200"
-                >
-                  <FileText className="h-5 w-5" />
-                  Create New Proposal
-                </Link>
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
