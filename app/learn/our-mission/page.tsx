@@ -1,12 +1,8 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowRight, Leaf, Recycle, TrendingDown } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Our Mission: Building a Circular Economy for a Sustainable Future | Genesis Reloop',
-  description: 'Learn about Genesis Reloop\'s mission to transform waste into value through circular economy principles. Discover how we convert UCO to biodiesel, reducing GHG emissions by up to 88%.',
-}
 
 export default function OurMissionPage() {
   return (

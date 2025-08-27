@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -15,11 +16,6 @@ import {
   Youtube,
   ExternalLink
 } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Community - Join the Genesis Reloop Movement',
-  description: 'Connect with thousands of members building the circular economy. Share ideas, attend events, and make a real impact together.',
-}
 
 export default function CommunityPage() {
   const upcomingEvents = [

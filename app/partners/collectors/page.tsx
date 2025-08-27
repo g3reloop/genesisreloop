@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -13,11 +14,6 @@ import {
   Briefcase,
   CheckCircle
 } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Become a UCO Collector - Partner with Genesis Reloop',
-  description: 'Join our network of certified collectors. Guaranteed purchase agreements, training provided, and be part of the circular economy revolution.',
-}
 
 export default function CollectorsPage() {
   return (

@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -14,11 +15,6 @@ import {
   Target,
   CheckCircle
 } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Investment Opportunities - Genesis Reloop',
-  description: 'Invest in the circular economy. Token staking, facility funding, and impact investments with real returns backed by tangible assets.',
-}
 
 export default function InvestorsPage() {
   return (

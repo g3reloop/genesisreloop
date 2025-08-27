@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -12,11 +13,6 @@ import {
   RefreshCw,
   Wallet
 } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Our Model: DAOs, Token Utility, and Decentralized Finance | Genesis Reloop',
-  description: 'Learn about Genesis Reloop\'s decentralized autonomous organization (DAO), token utility for governance and staking, and how DeFi principles create sustainable value.',
-}
 
 export default function OurModelPage() {
   return (

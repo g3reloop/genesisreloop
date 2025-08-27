@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -12,11 +13,6 @@ import {
   Award,
   Calculator
 } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Our Impact: Environmental, Social & Economic Benefits | Genesis Reloop',
-  description: 'Discover Genesis Reloop\'s measurable impact on the environment, communities, and economy through waste reduction, biodiesel production, and job creation.',
-}
 
 export default function OurImpactPage() {
   return (

@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -13,11 +14,6 @@ import {
   Calendar,
   FileText
 } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Restaurant Partners - Join the Circular Economy | Genesis Reloop',
-  description: 'Transform your used cooking oil into clean energy. Free collection, green certification, and join thousands of restaurants in the circular economy.',
-}
 
 export default function RestaurantPartnersPage() {
   return (

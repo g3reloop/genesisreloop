@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -12,10 +13,8 @@ import {
   Leaf
 } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Partners - Join the Genesis Reloop Ecosystem',
-  description: 'Partner with Genesis Reloop as a restaurant, collector, or investor. Together we\'re building the circular economy.',
-}
+// Metadata must be handled differently for client components
+// Consider moving to a layout.tsx or making this a server component
 
 export default function PartnersPage() {
   return (
