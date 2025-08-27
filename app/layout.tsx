@@ -50,8 +50,49 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    'name': 'Genesis Reloop',
+    'alternateName': 'Genesis Reloop DAO',
+    'url': 'https://genesisreloop.com',
+    'description': 'Community-owned infrastructure that turns local waste into local fuel. Food waste to biogas. UCO to biodiesel. GIRM credits lower costs. DAO funds the next loop.',
+    'founder': {
+      '@type': 'Person',
+      'name': 'Warren Brown',
+      'jobTitle': 'Founder & Systems Designer'
+    },
+    'foundingDate': '2024',
+    'address': {
+      '@type': 'PostalAddress',
+      'addressLocality': 'Brighton',
+      'addressCountry': 'United Kingdom'
+    },
+    'email': 'ops@genesisreloop.com',
+    'sameAs': [
+      'https://twitter.com/genesisreloop',
+      'https://linkedin.com/company/genesisreloop',
+      'https://github.com/warren-code/reloop-platform'
+    ],
+    'knowsAbout': [
+      'Waste Management',
+      'Circular Economy',
+      'Biogas Production',
+      'Biodiesel Production',
+      'Carbon Credits',
+      'DAO Governance',
+      'Community Energy'
+    ]
+  }
+
   return (
     <html lang="en" className={`${inter.variable} dark`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="antialiased bg-black text-mythic-text-primary min-h-screen flex flex-col">
         {/* Skip Links for Accessibility */}
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-mythic-primary-500 text-mythic-dark-900 px-4 py-2 rounded-md font-semibold z-50 focus:outline-none focus:ring-2 focus:ring-mythic-primary-500 focus:ring-offset-2 focus:ring-offset-black">

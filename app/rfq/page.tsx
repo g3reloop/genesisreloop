@@ -427,7 +427,7 @@ export default function RFQCenter() {
                 <div>
                   <h4 className="font-semibold text-mythic-primary-500 mb-2">What Happens Next?</h4>
                   <ul className="space-y-1 text-sm text-mythic-text-muted">
-                    <li>• We{`'`}ll share your RFQ with 3-5 pre-vetted modular suppliers</li>
+                    <li>• Your RFQ will be shared with 3-5 pre-vetted modular suppliers</li>
                     <li>• You{`'`}ll receive standardized quotes within 5 business days</li>
                     <li>• All quotes include delivery, installation, and commissioning</li>
                     <li>• DAO members get preferential pricing and payment terms</li>

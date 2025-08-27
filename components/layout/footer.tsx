@@ -22,8 +22,8 @@ const footerLinks = {
   ],
   trade: [
     { name: 'GIRM Credits', href: '/girm' },
-    { name: 'SRL Marketplace', href: '/marketplace' },
-    { name: 'Secondary Exchange', href: '/secondary' },
+    { name: 'Marketplace', href: '/marketplace' },
+    { name: 'Secondary Products', href: '/secondary' },
     { name: 'Compliance', href: '/compliance' }
   ],
   build: [

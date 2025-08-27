@@ -20,12 +20,12 @@ export default function AboutPage() {
       <div className="text-center mb-16">
         <h1 className="text-5xl font-bold mb-6">
           <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-            About ReLoop
+            About Genesis Reloop
           </span>
         </h1>
         <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-          We{`'`}re building the future of waste management through blockchain technology, 
-          AI innovation, and community-driven sustainability
+          Building community-owned infrastructure that turns local waste into local fuel,
+          with transparent operations and real impact metrics
         </p>
       </div>
 
@@ -81,13 +81,13 @@ export default function AboutPage() {
             <CardHeader>
               <div className="flex items-center gap-4">
                 <Shield className="h-6 w-6 text-emerald-500" />
-                <CardTitle>DARPA-Level Security</CardTitle>
+                <CardTitle>Secure Operations</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400">
-                Military-grade encryption, zero-knowledge proofs, and post-quantum 
-                cryptography protect every transaction and data point.
+                End-to-end encryption protects transaction data. All waste transfers 
+                are tracked with cryptographic proof and photo evidence.
               </p>
             </CardContent>
           </Card>
@@ -96,13 +96,13 @@ export default function AboutPage() {
             <CardHeader>
               <div className="flex items-center gap-4">
                 <Sparkles className="h-6 w-6 text-yellow-500" />
-                <CardTitle>18 AI Agents</CardTitle>
+                <CardTitle>Smart Matching</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400">
-                Specialized AI agents work 24/7 to optimize routes, match suppliers 
-                with processors, and verify carbon credits automatically.
+                Automated systems match waste suppliers with processors based on 
+                location, volume, and quality requirements.
               </p>
             </CardContent>
           </Card>
@@ -139,13 +139,33 @@ export default function AboutPage() {
         </div>
       </div>
 
+      {/* Core Team */}
+      <div className="bg-gradient-to-r from-mythic-primary-500/10 to-mythic-accent-300/10 rounded-2xl p-12 mb-16">
+        <h2 className="text-3xl font-bold text-center mb-8">Core Team</h2>
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold text-mythic-text-primary">Warren Brown</h3>
+            <p className="text-mythic-text-muted">Founder & Systems Designer</p>
+          </div>
+          <p className="text-gray-400 mb-6">
+            Genesis Reloop is currently led by a single founder focused on building 
+            the foundational infrastructure and community partnerships needed to 
+            make waste-to-fuel loops a reality.
+          </p>
+          <p className="text-sm text-mythic-text-muted italic">
+            As the platform grows, governance will transition to the DAO, ensuring 
+            true community ownership and decision-making.
+          </p>
+        </div>
+      </div>
+
       {/* Impact Stats */}
       <div className="bg-gradient-to-r from-emerald-900/20 to-teal-900/20 rounded-2xl p-12 mb-16">
         <h2 className="text-3xl font-bold text-center mb-12">Our Impact</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
           <div>
-            <div className="text-4xl font-bold text-emerald-400">850K+</div>
-            <div className="text-gray-400 mt-2">Liters Processed</div>
+        <div className="text-4xl font-bold text-emerald-400">850K+</div>
+            <div className="text-gray-400 mt-2">kg Waste Diverted</div>
           </div>
           <div>
             <div className="text-4xl font-bold text-emerald-400">15K</div>
