@@ -3,7 +3,7 @@
 import { Metadata } from 'next'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowRight, Filter, Flask, Sparkles, CheckCircle } from 'lucide-react'
+import { ArrowRight, Filter, FlaskRound, Sparkles, CheckCircle } from 'lucide-react'
 import { useState } from 'react'
 
 // export const metadata: Metadata = {
@@ -43,7 +43,7 @@ export default function OurProcessPage() {
       number: 2,
       title: 'Transesterification',
       subtitle: 'The Core Reaction',
-      icon: Flask,
+      icon: FlaskRound,
       color: 'from-mythic-primary-500 to-mythic-accent-300',
       content: {
         description: 'This is the heart of the biodiesel production process.',

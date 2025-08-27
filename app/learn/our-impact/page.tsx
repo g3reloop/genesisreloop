@@ -199,7 +199,7 @@ export default function OurImpactPage() {
             </div>
             
             <div className="bg-mythic-dark-900/50 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-semibold text-mythic-text-primary mb-4">Revenue Streams Created</h makes>
+              <h3 className="text-lg font-semibold text-mythic-text-primary mb-4">Revenue Streams Created</h3>
               
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
