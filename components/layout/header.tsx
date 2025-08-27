@@ -29,7 +29,7 @@ const navigation = [
   },
   { 
     name: 'Trade', 
-    href: '#',
+    href: '/marketplace',
     dropdown: [
       { name: 'GIRM Credits', href: '/girm' },
       { name: 'Marketplace', href: '/marketplace' },
@@ -52,7 +52,7 @@ const navigation = [
     dropdown: [
       { name: 'Request RFQ', href: '/rfq' },
       { name: 'Processor Directory', href: '/processors' },
-      { name: 'Join Network', href: '/register' }
+      { name: 'Join Network', href: '/join' }
     ]
   },
   { name: 'DAO', href: '/dao' },
@@ -96,26 +96,32 @@ export function Header() {
           <div className="hidden lg:flex items-center space-x-1">
             {navigation.map((item) => (
               <div key={item.name} className="relative">
-                <button
-                  onClick={() => item.dropdown ? setActiveDropdown(activeDropdown === item.name ? null : item.name) : null}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1",
-                    pathname === item.href || pathname.startsWith(item.href)
-                      ? "text-mythic-primary-500"
-                      : "text-mythic-text-muted hover:text-mythic-text-primary hover:bg-mythic-primary-500/10"
-                  )}
-                >
-                  {item.dropdown ? (
-                    <Link href={item.href === '#' ? item.dropdown[0].href : item.href}>
-                      {item.name}
-                    </Link>
-                  ) : (
-                    <Link href={item.href}>
-                      {item.name}
-                    </Link>
-                  )}
-                  {item.dropdown && <ChevronDown className="h-4 w-4" />}
-                </button>
+                {item.dropdown ? (
+                  <button
+                    onClick={() => setActiveDropdown(activeDropdown === item.name ? null : item.name)}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1",
+                      pathname.startsWith(item.dropdown[0].href)
+                        ? "text-mythic-primary-500"
+                        : "text-mythic-text-muted hover:text-mythic-text-primary hover:bg-mythic-primary-500/10"
+                    )}
+                  >
+                    {item.name}
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1",
+                      pathname === item.href
+                        ? "text-mythic-primary-500"
+                        : "text-mythic-text-muted hover:text-mythic-text-primary hover:bg-mythic-primary-500/10"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                )}
 
                 {/* Dropdown Menu */}
                 {item.dropdown && activeDropdown === item.name && (

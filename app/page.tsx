@@ -120,10 +120,10 @@ export default function HomePage() {
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                href="/onboard-supplier"
+                href="/join"
                 className="px-8 py-4 bg-mythic-dark-900/80 backdrop-blur text-mythic-text-primary font-semibold rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800/80 transition-all duration-200 flex items-center justify-center gap-2"
               >
-                Sell Your Waste
+                Join Network
               </Link>
             </motion.div>
 
@@ -395,7 +395,7 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/register"
+                href="/join"
                 className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-200"
               >
                 Join a community node

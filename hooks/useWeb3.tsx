@@ -37,7 +37,7 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
 
     const handleChainChanged = (chainId: string) => {
       setChainId(parseInt(chainId, 16))
-      window.location.reload() // Reload to ensure state consistency
+      // Do not automatically reload - let the app handle chain changes gracefully
     }
 
     window.ethereum.on('accountsChanged', handleAccountsChanged)

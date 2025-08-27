@@ -1,8 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FileText, Factory, Droplet, CheckCircle, Send, AlertCircle, Timer } from 'lucide-react'
+import { FileText, Factory, Droplet, CheckCircle, Send, AlertCircle, Timer, Loader2, CheckCircle2 } from 'lucide-react'
 import { useState } from 'react'
+import { submitRFQ, type RFQFormData } from './actions'
+import { toast } from 'sonner'
+import Link from 'next/link'
 
 type RFQType = 'biogas' | 'biodiesel'
 
@@ -42,15 +45,33 @@ export default function RFQCenter() {
     timeline: '',
     budget: ''
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [rfqId, setRfqId] = useState<string | null>(null)
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
-    console.log('RFQ submitted:', formData)
+    setIsSubmitting(true)
+    
+    try {
+      const result = await submitRFQ(formData as RFQFormData)
+      
+      if (result.success) {
+        setSubmitted(true)
+        setRfqId(result.rfqId || null)
+        toast.success(result.message)
+      } else {
+        toast.error(result.error || 'Failed to submit RFQ')
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -162,14 +183,64 @@ export default function RFQCenter() {
           </div>
         </motion.div>
 
-        {/* RFQ Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-4xl mx-auto"
-        >
-          <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 border border-mythic-primary-500/20">
+        {/* RFQ Form or Success Message */}
+        {submitted ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <div className="glass rounded-2xl p-12 border border-mythic-primary-500/20">
+              <CheckCircle2 className="h-20 w-20 text-mythic-primary-500 mx-auto mb-6" />
+              <h2 className="text-3xl font-bold text-mythic-text-primary mb-4">
+                RFQ Submitted Successfully!
+              </h2>
+              {rfqId && (
+                <p className="text-lg text-mythic-text-muted mb-2">
+                  Your RFQ ID: <span className="font-mono text-mythic-primary-500">{rfqId}</span>
+                </p>
+              )}
+              <p className="text-mythic-text-muted mb-8">
+                You will receive quotes from pre-vetted suppliers within 5 business days.
+                Check your email for confirmation and updates.
+              </p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => {
+                    setSubmitted(false)
+                    setFormData({
+                      type: 'biogas',
+                      companyName: '',
+                      contactName: '',
+                      email: '',
+                      phone: '',
+                      location: '',
+                      timeline: '',
+                      budget: ''
+                    })
+                  }}
+                  className="px-6 py-3 bg-mythic-dark-900 text-mythic-text-primary font-semibold rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all"
+                >
+                  Submit Another RFQ
+                </button>
+                <Link
+                  href="/marketplace"
+                  className="px-6 py-3 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all"
+                >
+                  View Marketplace
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="max-w-4xl mx-auto"
+          >
+            <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 border border-mythic-primary-500/20">
             <h2 className="text-2xl font-bold text-mythic-text-primary mb-6">
               {selectedType === 'biogas' ? 'Biogas AD Container RFQ' : 'Biodiesel Modular RFQ'}
             </h2>
@@ -440,14 +511,25 @@ export default function RFQCenter() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200 flex items-center gap-2"
+                disabled={isSubmitting}
+                className="px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send className="h-5 w-5" />
-                Submit RFQ
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-5 w-5" />
+                    Submit RFQ
+                  </>
+                )}
               </button>
             </div>
           </form>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Additional Info */}
         <motion.div
