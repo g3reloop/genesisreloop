@@ -14,7 +14,8 @@ import {
   Recycle,
   Coins,
   Vote,
-  FileText
+  FileText,
+  Activity
 } from 'lucide-react'
 
 const navigation = [
@@ -158,6 +159,10 @@ export function Header() {
             <Link href="/compliance" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
               <FileText className="h-4 w-4" />
               <span className="text-sm">WTN</span>
+            </Link>
+            <Link href="/agents" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
+              <Activity className="h-4 w-4" />
+              <span className="text-sm">Agents</span>
             </Link>
 
             {/* Wallet Connect */}
