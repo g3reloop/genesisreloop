@@ -2,7 +2,8 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Mail, Phone, MapPin, Globe, MessageSquare, Clock } from 'lucide-react'
+import { Mail, Phone, MapPin, Globe, MessageSquare, Clock, Calendar } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ContactPage() {
   return (
@@ -91,7 +92,9 @@ export default function ContactPage() {
                 <Mail className="h-5 w-5 text-emerald-500 mt-0.5" />
                 <div>
                   <p className="font-medium">Email</p>
-                  <p className="text-sm text-gray-400">dao@genesis-reloop.network</p>
+                  <a href="mailto:ops@genesisreloop.com" className="text-sm text-gray-400 hover:text-emerald-400 transition-colors">
+                    ops@genesisreloop.com
+                  </a>
                 </div>
               </div>
               
@@ -130,17 +133,45 @@ export default function ContactPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Quick Links</CardTitle>
+              <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="ghost" className="w-full justify-start">
-                <Globe className="h-4 w-4 mr-2" />
-                View Node Map
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Join DAO Discord
-              </Button>
+            <CardContent className="space-y-4">
+              <Link 
+                href="mailto:ops@genesisreloop.com" 
+                className="w-full"
+              >
+                <Button className="w-full justify-center" variant="outline">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Email Us
+                </Button>
+              </Link>
+              
+              <Link 
+                href="https://calendar.app.google/7Xg3uNPpATPRzg5Y7" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
+                <Button className="w-full justify-center bg-mythic-primary-500 hover:bg-mythic-primary-600 text-white">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Book a 30-min intro call
+                </Button>
+              </Link>
+              
+              <div className="pt-4 space-y-2">
+                <Link href="/marketplace" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Globe className="h-4 w-4 mr-2" />
+                    View Marketplace
+                  </Button>
+                </Link>
+                <Link href="https://discord.gg/genesisreloop" target="_blank" rel="noopener noreferrer" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Join DAO Discord
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>

@@ -56,7 +56,9 @@ const navigation = [
     ]
   },
   { name: 'DAO', href: '/dao' },
-  { name: 'Docs', href: '/docs' }
+  { name: 'Treasury', href: '/treasury' },
+  { name: 'Docs', href: '/docs' },
+  { name: 'Contact', href: '/contact' }
 ]
 
 export function Header() {

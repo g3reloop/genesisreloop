@@ -221,8 +221,11 @@ export default function GIRMCreditLedger() {
               </div>
               
               <div className="mt-6 flex justify-between items-center">
-                <button className="text-sm text-mythic-primary-500 hover:text-mythic-primary-400 transition-colors">
-                  View Full Ledger →
+                <button 
+                  disabled
+                  className="text-sm text-mythic-primary-500/50 cursor-not-allowed"
+                >
+                  View Full Ledger → (Coming Soon)
                 </button>
                 <div className="text-sm text-mythic-text-muted">
                   Showing 4 of 15,234 total batches
@@ -263,10 +266,19 @@ export default function GIRMCreditLedger() {
                     </div>
                     
                     <div className="mt-4 flex gap-3">
-                      <button className="flex-1 px-4 py-2 bg-mythic-primary-500/20 text-mythic-primary-500 rounded-lg hover:bg-mythic-primary-500/30 transition-all font-semibold">
+                      <button 
+                        disabled
+                        className="flex-1 px-4 py-2 bg-mythic-primary-500/10 text-mythic-primary-500/50 rounded-lg cursor-not-allowed font-semibold relative"
+                      >
                         Buy Credits
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
+                          <span className="text-xs">Coming Soon</span>
+                        </span>
                       </button>
-                      <button className="px-4 py-2 text-mythic-text-muted hover:text-mythic-text-primary transition-colors">
+                      <button 
+                        disabled
+                        className="px-4 py-2 text-mythic-text-muted/50 cursor-not-allowed"
+                      >
                         View Proof
                       </button>
                     </div>
@@ -306,12 +318,15 @@ export default function GIRMCreditLedger() {
             Ready to participate in the credit economy?
           </h3>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/girm/market"
-              className="px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200"
+            <button
+              disabled
+              className="px-8 py-4 bg-gradient-to-r from-mythic-primary-500/50 to-mythic-accent-300/50 text-mythic-dark-900/50 font-semibold rounded-lg cursor-not-allowed relative"
             >
               Buy Credits
-            </Link>
+              <span className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-lg">
+                <span className="text-mythic-primary-500">Coming Soon</span>
+              </span>
+            </button>
             <Link
               href="/docs#girm"
               className="px-8 py-4 bg-mythic-dark-900 text-mythic-text-primary font-semibold rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all duration-200"

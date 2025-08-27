@@ -28,7 +28,7 @@ const footerLinks = {
   ],
   build: [
     { name: 'Request RFQ', href: '/rfq' },
-    { name: 'Join Network', href: '/register' },
+    { name: 'Join Network', href: '/join' },
     { name: 'Operator Console', href: '/ops' },
     { name: 'Documentation', href: '/docs' }
   ],
@@ -43,7 +43,7 @@ const footerLinks = {
 const socialLinks = [
   { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/genesisreloop' },
   { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/company/genesisreloop' },
-  { name: 'GitHub', icon: Github, href: 'https://github.com/genesisreloop' },
+  { name: 'GitHub', icon: Github, href: 'https://github.com/warren-code/reloop-platform' },
   { name: 'Discord', icon: MessageCircle, href: 'https://discord.gg/genesisreloop' }
 ]
 
