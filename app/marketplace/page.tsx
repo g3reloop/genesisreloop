@@ -134,9 +134,9 @@ export default function MarketplacePage() {
   }
 
   const categoryStyles = {
-    'food-waste': 'bg-green-100 text-green-800',
-    'cooking-oil': 'bg-yellow-100 text-yellow-800',
-    'recycled-product': 'bg-blue-100 text-blue-800'
+    'food-waste': 'bg-mythic-primary-500/20 text-mythic-primary-400 border border-mythic-primary-500/30',
+    'cooking-oil': 'bg-mythic-accent-500/20 text-mythic-accent-400 border border-mythic-accent-500/30',
+    'recycled-product': 'bg-mythic-secondary-500/20 text-mythic-secondary-400 border border-mythic-secondary-500/30'
   }
 
   const categoryIcons = {
@@ -146,24 +146,24 @@ export default function MarketplacePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen pt-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Marketplace</h1>
-          <p className="text-gray-600">Browse and purchase waste materials and recycled products</p>
+        <div className="mb-12 text-center">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent mb-4">Marketplace</h1>
+          <p className="text-mythic-text-muted text-lg max-w-2xl mx-auto">Browse and purchase waste materials and recycled products from verified suppliers</p>
         </div>
 
         {/* Action Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+          <div className="flex flex-wrap gap-2 w-full lg:w-auto">
             {/* Category Filters */}
             <button
               onClick={() => setSelectedCategory('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedCategory === 'all'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                  ? 'bg-mythic-primary-500 text-white'
+                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
               }`}
             >
               All Categories
@@ -172,8 +172,8 @@ export default function MarketplacePage() {
               onClick={() => setSelectedCategory('food-waste')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedCategory === 'food-waste'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                  ? 'bg-mythic-primary-500 text-white'
+                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
               }`}
             >
               Food Waste
@@ -182,8 +182,8 @@ export default function MarketplacePage() {
               onClick={() => setSelectedCategory('cooking-oil')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedCategory === 'cooking-oil'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                  ? 'bg-mythic-primary-500 text-white'
+                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
               }`}
             >
               Cooking Oil
@@ -192,20 +192,20 @@ export default function MarketplacePage() {
               onClick={() => setSelectedCategory('recycled-product')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedCategory === 'recycled-product'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                  ? 'bg-mythic-primary-500 text-white'
+                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
               }`}
             >
               Recycled Products
             </button>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
             {/* Sort Dropdown */}
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="px-4 py-2 rounded-lg border border-mythic-primary-500/20 bg-mythic-dark-800 text-mythic-text-primary focus:ring-2 focus:ring-mythic-primary-500 focus:border-mythic-primary-500 w-full sm:w-auto"
             >
               <option value="newest">Newest First</option>
               <option value="price-low">Price: Low to High</option>
@@ -215,7 +215,7 @@ export default function MarketplacePage() {
             {/* Add Listing Button */}
             <Link
               href="/marketplace/create"
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-mythic-primary-500 text-white rounded-lg hover:bg-mythic-primary-600 transition-colors w-full sm:w-auto"
             >
               <FiPlus />
               <span>Add Listing</span>
@@ -225,13 +225,13 @@ export default function MarketplacePage() {
 
         {/* Cart Indicator */}
         {cartItems.length > 0 && (
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg flex items-center justify-between">
-            <span className="text-blue-800 font-medium">
+          <div className="mb-6 p-4 bg-mythic-primary-500/10 border border-mythic-primary-500/20 rounded-lg flex items-center justify-between">
+            <span className="text-mythic-text-primary font-medium">
               {cartItems.length} item{cartItems.length > 1 ? 's' : ''} in cart
             </span>
             <Link
               href="/marketplace/cart"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-mythic-primary-500 hover:text-mythic-primary-400 font-medium transition-colors"
             >
               View Cart →
             </Link>
@@ -242,19 +242,19 @@ export default function MarketplacePage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm p-6 animate-pulse">
-                <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
+              <div key={i} className="bg-mythic-dark-800 rounded-xl border border-mythic-primary-500/20 p-6 animate-pulse">
+                <div className="h-48 bg-mythic-dark-700 rounded-lg mb-4"></div>
+                <div className="h-6 bg-mythic-dark-700 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-mythic-dark-700 rounded w-full mb-4"></div>
+                <div className="h-10 bg-mythic-dark-700 rounded"></div>
               </div>
             ))}
           </div>
         ) : filteredListings.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredListings.map((listing) => (
-              <div key={listing.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="relative h-48 bg-gray-100 rounded-t-xl overflow-hidden">
+              <div key={listing.id} className="bg-mythic-dark-800 rounded-xl border border-mythic-primary-500/20 hover:border-mythic-primary-500/40 transition-all hover:shadow-lg hover:shadow-mythic-primary-500/10">
+                <div className="relative h-48 bg-mythic-dark-700 rounded-t-xl overflow-hidden">
                   <Image
                     src={listing.images[0]}
                     alt={listing.title}
@@ -262,66 +262,66 @@ export default function MarketplacePage() {
                     className="object-cover"
                   />
                   <div className="absolute top-2 right-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${categoryStyles[listing.category]}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${categoryStyles[listing.category]}`}>
                       {listing.category.replace('-', ' ')}
                     </span>
                   </div>
                 </div>
                 
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  <h3 className="text-lg font-semibold text-mythic-text-primary mb-2">
                     {listing.title}
                   </h3>
                   
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  <p className="text-mythic-text-muted text-sm mb-4 line-clamp-2">
                     {listing.description}
                   </p>
                   
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <span className="text-2xl font-bold text-green-600">
+                      <span className="text-2xl font-bold text-mythic-primary-500">
                         ${listing.price}
                       </span>
-                      <span className="text-gray-500 text-sm ml-1">
+                      <span className="text-mythic-text-muted text-sm ml-1">
                         /{listing.unit}
                       </span>
                     </div>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-mythic-text-muted">
                       {listing.quantity} {listing.unit}s available
                     </span>
                   </div>
                   
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium text-mythic-text-primary">
                         {listing.seller.name}
                       </span>
                       {listing.seller.verified && (
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                        <span className="text-xs bg-mythic-secondary-500/20 text-mythic-secondary-400 px-2 py-0.5 rounded-full border border-mythic-secondary-500/30">
                           Verified
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-yellow-500">★</span>
-                      <span className="text-sm text-gray-600">{listing.seller.rating}</span>
+                      <span className="text-mythic-accent-500">★</span>
+                      <span className="text-sm text-mythic-text-muted">{listing.seller.rating}</span>
                     </div>
                   </div>
                   
                   <div className="flex gap-2">
                     <Link
                       href={`/marketplace/${listing.id}`}
-                      className="flex-1 text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="flex-1 text-center px-4 py-2 border border-mythic-primary-500/20 text-mythic-text-muted rounded-lg hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary hover:border-mythic-primary-500/40 transition-all"
                     >
                       View Details
                     </Link>
                     <button
                       onClick={() => addToCart(listing.id)}
                       disabled={cartItems.includes(listing.id)}
-                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
                         cartItems.includes(listing.id)
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-green-600 text-white hover:bg-green-700'
+                          ? 'bg-mythic-dark-700 text-mythic-text-muted cursor-not-allowed opacity-50'
+                          : 'bg-mythic-primary-500 text-white hover:bg-mythic-primary-600'
                       }`}
                     >
                       {cartItems.includes(listing.id) ? 'In Cart' : 'Add to Cart'}
@@ -333,12 +333,12 @@ export default function MarketplacePage() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <div className="text-gray-400 text-6xl mb-4">📦</div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No listings found</h3>
-            <p className="text-gray-500 mb-6">Try adjusting your filters or create a new listing</p>
+            <div className="text-mythic-text-muted text-6xl mb-4">📦</div>
+            <h3 className="text-xl font-semibold text-mythic-text-primary mb-2">No listings found</h3>
+            <p className="text-mythic-text-muted mb-6">Try adjusting your filters or create a new listing</p>
             <Link
               href="/marketplace/create"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-mythic-primary-500 text-white rounded-lg hover:bg-mythic-primary-600 transition-colors"
             >
               <FiPlus />
               <span>Create First Listing</span>

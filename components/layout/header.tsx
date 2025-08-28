@@ -20,7 +20,8 @@ import {
   LogIn,
   LogOut,
   User,
-  BarChart3
+  BarChart3,
+  LayoutDashboard
 } from 'lucide-react'
 
 const navigation = [
@@ -68,6 +69,21 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
+            {/* Dashboard Link for logged-in users */}
+            {user && (
+              <Link
+                href="/dashboard"
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1",
+                  pathname === '/dashboard'
+                    ? "text-mythic-primary-500"
+                    : "text-mythic-text-muted hover:text-mythic-text-primary hover:bg-mythic-primary-500/10"
+                )}
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+              </Link>
+            )}
             {navigation.map((item) => {
               // Check if user has access to this route
               const hasAccess = item.dropdown 
@@ -126,57 +142,59 @@ export function Header() {
           </div>
 
           {/* Right Side Actions */}
-          <div className="navbar actions flex items-center space-x-2 sm:space-x-4 flex-wrap min-w-0">
-            {/* Quick Links */}
-            <Link href="/girm" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
-              <Coins className="h-4 w-4" />
-              <span className="text-sm">GIRM</span>
-            </Link>
-            <Link href="/dao" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
-              <Vote className="h-4 w-4" />
-              <span className="text-sm">DAO</span>
-            </Link>
-            <Link href="/compliance" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
-              <FileText className="h-4 w-4" />
-              <span className="text-sm">WTN</span>
-            </Link>
-            {user && canAccessRoute('/agents') && (
-              <Link href="/agents" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
-                <Activity className="h-4 w-4" />
-                <span className="text-sm">Agents</span>
+          <div className="flex items-center space-x-4">
+            {/* Quick Links - Hidden on small screens */}
+            <div className="hidden lg:flex items-center space-x-2">
+              <Link href="/girm" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                <Coins className="h-4 w-4" />
+                <span className="text-sm font-medium">GIRM</span>
               </Link>
-            )}
-            {user && user.role === 'admin' && (
-              <Link href="/monitoring" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
-                <BarChart3 className="h-4 w-4" />
-                <span className="text-sm">Monitor</span>
+              <Link href="/dao" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                <Vote className="h-4 w-4" />
+                <span className="text-sm font-medium">DAO</span>
               </Link>
-            )}
+              <Link href="/compliance" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                <FileText className="h-4 w-4" />
+                <span className="text-sm font-medium">WTN</span>
+              </Link>
+              {user && canAccessRoute('/agents') && (
+                <Link href="/agents" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                  <Activity className="h-4 w-4" />
+                  <span className="text-sm font-medium">Agents</span>
+                </Link>
+              )}
+              {user && user.role === 'admin' && (
+                <Link href="/monitoring" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                  <BarChart3 className="h-4 w-4" />
+                  <span className="text-sm font-medium">Monitor</span>
+                </Link>
+              )}
+            </div>
 
             {/* User Menu / Auth */}
             {user ? (
-              <div className="flex items-center space-x-2">
-                <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-mythic-primary-500/10 border border-mythic-primary-500/20">
+              <div className="flex items-center space-x-3">
+                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-mythic-primary-500/10 border border-mythic-primary-500/20">
                   <User className="h-4 w-4 text-mythic-primary-500" />
-                  <span className="text-sm text-mythic-text-primary">{user.name}</span>
+                  <span className="text-sm text-mythic-text-primary font-medium">{user.name}</span>
                   <span className="text-xs text-mythic-text-muted">({user.role})</span>
                 </div>
                 <Button
                   onClick={logout}
                   size="sm"
                   variant="ghost"
-                  className="hidden sm:flex items-center gap-1 text-mythic-text-muted hover:text-red-400"
+                  className="hidden md:flex items-center gap-1.5 text-mythic-text-muted hover:text-red-400"
                 >
                   <LogOut className="h-4 w-4" />
-                  Logout
+                  <span className="text-sm">Logout</span>
                 </Button>
                 <WalletConnect />
               </div>
             ) : (
               <Link href="/login">
-                <Button size="sm" className="flex items-center gap-1">
+                <Button size="sm" className="flex items-center gap-2">
                   <LogIn className="h-4 w-4" />
-                  Login
+                  <span>Login</span>
                 </Button>
               </Link>
             )}
@@ -221,6 +239,24 @@ export function Header() {
             )}
             
             {/* Navigation Items */}
+            {/* Dashboard Link for mobile */}
+            {user && (
+              <Link
+                href="/dashboard"
+                className={cn(
+                  "block px-4 py-3 text-base font-medium rounded-lg transition-colors",
+                  pathname === '/dashboard'
+                    ? "text-mythic-primary-500 bg-mythic-primary-500/10"
+                    : "text-mythic-text-muted hover:text-mythic-text-primary hover:bg-mythic-primary-500/10"
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-2">
+                  <LayoutDashboard className="h-5 w-5" />
+                  Dashboard
+                </div>
+              </Link>
+            )}
             {navigation.map((item) => (
               <div key={item.name}>
                 <Link
