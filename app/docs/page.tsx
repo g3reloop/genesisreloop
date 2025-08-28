@@ -9,6 +9,7 @@ export default function Documentation() {
   const [activeSection, setActiveSection] = useState<string>('srl-crl')
 
   const sections = [
+    { id: 'compliance', title: 'Compliance Docs', icon: Shield, isLink: true, href: '/docs/compliance' },
     { id: 'srl-crl', title: 'SRL vs CRL', icon: Shield },
     { id: 'girm', title: 'GIRM Methods', icon: FileText },
     { id: 'heat-cascade', title: 'Heat Cascading', icon: Thermometer },
@@ -52,6 +53,21 @@ export default function Documentation() {
               <nav className="space-y-2">
                 {sections.map((section) => {
                   const Icon = section.icon
+                  
+                  if (section.isLink) {
+                    return (
+                      <Link
+                        key={section.id}
+                        href={section.href!}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-mythic-text-muted hover:bg-mythic-dark-800 hover:text-mythic-text-primary"
+                      >
+                        <Icon className="h-4 w-4" />
+                        <span className="text-sm font-medium">{section.title}</span>
+                        <ChevronRight className="h-4 w-4 ml-auto" />
+                      </Link>
+                    )
+                  }
+                  
                   return (
                     <button
                       key={section.id}
