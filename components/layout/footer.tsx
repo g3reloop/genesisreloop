@@ -34,7 +34,7 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer id="footer-navigation" className="bg-black border-t border-mythic-primary-500/10" role="contentinfo">
+    <footer id="footer-navigation" className="relative z-20 bg-black border-t border-mythic-primary-500/10 mt-auto" role="contentinfo">
       {/* Main Footer */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">

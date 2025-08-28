@@ -112,14 +112,16 @@ export default function RootLayout({
         
         <AuthProvider>
           <Web3Provider>
-            <ClientWrapper>
-              <Header />
-              <main id="main-content" className="flex-1 relative z-10" role="main" aria-label="Main content">
-                {children}
-              </main>
-              <Footer />
-              <Toaster richColors position="top-right" theme="dark" />
-            </ClientWrapper>
+            <div className="flex flex-col min-h-screen relative z-10">
+              <ClientWrapper>
+                <Header />
+                <main id="main-content" className="flex-1" role="main" aria-label="Main content">
+                  {children}
+                </main>
+                <Footer />
+                <Toaster richColors position="top-right" theme="dark" />
+              </ClientWrapper>
+            </div>
           </Web3Provider>
         </AuthProvider>
       </body>
