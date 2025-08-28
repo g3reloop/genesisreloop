@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Web3Provider } from "@/hooks/useWeb3";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -102,14 +103,16 @@ export default function RootLayout({
           Skip to footer
         </a>
         
-        <Web3Provider>
-          <Header />
-          <main id="main-content" className="flex-1" role="main" aria-label="Main content">
-            {children}
-          </main>
-          <Footer />
-          <Toaster richColors position="top-right" theme="dark" />
-        </Web3Provider>
+        <AuthProvider>
+          <Web3Provider>
+            <Header />
+            <main id="main-content" className="flex-1" role="main" aria-label="Main content">
+              {children}
+            </main>
+            <Footer />
+            <Toaster richColors position="top-right" theme="dark" />
+          </Web3Provider>
+        </AuthProvider>
       </body>
     </html>
   );

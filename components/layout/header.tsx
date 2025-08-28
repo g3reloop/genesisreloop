@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils/cn'
 import { Button } from '@/components/ui/button'
 import { WalletConnect } from '@/components/Web3/WalletConnect'
 import { GenesisLogo } from '@/components/ui/genesis-logo'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   Menu,
   X,
@@ -15,7 +16,11 @@ import {
   Coins,
   Vote,
   FileText,
-  Activity
+  Activity,
+  LogIn,
+  LogOut,
+  User,
+  BarChart3
 } from 'lucide-react'
 
 const navigation = [
@@ -67,6 +72,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const pathname = usePathname()
+  const { user, logout, canAccessRoute } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,7 +103,15 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navigation.map((item) => (
+            {navigation.map((item) => {
+              // Check if user has access to this route
+              const hasAccess = item.dropdown 
+                ? item.dropdown.some(subItem => canAccessRoute(subItem.href))
+                : canAccessRoute(item.href)
+              
+              if (!hasAccess && user) return null
+              
+              return (
               <div key={item.name} className="relative">
                 {item.dropdown ? (
                   <button
@@ -142,7 +156,8 @@ export function Header() {
                   </div>
                 )}
               </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Right Side Actions */}
@@ -160,13 +175,46 @@ export function Header() {
               <FileText className="h-4 w-4" />
               <span className="text-sm">WTN</span>
             </Link>
-            <Link href="/agents" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
-              <Activity className="h-4 w-4" />
-              <span className="text-sm">Agents</span>
-            </Link>
+            {user && canAccessRoute('/agents') && (
+              <Link href="/agents" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
+                <Activity className="h-4 w-4" />
+                <span className="text-sm">Agents</span>
+              </Link>
+            )}
+            {user && user.role === 'admin' && (
+              <Link href="/monitoring" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
+                <BarChart3 className="h-4 w-4" />
+                <span className="text-sm">Monitor</span>
+              </Link>
+            )}
 
-            {/* Wallet Connect */}
-            <WalletConnect />
+            {/* User Menu / Auth */}
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-mythic-primary-500/10 border border-mythic-primary-500/20">
+                  <User className="h-4 w-4 text-mythic-primary-500" />
+                  <span className="text-sm text-mythic-text-primary">{user.name}</span>
+                  <span className="text-xs text-mythic-text-muted">({user.role})</span>
+                </div>
+                <Button
+                  onClick={logout}
+                  size="sm"
+                  variant="ghost"
+                  className="hidden sm:flex items-center gap-1 text-mythic-text-muted hover:text-red-400"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+                <WalletConnect />
+              </div>
+            ) : (
+              <Link href="/login">
+                <Button size="sm" className="flex items-center gap-1">
+                  <LogIn className="h-4 w-4" />
+                  Login
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu */}
             <button
