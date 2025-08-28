@@ -123,11 +123,11 @@ export default function MonitoringPage() {
   }
 
   return (
-    <div className="container mx-auto py-24 px-4">
+    <div className="monitor container mx-auto py-24 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">System Monitoring</h1>
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">System Monitoring</h1>
           <p className="text-lg text-mythic-text-muted">
             Real-time monitoring and observability dashboard
           </p>
@@ -135,14 +135,14 @@ export default function MonitoringPage() {
 
         {/* System Metrics */}
         <div className="grid lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-mythic-dark-800 border-mythic-primary-500/20">
+          <Card className="panel bg-mythic-dark-900 border-mythic-primary-500/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">CPU Usage</CardTitle>
+              <CardTitle className="text-sm font-medium text-mythic-text-primary">CPU Usage</CardTitle>
               <Cpu className="h-4 w-4 text-mythic-primary-500" />
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className={cn("text-2xl font-bold", getStatusColor(metrics.cpu))}>
+                <p className={cn("stat text-2xl font-bold text-mythic-text-primary", getStatusColor(metrics.cpu))}>
                   {metrics.cpu.toFixed(1)}%
                 </p>
                 <TrendingUp className="h-4 w-4 text-mythic-text-muted" />
@@ -151,14 +151,14 @@ export default function MonitoringPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-mythic-dark-800 border-mythic-primary-500/20">
+          <Card className="panel bg-mythic-dark-900 border-mythic-primary-500/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Memory</CardTitle>
+              <CardTitle className="text-sm font-medium text-mythic-text-primary">Memory</CardTitle>
               <Server className="h-4 w-4 text-mythic-primary-500" />
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className={cn("text-2xl font-bold", getStatusColor(metrics.memory))}>
+                <p className={cn("stat text-2xl font-bold text-mythic-text-primary", getStatusColor(metrics.memory))}>
                   {metrics.memory.toFixed(1)}%
                 </p>
                 <TrendingDown className="h-4 w-4 text-mythic-text-muted" />
@@ -167,14 +167,14 @@ export default function MonitoringPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-mythic-dark-800 border-mythic-primary-500/20">
+          <Card className="panel bg-mythic-dark-900 border-mythic-primary-500/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Disk Usage</CardTitle>
+              <CardTitle className="text-sm font-medium text-mythic-text-primary">Disk Usage</CardTitle>
               <HardDrive className="h-4 w-4 text-mythic-primary-500" />
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline justify-between">
-                <p className={cn("text-2xl font-bold", getStatusColor(metrics.disk))}>
+                <p className={cn("stat text-2xl font-bold text-mythic-text-primary", getStatusColor(metrics.disk))}>
                   {metrics.disk.toFixed(1)}%
                 </p>
                 <TrendingUp className="h-4 w-4 text-mythic-text-muted" />
@@ -183,20 +183,20 @@ export default function MonitoringPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-mythic-dark-800 border-mythic-primary-500/20">
+          <Card className="panel bg-mythic-dark-900 border-mythic-primary-500/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Network I/O</CardTitle>
+              <CardTitle className="text-sm font-medium text-mythic-text-primary">Network I/O</CardTitle>
               <Network className="h-4 w-4 text-mythic-primary-500" />
             </CardHeader>
             <CardContent>
               <div>
                 <div className="flex items-baseline justify-between mb-1">
                   <span className="text-xs text-mythic-text-muted">In</span>
-                  <p className="text-sm font-bold">{metrics.network.in.toFixed(1)} MB/s</p>
+                  <p className="stat text-sm font-bold text-mythic-text-primary">{metrics.network.in.toFixed(1)} MB/s</p>
                 </div>
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs text-mythic-text-muted">Out</span>
-                  <p className="text-sm font-bold">{metrics.network.out.toFixed(1)} MB/s</p>
+                  <p className="stat text-sm font-bold text-mythic-text-primary">{metrics.network.out.toFixed(1)} MB/s</p>
                 </div>
               </div>
             </CardContent>
@@ -204,10 +204,10 @@ export default function MonitoringPage() {
         </div>
 
         {/* Service Health */}
-        <Card className="bg-mythic-dark-900 border-mythic-primary-500/20 mb-8">
+        <Card className="panel bg-mythic-dark-900 border-mythic-primary-500/20 mb-8">
           <CardHeader>
-            <CardTitle>Service Health</CardTitle>
-            <CardDescription>Current status of all system services</CardDescription>
+            <CardTitle className="text-mythic-text-primary">Service Health</CardTitle>
+            <CardDescription className="text-mythic-text-muted">Current status of all system services</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -219,7 +219,7 @@ export default function MonitoringPage() {
                   <div className="flex items-center gap-3">
                     {getStatusIcon(service.status)}
                     <div>
-                      <h3 className="font-semibold">{service.name}</h3>
+                      <h3 className="font-semibold text-mythic-text-primary">{service.name}</h3>
                       {service.message && (
                         <p className="text-sm text-mythic-text-muted">{service.message}</p>
                       )}
@@ -228,11 +228,11 @@ export default function MonitoringPage() {
                   <div className="flex items-center gap-4 text-sm">
                     <div className="text-right">
                       <p className="text-mythic-text-muted">Uptime</p>
-                      <p className="font-semibold">{service.uptime}</p>
+                      <p className="font-semibold text-mythic-text-primary">{service.uptime}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-mythic-text-muted">Last Check</p>
-                      <p className="font-semibold">{service.lastCheck}</p>
+                      <p className="font-semibold text-mythic-text-primary">{service.lastCheck}</p>
                     </div>
                     <Badge 
                       variant={service.status === 'healthy' ? 'default' : 'destructive'}
@@ -251,10 +251,10 @@ export default function MonitoringPage() {
         </Card>
 
         {/* Recent Alerts */}
-        <Card className="bg-mythic-dark-900 border-mythic-primary-500/20">
+        <Card className="panel bg-mythic-dark-900 border-mythic-primary-500/20">
           <CardHeader>
-            <CardTitle>Recent Alerts</CardTitle>
-            <CardDescription>System alerts and notifications</CardDescription>
+            <CardTitle className="text-mythic-text-primary">Recent Alerts</CardTitle>
+            <CardDescription className="text-mythic-text-muted">System alerts and notifications</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">

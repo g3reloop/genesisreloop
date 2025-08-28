@@ -126,7 +126,7 @@ export function Header() {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="navbar actions flex items-center space-x-2 sm:space-x-4 flex-wrap min-w-0">
             {/* Quick Links */}
             <Link href="/girm" className="hidden sm:flex items-center gap-1 p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
               <Coins className="h-4 w-4" />

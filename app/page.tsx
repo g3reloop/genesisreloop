@@ -90,7 +90,7 @@ export default function HomePage() {
               className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6"
             >
               <span className="bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">
-                Turn Local Waste into Local Fuel
+                Turn waste into value with decentralized loops
               </span>
             </motion.h1>
 
@@ -101,8 +101,8 @@ export default function HomePage() {
               transition={{ delay: 0.4 }}
               className="text-xl text-mythic-text-muted mb-12 max-w-3xl mx-auto"
             >
-              Food waste → Biogas (on-site). Used cooking oil → Biodiesel. 
-              Credits cut costs. DAO seeds the next loop.
+              Genesis Reloop connects suppliers, processors, and buyers into verifiable circular supply chains. 
+              Automate logistics, trace every kilogram, finance with GIRM credits, and prove real impact.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -113,17 +113,17 @@ export default function HomePage() {
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <Link
-                href="/rfq"
+                href="/join"
                 className="group px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200 flex items-center justify-center gap-2"
               >
-                Start a Loop
+                Join the network
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                href="/join"
+                href="/tutorial"
                 className="px-8 py-4 bg-mythic-dark-900/80 backdrop-blur text-mythic-text-primary font-semibold rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800/80 transition-all duration-200 flex items-center justify-center gap-2"
               >
-                Join Network
+                How it works
               </Link>
             </motion.div>
 
@@ -188,87 +188,64 @@ export default function HomePage() {
           >
             <h2 className="text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">
-                How the Loops Work
+                How it works
               </span>
             </h2>
-            <p className="text-xl text-mythic-text-muted max-w-3xl mx-auto">
-              Simple chemistry. Proven tech. Community ownership.
-            </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Food Waste Loop */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="glass rounded-2xl p-8 border border-mythic-primary-500/20"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Flame className="h-8 w-8 text-mythic-primary-500" />
-                <h3 className="text-2xl font-bold text-mythic-text-primary">Food Waste → Energy</h3>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="glass rounded-2xl p-8 md:p-12 border border-mythic-primary-500/20">
+              <ol className="space-y-6">
+                <li className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-mythic-primary-500 text-mythic-dark-900 rounded-full flex items-center justify-center font-bold">1</span>
                   <div>
-                    <p className="font-semibold text-mythic-text-primary">Container AD Unit</p>
-                    <p className="text-sm text-mythic-text-muted">40ft module processes 1-5 tonnes/day</p>
+                    <strong className="text-mythic-text-primary">List feedstock</strong>
+                    <span className="text-mythic-text-muted"> (UCO, plastics, organics) with specs and volumes.</span>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
+                </li>
+                <li className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-mythic-primary-500 text-mythic-dark-900 rounded-full flex items-center justify-center font-bold">2</span>
                   <div>
-                    <p className="font-semibold text-mythic-text-primary">CHP + Heat Cascade</p>
-                    <p className="text-sm text-mythic-text-muted">Generate electricity + capture 85% total energy</p>
+                    <strong className="text-mythic-text-primary">Match to processors</strong>
+                    <span className="text-mythic-text-muted"> via agents (technology, permits, capacity).</span>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
+                </li>
+                <li className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-mythic-primary-500 text-mythic-dark-900 rounded-full flex items-center justify-center font-bold">3</span>
                   <div>
-                    <p className="font-semibold text-mythic-text-primary">Digestate Output</p>
-                    <p className="text-sm text-mythic-text-muted">High-quality fertilizer for local farms</p>
+                    <strong className="text-mythic-text-primary">Automate routes & paperwork</strong>
+                    <span className="text-mythic-text-muted"> (WTN, duty-of-care).</span>
                   </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* UCO Loop */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="glass rounded-2xl p-8 border border-mythic-accent-300/20"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Recycle className="h-8 w-8 text-mythic-accent-300" />
-                <h3 className="text-2xl font-bold text-mythic-text-primary">UCO → Biodiesel</h3>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-mythic-accent-300 mt-0.5" />
+                </li>
+                <li className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-mythic-primary-500 text-mythic-dark-900 rounded-full flex items-center justify-center font-bold">4</span>
                   <div>
-                    <p className="font-semibold text-mythic-text-primary">Modular Refinery</p>
-                    <p className="text-sm text-mythic-text-muted">20ft unit processes 500-2000L/day</p>
+                    <strong className="text-mythic-text-primary">Sell outputs</strong>
+                    <span className="text-mythic-text-muted"> (biodiesel, biogas, oils, digestate) to verified buyers.</span>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-mythic-accent-300 mt-0.5" />
+                </li>
+                <li className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-mythic-primary-500 text-mythic-dark-900 rounded-full flex items-center justify-center font-bold">5</span>
                   <div>
-                    <p className="font-semibold text-mythic-text-primary">B100 Quality</p>
-                    <p className="text-sm text-mythic-text-muted">EN 14214 compliant fuel for any diesel engine</p>
+                    <strong className="text-mythic-text-primary">Finance</strong>
+                    <span className="text-mythic-text-muted"> with GIRM credits and settle via Treasury.</span>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-mythic-accent-300 mt-0.5" />
+                </li>
+                <li className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-mythic-primary-500 text-mythic-dark-900 rounded-full flex items-center justify-center font-bold">6</span>
                   <div>
-                    <p className="font-semibold text-mythic-text-primary">Glycerol Value</p>
-                    <p className="text-sm text-mythic-text-muted">Byproduct sells to cosmetics/feed industries</p>
+                    <strong className="text-mythic-text-primary">Audit</strong>
+                    <span className="text-mythic-text-muted"> end-to-end with traceable, verifiable proof.</span>
                   </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+                </li>
+              </ol>
+            </div>
+          </motion.div>
         </div>
       </section>
 

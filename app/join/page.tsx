@@ -166,7 +166,7 @@ export default function JoinPage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card
-                  className={`glass border-2 cursor-pointer transition-all duration-300 h-full ${
+                  className={`border-2 cursor-pointer transition-all duration-300 h-full bg-mythic-dark-900 ${
                     isSelected 
                       ? 'border-mythic-primary-500 bg-mythic-primary-500/10' 
                       : 'border-mythic-primary-500/20 hover:border-mythic-primary-500/40'
@@ -182,7 +182,7 @@ export default function JoinPage() {
                         <CheckCircle className="h-6 w-6 text-mythic-primary-500" />
                       )}
                     </div>
-                    <CardTitle className="text-2xl mt-4">{role.title}</CardTitle>
+                    <CardTitle className="text-2xl mt-4 text-mythic-text-primary">{role.title}</CardTitle>
                     <CardDescription className="text-mythic-text-muted">
                       {role.description}
                     </CardDescription>

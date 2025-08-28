@@ -52,10 +52,12 @@ export const WalletConnect = () => {
         onClick={connect}
         disabled={isConnecting}
         variant="default"
-        className="gap-2"
+        className="btn-connect-wallet gap-2 whitespace-nowrap"
+        data-test="connect-wallet"
       >
         <Wallet className="h-4 w-4" />
-        {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+        <span className="hidden sm:inline">{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
+        <span className="sm:hidden">Connect</span>
       </Button>
     )
   }
@@ -63,12 +65,12 @@ export const WalletConnect = () => {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span className="font-mono">{formatAddress(account)}</span>
+        <Button variant="outline" className="gap-2 max-w-full">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="h-2 w-2 rounded-full bg-green-500 flex-shrink-0" />
+            <span className="font-mono text-ellipsis overflow-hidden">{formatAddress(account)}</span>
           </div>
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="h-4 w-4 flex-shrink-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

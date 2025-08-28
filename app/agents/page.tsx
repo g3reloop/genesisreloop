@@ -6,7 +6,7 @@ import {
   Bot, MessageSquare, X, Send,
   Truck, Recycle, Route, ShoppingBag, Beaker,
   Shield, Award, Search, AlertTriangle, DollarSign,
-  Loader2
+  Loader2, Minimize2, Maximize2, Square, FileText
 } from 'lucide-react'
 import { MythicBackground } from '@/components/ui/mythic-background'
 import { cn } from '@/lib/utils/cn'
@@ -111,6 +111,7 @@ export default function AgentsPage() {
   const [inputMessage, setInputMessage] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [filter, setFilter] = useState<'all' | 'matching' | 'compliance' | 'finance' | 'reputation'>('all')
+  const [drawerState, setDrawerState] = useState<'closed' | 'minimized' | 'open' | 'fullscreen'>('open')
 
   const filteredAgents = filter === 'all' 
     ? agents 
@@ -288,7 +289,14 @@ export default function AgentsPage() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed inset-4 md:inset-auto md:right-8 md:bottom-8 md:w-96 md:h-[600px] bg-mythic-dark-900 rounded-2xl shadow-2xl border-2 border-mythic-primary-500/20 z-50 flex flex-col"
+              className={cn(
+                "fixed bg-mythic-dark-900 rounded-2xl shadow-2xl border-2 border-mythic-primary-500/20 z-50 flex flex-col transition-all duration-300",
+                drawerState === 'fullscreen' 
+                  ? "inset-4" 
+                  : drawerState === 'minimized'
+                  ? "md:right-8 md:bottom-8 md:w-80 md:h-16"
+                  : "inset-4 md:inset-auto md:right-8 md:bottom-8 md:w-96 md:h-[600px]"
+              )}
             >
               {/* Chat Header */}
               <div className="p-6 border-b border-mythic-primary-500/10">
@@ -309,12 +317,37 @@ export default function AgentsPage() {
                       <p className="text-xs text-mythic-text-muted">Online</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setSelectedAgent(null)}
-                    className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors"
-                  >
-                    <X className="h-5 w-5 text-mythic-text-muted" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Drawer Controls */}
+                    <a
+                      href="/docs"
+                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
+                      title="Docs"
+                    >
+                      <FileText className="h-4 w-4" />
+                    </a>
+                    <button
+                      onClick={() => setDrawerState('minimized')}
+                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
+                      title="Minimize (Ctrl+\\)"
+                    >
+                      <Minimize2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setDrawerState(drawerState === 'fullscreen' ? 'open' : 'fullscreen')}
+                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
+                      title="Fullscreen (Ctrl+Enter)"
+                    >
+                      {drawerState === 'fullscreen' ? <Square className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                    </button>
+                    <button
+                      onClick={() => setSelectedAgent(null)}
+                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
+                      title="Close (Esc)"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
 

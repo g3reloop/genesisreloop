@@ -129,16 +129,20 @@ export default function MarketplacePage() {
   )
 
   return (
-    <div className="space-y-8">
+    <div className="marketplace-root space-y-8 min-h-screen bg-black">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="marketplace-header flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gradient mb-2">Trade batches. See the proofs.</h1>
-          <p className="text-mythic-dark-500 dark:text-mythic-dark-400">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent mb-2">Trade batches. See the proofs.</h1>
+          <p className="text-mythic-text-muted">
             List only SRL-verified supply. Escrow settles after LoopAuditBot confirms delivery.
           </p>
         </div>
-        <Button variant="primary" glow>
+        <Button 
+          variant="primary" 
+          glow
+          data-test="list-srl-batches"
+        >
           <Plus className="h-4 w-4 mr-2" />
           List SRL batches
         </Button>
@@ -207,25 +211,25 @@ export default function MarketplacePage() {
               const StatusIcon = statusIcons[batch.status as keyof typeof statusIcons] || Clock
               
               return (
-                <Card key={batch.id} className="hover:shadow-lg transition-all duration-200 overflow-hidden">
+                <Card key={batch.id} className="marketplace-card hover:shadow-lg transition-all duration-200 overflow-hidden bg-mythic-dark-900 border-mythic-primary-500/20">
                   <div className={cn(
                     "h-1 w-full",
-                    batch.loopType === 'SRL' ? "bg-mythic-loop-srl" : "bg-mythic-loop-crl"
+                    batch.loopType === 'SRL' ? "bg-mythic-primary-500" : "bg-mythic-accent-300"
                   )} />
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
-                        <CardTitle className="text-lg flex items-center">
+                        <CardTitle className="text-lg flex items-center text-mythic-text-primary">
                           <Icon className="h-5 w-5 mr-2" />
                           {batch.batchCode}
                         </CardTitle>
-                        <CardDescription>{batch.node}</CardDescription>
+                        <CardDescription className="text-mythic-text-muted">{batch.node}</CardDescription>
                       </div>
                       <div className={cn(
                         "px-2 py-1 rounded-full text-xs font-medium",
                         batch.loopType === 'SRL' 
-                          ? "bg-mythic-loop-srl/20 text-mythic-loop-srl"
-                          : "bg-mythic-loop-crl/20 text-mythic-loop-crl"
+                          ? "bg-mythic-primary-500/20 text-mythic-primary-500"
+                          : "bg-mythic-accent-300/20 text-mythic-accent-300"
                       )}>
                         {batch.loopType}
                       </div>
@@ -234,22 +238,22 @@ export default function MarketplacePage() {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-mythic-dark-500 dark:text-mythic-dark-400">Quantity</p>
-                        <p className="font-semibold">{batch.quantity} kg</p>
+                        <p className="text-mythic-text-muted">Quantity</p>
+                        <p className="font-semibold text-mythic-text-primary">{batch.quantity} kg</p>
                       </div>
                       {batch.fatContent && (
                         <div>
-                          <p className="text-mythic-dark-500 dark:text-mythic-dark-400">Fat Content</p>
-                          <p className="font-semibold">{batch.fatContent}%</p>
+                          <p className="text-mythic-text-muted">Fat Content</p>
+                          <p className="font-semibold text-mythic-text-primary">{batch.fatContent}%</p>
                         </div>
                       )}
                       <div>
-                        <p className="text-mythic-dark-500 dark:text-mythic-dark-400">Price</p>
-                        <p className="font-semibold">£{batch.price}/kg</p>
+                        <p className="text-mythic-text-muted">Price</p>
+                        <p className="font-semibold text-mythic-text-primary">£{batch.price}/kg</p>
                       </div>
                       <div>
-                        <p className="text-mythic-dark-500 dark:text-mythic-dark-400">Location</p>
-                        <p className="font-semibold">{batch.location}</p>
+                        <p className="text-mythic-text-muted">Location</p>
+                        <p className="font-semibold text-mythic-text-primary">{batch.location}</p>
                       </div>
                     </div>
                     
@@ -258,8 +262,13 @@ export default function MarketplacePage() {
                         <StatusIcon className="h-4 w-4 mr-1" />
                         {batch.status}
                       </div>
-                      <Button size="sm" variant={batch.loopType === 'SRL' ? 'secondary' : 'default'}>
-                        Audit Batch
+                      <Button 
+                        size="sm" 
+                        variant={batch.loopType === 'SRL' ? 'secondary' : 'default'}
+                        data-test="view-details"
+                        className="bg-mythic-primary-500 text-mythic-dark-900 hover:bg-mythic-primary-600"
+                      >
+                        View Details
                       </Button>
                     </div>
                   </CardContent>
@@ -277,15 +286,15 @@ export default function MarketplacePage() {
             const StatusIcon = statusIcons[product.status as keyof typeof statusIcons] || Clock
             
             return (
-              <Card key={product.id} glass className="hover:shadow-lg transition-all duration-200">
+              <Card key={product.id} className="marketplace-card hover:shadow-lg transition-all duration-200 bg-mythic-dark-900 border-mythic-primary-500/20">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-lg flex items-center">
+                      <CardTitle className="text-lg flex items-center text-mythic-text-primary">
                         <Icon className="h-5 w-5 mr-2" />
                         {product.productType}
                       </CardTitle>
-                      <CardDescription>{product.processor}</CardDescription>
+                      <CardDescription className="text-mythic-text-muted">{product.processor}</CardDescription>
                     </div>
                     <div className="flex items-center text-mythic-secondary-500">
                       <Leaf className="h-4 w-4 mr-1" />
@@ -296,12 +305,12 @@ export default function MarketplacePage() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-mythic-dark-500 dark:text-mythic-dark-400">Quantity</p>
-                      <p className="font-semibold">{product.quantity} {product.unit}</p>
+                      <p className="text-mythic-text-muted">Quantity</p>
+                      <p className="font-semibold text-mythic-text-primary">{product.quantity} {product.unit}</p>
                     </div>
                     <div>
-                      <p className="text-mythic-dark-500 dark:text-mythic-dark-400">Price</p>
-                      <p className="font-semibold">£{product.price}/{product.unit}</p>
+                      <p className="text-mythic-text-muted">Price</p>
+                      <p className="font-semibold text-mythic-text-primary">£{product.price}/{product.unit}</p>
                     </div>
                   </div>
                   
@@ -310,8 +319,13 @@ export default function MarketplacePage() {
                       <StatusIcon className="h-4 w-4 mr-1" />
                       {product.status}
                     </div>
-                    <Button size="sm" variant="accent">
-                      Deploy
+                    <Button 
+                      size="sm" 
+                      variant="accent"
+                      data-test="contact-seller"
+                      className="bg-mythic-primary-500 text-mythic-dark-900 hover:bg-mythic-primary-600"
+                    >
+                      Contact Seller
                     </Button>
                   </div>
                 </CardContent>
@@ -322,28 +336,28 @@ export default function MarketplacePage() {
       )}
 
       {/* Market Stats */}
-      <Card className="mt-8">
+      <Card className="marketplace-card mt-8 bg-mythic-dark-900 border-mythic-primary-500/20">
         <CardHeader>
-          <CardTitle>Loop Activity</CardTitle>
-          <CardDescription>Community node performance today</CardDescription>
+          <CardTitle className="text-mythic-text-primary">Loop Activity</CardTitle>
+          <CardDescription className="text-mythic-text-muted">Community node performance today</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
               <p className="text-3xl font-bold text-mythic-primary-500">245</p>
-              <p className="text-sm text-mythic-dark-500 dark:text-mythic-dark-400">Active Batches</p>
+              <p className="text-sm text-mythic-text-muted">Active Batches</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-mythic-secondary-500">78%</p>
-              <p className="text-sm text-mythic-dark-500 dark:text-mythic-dark-400">SRL Verified</p>
+              <p className="text-3xl font-bold text-mythic-accent-300">78%</p>
+              <p className="text-sm text-mythic-text-muted">SRL Verified</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-mythic-accent-500">£45.2K</p>
-              <p className="text-sm text-mythic-dark-500 dark:text-mythic-dark-400">Settled Today</p>
+              <p className="text-3xl font-bold text-mythic-accent-300">£45.2K</p>
+              <p className="text-sm text-mythic-text-muted">Settled Today</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-mythic-flow-credits">128.5</p>
-              <p className="text-sm text-mythic-dark-500 dark:text-mythic-dark-400">tCO₂ Anchored</p>
+              <p className="text-3xl font-bold text-flow-credits">128.5</p>
+              <p className="text-sm text-mythic-text-muted">tCO₂ Anchored</p>
             </div>
           </div>
         </CardContent>

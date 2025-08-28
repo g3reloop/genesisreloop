@@ -139,13 +139,12 @@ export function MythicBackground({
   )
 }
 
-// Animated version with multiple layers
+// Animated version with multiple layers - DISABLED per requirements
 export function MythicBackgroundAnimated({ className }: { className?: string }) {
   return (
-    <div className={cn("absolute inset-0", className)}>
-      <MythicBackground variant="flow" opacity={0.03} />
-      <MythicBackground variant="concentric" opacity={0.02} className="animate-rotate-slow" />
-      <MythicBackground variant="spiral" opacity={0.01} className="animate-pulse-slow" />
+    <div className={cn("absolute inset-0 bg-black", className)}>
+      {/* Static background only - no animations */}
+      <div className="absolute inset-0 bg-gradient-to-br from-mythic-primary-500/5 via-black to-mythic-accent-300/5" />
     </div>
   )
 }
