@@ -231,6 +231,31 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-black/95 backdrop-blur-xl border-t border-mythic-primary-500/10">
           <div className="container mx-auto px-4 py-4 space-y-1">
+            {/* User Info in Mobile */}
+            {user && (
+              <div className="flex items-center justify-between px-4 py-3 mb-4 rounded-lg bg-mythic-primary-500/10 border border-mythic-primary-500/20">
+                <div className="flex items-center gap-2">
+                  <User className="h-5 w-5 text-mythic-primary-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-mythic-text-primary">{user.name}</p>
+                    <p className="text-xs text-mythic-text-muted">{user.role}</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => {
+                    logout()
+                    setMobileMenuOpen(false)
+                  }}
+                  size="sm"
+                  variant="ghost"
+                  className="text-red-400 hover:text-red-300"
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
+            
+            {/* Navigation Items */}
             {navigation.map((item) => (
               <div key={item.name}>
                 <Link
@@ -261,6 +286,55 @@ export function Header() {
                 )}
               </div>
             ))}
+            
+            {/* Mobile Quick Links */}
+            <div className="border-t border-mythic-primary-500/10 pt-4 mt-4 flex flex-wrap gap-2">
+              <Link 
+                href="/girm" 
+                className="px-4 py-2 rounded-lg bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary transition-all flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Coins className="h-4 w-4" />
+                GIRM
+              </Link>
+              {user && canAccessRoute('/agents') && (
+                <Link 
+                  href="/agents" 
+                  className="px-4 py-2 rounded-lg bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary transition-all flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Activity className="h-4 w-4" />
+                  Agents
+                </Link>
+              )}
+              {user && user.role === 'admin' && (
+                <Link 
+                  href="/monitoring" 
+                  className="px-4 py-2 rounded-lg bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary transition-all flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  Monitor
+                </Link>
+              )}
+            </div>
+            
+            {/* Login Button for Mobile */}
+            {!user && (
+              <div className="border-t border-mythic-primary-500/10 pt-4 mt-4">
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full justify-center">
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Login
+                  </Button>
+                </Link>
+              </div>
+            )}
+            
+            {/* Wallet Connect for Mobile */}
+            <div className="pt-2">
+              <WalletConnect className="w-full" />
+            </div>
           </div>
         </div>
       )}

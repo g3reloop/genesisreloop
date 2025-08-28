@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Web3Provider } from "@/hooks/useWeb3";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { MythicBackgroundAnimated } from "@/components/ui/mythic-background";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -89,12 +90,17 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} dark`}>
       <head>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased bg-black text-mythic-text-primary min-h-screen flex flex-col">
+      <body className="antialiased bg-black text-mythic-text-primary min-h-screen flex flex-col relative overflow-x-hidden">
+        {/* Mythic Background */}
+        <MythicBackgroundAnimated className="fixed inset-0 z-0" />
+        
         {/* Skip Links for Accessibility */}
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-mythic-primary-500 text-mythic-dark-900 px-4 py-2 rounded-md font-semibold z-50 focus:outline-none focus:ring-2 focus:ring-mythic-primary-500 focus:ring-offset-2 focus:ring-offset-black">
           Skip to main content
@@ -106,7 +112,7 @@ export default function RootLayout({
         <AuthProvider>
           <Web3Provider>
             <Header />
-            <main id="main-content" className="flex-1" role="main" aria-label="Main content">
+            <main id="main-content" className="flex-1 relative z-10" role="main" aria-label="Main content">
               {children}
             </main>
             <Footer />
