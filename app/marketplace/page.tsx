@@ -1,421 +1,351 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils/cn'
-import { toast } from 'sonner'
-import {
-  Package,
-  Filter,
-  Plus,
-  TrendingUp,
-  Droplet,
-  Flame,
-  Leaf,
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  MapPin,
-  Calendar,
-  Info,
-  ShieldCheck,
-  Coins
-} from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { FiShoppingCart, FiPlus, FiTruck, FiPackage } from 'react-icons/fi'
+import Link from 'next/link'
+import Image from 'next/image'
+import { toast } from 'react-hot-toast'
 
-// Mock data for feedstock batches
-const mockBatches = [
+interface Listing {
+  id: string
+  title: string
+  description: string
+  price: number
+  unit: string
+  quantity: number
+  category: 'food-waste' | 'cooking-oil' | 'recycled-product'
+  status: 'available' | 'pending' | 'sold'
+  seller: {
+    name: string
+    rating: number
+    verified: boolean
+  }
+  location: string
+  images: string[]
+  createdAt: string
+}
+
+// Mock data for demonstration
+const mockListings: Listing[] = [
   {
     id: '1',
-    batchCode: 'UCO-2024-001',
-    node: 'Community Kitchen Co-op',
-    type: 'UCO',
-    quantity: 450,
-    fatContent: 85,
-    loopType: 'SRL',
-    status: 'REGISTERED',
-    price: 0.65,
-    location: 'London',
-    createdAt: new Date('2024-01-15'),
-    girmProof: 'GIRM-2024-001-ABC'
+    title: 'Fresh Vegetable Scraps',
+    description: 'Mixed vegetable trimmings from restaurant prep, perfect for composting',
+    price: 15,
+    unit: 'kg',
+    quantity: 50,
+    category: 'food-waste',
+    status: 'available',
+    seller: {
+      name: 'Green Restaurant',
+      rating: 4.8,
+      verified: true
+    },
+    location: 'Downtown District',
+    images: ['/api/placeholder/300/200'],
+    createdAt: '2024-01-15'
   },
   {
     id: '2',
-    batchCode: 'FW-2024-002',
-    node: 'Local Food Network',
-    type: 'FOOD_WASTE',
-    quantity: 800,
-    loopType: 'SRL',
-    status: 'ASSIGNED',
-    price: 0.45,
-    location: 'Manchester',
-    createdAt: new Date('2024-01-14'),
-    girmProof: 'GIRM-2024-002-DEF'
+    title: 'Used Cooking Oil - High Quality',
+    description: 'Clean used cooking oil, filtered and ready for biodiesel processing',
+    price: 25,
+    unit: 'liter',
+    quantity: 100,
+    category: 'cooking-oil',
+    status: 'available',
+    seller: {
+      name: 'City Diner',
+      rating: 4.5,
+      verified: true
+    },
+    location: 'Industrial Zone',
+    images: ['/api/placeholder/300/200'],
+    createdAt: '2024-01-14'
   },
   {
     id: '3',
-    batchCode: 'UCO-2024-003',
-    node: 'Corporate Chain (overflow)',
-    type: 'UCO',
-    quantity: 320,
-    fatContent: 78,
-    loopType: 'CRL',
-    status: 'REGISTERED',
-    price: 0.55,
-    location: 'Birmingham',
-    createdAt: new Date('2024-01-13'),
-    girmProof: 'pending'
+    title: 'Recycled Compost Bags',
+    description: 'Eco-friendly compost bags made from recycled materials',
+    price: 45,
+    unit: 'pack',
+    quantity: 30,
+    category: 'recycled-product',
+    status: 'available',
+    seller: {
+      name: 'EcoProducts Co.',
+      rating: 4.9,
+      verified: true
+    },
+    location: 'Green Valley',
+    images: ['/api/placeholder/300/200'],
+    createdAt: '2024-01-13'
   }
 ]
-
-// Mock secondary products
-const mockSecondaryProducts = [
-  {
-    id: '1',
-    productType: 'BIODIESEL',
-    quantity: 5000,
-    unit: 'liters',
-    price: 1.25,
-    processor: 'BioFuel Solutions Ltd',
-    status: 'AVAILABLE',
-    carbonSaved: 12.5
-  },
-  {
-    id: '2',
-    productType: 'GLYCERIN',
-    quantity: 800,
-    unit: 'kg',
-    price: 0.85,
-    processor: 'Green Processing Co',
-    status: 'AVAILABLE',
-    carbonSaved: 2.1
-  },
-  {
-    id: '3',
-    productType: 'DIGESTATE',
-    quantity: 2500,
-    unit: 'kg',
-    price: 0.15,
-    processor: 'Circular Bio Plant',
-    status: 'RESERVED',
-    carbonSaved: 3.8
-  }
-]
-
-const typeIcons = {
-  UCO: Droplet,
-  FOOD_WASTE: Leaf,
-  BIODIESEL: Flame,
-  GLYCERIN: Package,
-  DIGESTATE: Leaf
-}
-
-const statusColors = {
-  REGISTERED: 'text-mythic-primary-500',
-  ASSIGNED: 'text-mythic-accent-500',
-  AVAILABLE: 'text-mythic-secondary-500',
-  RESERVED: 'text-mythic-accent-500',
-  SOLD: 'text-mythic-dark-500'
-}
-
-const statusIcons = {
-  REGISTERED: Clock,
-  ASSIGNED: AlertCircle,
-  AVAILABLE: CheckCircle,
-  RESERVED: AlertCircle,
-  SOLD: CheckCircle
-}
 
 export default function MarketplacePage() {
-  const [activeTab, setActiveTab] = useState<'feedstock' | 'secondary'>('feedstock')
-  const [filterLoopType, setFilterLoopType] = useState<'all' | 'SRL' | 'CRL'>('all')
-  const [selectedBatch, setSelectedBatch] = useState<string | null>(null)
-  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [listings, setListings] = useState<Listing[]>([])
+  const [filteredListings, setFilteredListings] = useState<Listing[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<string>('newest')
+  const [isLoading, setIsLoading] = useState(true)
+  const [cartItems, setCartItems] = useState<string[]>([])
 
-  const filteredBatches = mockBatches.filter(batch => 
-    filterLoopType === 'all' || batch.loopType === filterLoopType
-  )
+  useEffect(() => {
+    // Simulate loading data
+    const loadListings = async () => {
+      setIsLoading(true)
+      // In production, this would be an API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      setListings(mockListings)
+      setFilteredListings(mockListings)
+      setIsLoading(false)
+    }
+    loadListings()
+  }, [])
 
-  const handleListBatch = () => {
-    setShowCreateModal(true)
-    toast.info('List Batch modal would open here')
+  useEffect(() => {
+    // Filter listings
+    let filtered = [...listings]
+    
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(listing => listing.category === selectedCategory)
+    }
+
+    // Sort listings
+    if (sortBy === 'newest') {
+      filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    } else if (sortBy === 'price-low') {
+      filtered.sort((a, b) => a.price - b.price)
+    } else if (sortBy === 'price-high') {
+      filtered.sort((a, b) => b.price - a.price)
+    }
+
+    setFilteredListings(filtered)
+  }, [selectedCategory, sortBy, listings])
+
+  const addToCart = (listingId: string) => {
+    if (cartItems.includes(listingId)) {
+      toast.error('Item already in cart')
+      return
+    }
+    setCartItems([...cartItems, listingId])
+    toast.success('Added to cart')
   }
 
-  const handleViewDetails = (batchId: string) => {
-    setSelectedBatch(batchId)
-    toast.info(`Viewing details for batch ${batchId}`)
+  const categoryStyles = {
+    'food-waste': 'bg-green-100 text-green-800',
+    'cooking-oil': 'bg-yellow-100 text-yellow-800',
+    'recycled-product': 'bg-blue-100 text-blue-800'
   }
 
-  const handleContactSeller = (productId: string) => {
-    toast.success('Contact request sent to seller')
+  const categoryIcons = {
+    'food-waste': <FiPackage />,
+    'cooking-oil': <FiTruck />,
+    'recycled-product': <FiShoppingCart />
   }
 
   return (
-    <div className="marketplace-root space-y-8 min-h-screen bg-black">
-      {/* Header */}
-      <div className="marketplace-header flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent mb-2">Trade batches. See the proofs.</h1>
-          <p className="text-mythic-text-muted">
-            List only SRL-verified supply. Escrow settles after LoopAuditBot confirms delivery.
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">Marketplace</h1>
+          <p className="text-gray-600">Browse and purchase waste materials and recycled products</p>
         </div>
-        <Button 
-          variant="primary" 
-          glow
-          data-test="list-srl-batches"
-          onClick={handleListBatch}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          List SRL batches
-        </Button>
-      </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-1 bg-mythic-dark-100 dark:bg-mythic-dark-900 p-1 rounded-lg w-fit">
-        <button
-          onClick={() => setActiveTab('feedstock')}
-          className={cn(
-            "px-4 py-2 rounded-md transition-all duration-200",
-            activeTab === 'feedstock'
-              ? "bg-white dark:bg-mythic-dark-800 shadow-sm"
-              : "hover:bg-mythic-dark-50 dark:hover:bg-mythic-dark-800"
-          )}
-        >
-          Community Supply
-        </button>
-        <button
-          onClick={() => setActiveTab('secondary')}
-          className={cn(
-            "px-4 py-2 rounded-md transition-all duration-200",
-            activeTab === 'secondary'
-              ? "bg-white dark:bg-mythic-dark-800 shadow-sm"
-              : "hover:bg-mythic-dark-50 dark:hover:bg-mythic-dark-800"
-          )}
-        >
-          Converted Products
-        </button>
-      </div>
-
-      {activeTab === 'feedstock' && (
-        <>
-          {/* Filters */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <Filter className="h-4 w-4 text-mythic-dark-500" />
-              <span className="text-sm">Filter by loop:</span>
-            </div>
-            <div className="flex space-x-2">
-              {(['all', 'SRL', 'CRL'] as const).map(type => (
-                <button
-                  key={type}
-                  onClick={() => setFilterLoopType(type)}
-                  className={cn(
-                    "px-3 py-1 rounded-full text-sm transition-all",
-                    filterLoopType === type
-                      ? type === 'SRL' 
-                        ? "bg-mythic-loop-srl text-white"
-                        : type === 'CRL'
-                        ? "bg-mythic-loop-crl text-white"
-                        : "bg-mythic-primary-500 text-white"
-                      : "bg-mythic-dark-100 dark:bg-mythic-dark-800 hover:bg-mythic-dark-200 dark:hover:bg-mythic-dark-700"
-                  )}
-                >
-                  {type === 'all' ? 'All' : type}
-                </button>
-              ))}
-            </div>
+        {/* Action Bar */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div className="flex flex-wrap gap-2">
+            {/* Category Filters */}
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === 'all'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              All Categories
+            </button>
+            <button
+              onClick={() => setSelectedCategory('food-waste')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === 'food-waste'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Food Waste
+            </button>
+            <button
+              onClick={() => setSelectedCategory('cooking-oil')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === 'cooking-oil'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Cooking Oil
+            </button>
+            <button
+              onClick={() => setSelectedCategory('recycled-product')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === 'recycled-product'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Recycled Products
+            </button>
           </div>
 
-          {/* Feedstock Grid */}
+          <div className="flex items-center gap-4">
+            {/* Sort Dropdown */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            >
+              <option value="newest">Newest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+
+            {/* Add Listing Button */}
+            <Link
+              href="/marketplace/create"
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <FiPlus />
+              <span>Add Listing</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Cart Indicator */}
+        {cartItems.length > 0 && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg flex items-center justify-between">
+            <span className="text-blue-800 font-medium">
+              {cartItems.length} item{cartItems.length > 1 ? 's' : ''} in cart
+            </span>
+            <Link
+              href="/marketplace/cart"
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              View Cart →
+            </Link>
+          </div>
+        )}
+
+        {/* Listings Grid */}
+        {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBatches.map(batch => {
-              const Icon = typeIcons[batch.type as keyof typeof typeIcons] || Package
-              const StatusIcon = statusIcons[batch.status as keyof typeof statusIcons] || Clock
-              
-              return (
-                <Card key={batch.id} className="marketplace-card hover:shadow-lg transition-all duration-200 overflow-hidden bg-mythic-dark-900 border-mythic-primary-500/20">
-                  <div className={cn(
-                    "h-1 w-full",
-                    batch.loopType === 'SRL' ? "bg-mythic-primary-500" : "bg-mythic-accent-300"
-                  )} />
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg flex items-center text-mythic-text-primary">
-                          <Icon className="h-5 w-5 mr-2" />
-                          {batch.batchCode}
-                        </CardTitle>
-                        <CardDescription className="text-mythic-text-muted">{batch.node}</CardDescription>
-                      </div>
-                      <div className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
-                        batch.loopType === 'SRL' 
-                          ? "bg-mythic-primary-500/20 text-mythic-primary-500"
-                          : "bg-mythic-accent-300/20 text-mythic-accent-300"
-                      )}>
-                        {batch.loopType}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-mythic-text-muted flex items-center gap-1">
-                          <Package className="h-3 w-3" />
-                          Quantity
-                        </p>
-                        <p className="font-semibold text-mythic-text-primary">{batch.quantity} kg</p>
-                      </div>
-                      {batch.fatContent && (
-                        <div>
-                          <p className="text-mythic-text-muted flex items-center gap-1">
-                            <Droplet className="h-3 w-3" />
-                            Fat Content
-                          </p>
-                          <p className="font-semibold text-mythic-text-primary">{batch.fatContent}%</p>
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-mythic-text-muted flex items-center gap-1">
-                          <Coins className="h-3 w-3" />
-                          Price
-                        </p>
-                        <p className="font-semibold text-mythic-text-primary">£{batch.price}/kg</p>
-                      </div>
-                      <div>
-                        <p className="text-mythic-text-muted flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          Location
-                        </p>
-                        <p className="font-semibold text-mythic-text-primary">{batch.location}</p>
-                      </div>
-                    </div>
-                    
-                    {/* GIRM Proof Badge */}
-                    <div className="flex items-center justify-between p-3 bg-mythic-primary-500/10 rounded-lg border border-mythic-primary-500/20">
-                      <div className="flex items-center gap-2">
-                        <ShieldCheck className="h-4 w-4 text-mythic-primary-500" />
-                        <span className="text-sm text-mythic-text-muted">GIRM Proof</span>
-                      </div>
-                      <span className="text-xs font-mono text-mythic-primary-500">
-                        {batch.girmProof === 'pending' ? 'Pending verification' : batch.girmProof}
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-xl shadow-sm p-6 animate-pulse">
+                <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
+                <div className="h-10 bg-gray-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        ) : filteredListings.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredListings.map((listing) => (
+              <div key={listing.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="relative h-48 bg-gray-100 rounded-t-xl overflow-hidden">
+                  <Image
+                    src={listing.images[0]}
+                    alt={listing.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute top-2 right-2">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${categoryStyles[listing.category]}`}>
+                      {listing.category.replace('-', ' ')}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    {listing.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {listing.description}
+                  </p>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <span className="text-2xl font-bold text-green-600">
+                        ${listing.price}
+                      </span>
+                      <span className="text-gray-500 text-sm ml-1">
+                        /{listing.unit}
                       </span>
                     </div>
-                    
-                    {/* Collection Date */}
-                    <div className="flex items-center gap-2 text-sm text-mythic-text-muted">
-                      <Calendar className="h-4 w-4" />
-                      <span>Listed {new Date(batch.createdAt).toLocaleDateString()}</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between pt-2 border-t">
-                      <div className={cn("flex items-center text-sm", statusColors[batch.status as keyof typeof statusColors])}>
-                        <StatusIcon className="h-4 w-4 mr-1" />
-                        {batch.status}
-                      </div>
-                      <Button 
-                        size="sm" 
-                        variant={batch.loopType === 'SRL' ? 'secondary' : 'default'}
-                        data-test="view-details"
-                        className="bg-mythic-primary-500 text-mythic-dark-900 hover:bg-mythic-primary-600"
-                        onClick={() => handleViewDetails(batch.id)}
-                      >
-                        View Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </>
-      )}
-
-      {activeTab === 'secondary' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockSecondaryProducts.map(product => {
-            const Icon = typeIcons[product.productType as keyof typeof typeIcons] || Package
-            const StatusIcon = statusIcons[product.status as keyof typeof statusIcons] || Clock
-            
-            return (
-              <Card key={product.id} className="marketplace-card hover:shadow-lg transition-all duration-200 bg-mythic-dark-900 border-mythic-primary-500/20">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-lg flex items-center text-mythic-text-primary">
-                        <Icon className="h-5 w-5 mr-2" />
-                        {product.productType}
-                      </CardTitle>
-                      <CardDescription className="text-mythic-text-muted">{product.processor}</CardDescription>
-                    </div>
-                    <div className="flex items-center text-mythic-secondary-500">
-                      <Leaf className="h-4 w-4 mr-1" />
-                      <span className="text-xs font-medium">{product.carbonSaved} tCO₂</span>
-                    </div>
+                    <span className="text-sm text-gray-500">
+                      {listing.quantity} {listing.unit}s available
+                    </span>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-mythic-text-muted">Quantity</p>
-                      <p className="font-semibold text-mythic-text-primary">{product.quantity} {product.unit}</p>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-700">
+                        {listing.seller.name}
+                      </span>
+                      {listing.seller.verified && (
+                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                          Verified
+                        </span>
+                      )}
                     </div>
-                    <div>
-                      <p className="text-mythic-text-muted">Price</p>
-                      <p className="font-semibold text-mythic-text-primary">£{product.price}/{product.unit}</p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-yellow-500">★</span>
+                      <span className="text-sm text-gray-600">{listing.seller.rating}</span>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <div className={cn("flex items-center text-sm", statusColors[product.status as keyof typeof statusColors])}>
-                      <StatusIcon className="h-4 w-4 mr-1" />
-                      {product.status}
-                    </div>
-                    <Button 
-                      size="sm" 
-                      variant="accent"
-                      data-test="contact-seller"
-                      className="bg-mythic-primary-500 text-mythic-dark-900 hover:bg-mythic-primary-600"
-                      onClick={() => handleContactSeller(product.id)}
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/marketplace/${listing.id}`}
+                      className="flex-1 text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      Contact Seller
-                    </Button>
+                      View Details
+                    </Link>
+                    <button
+                      onClick={() => addToCart(listing.id)}
+                      disabled={cartItems.includes(listing.id)}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                        cartItems.includes(listing.id)
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'bg-green-600 text-white hover:bg-green-700'
+                      }`}
+                    >
+                      {cartItems.includes(listing.id) ? 'In Cart' : 'Add to Cart'}
+                    </button>
                   </div>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-      )}
-
-      {/* Market Stats */}
-      <Card className="marketplace-card mt-8 bg-mythic-dark-900 border-mythic-primary-500/20">
-        <CardHeader>
-          <CardTitle className="text-mythic-text-primary">Loop Activity</CardTitle>
-          <CardDescription className="text-mythic-text-muted">Community node performance today</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <p className="text-3xl font-bold text-mythic-primary-500">245</p>
-              <p className="text-sm text-mythic-text-muted">Active Batches</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-mythic-accent-300">78%</p>
-              <p className="text-sm text-mythic-text-muted">SRL Verified</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-mythic-accent-300">£45.2K</p>
-              <p className="text-sm text-mythic-text-muted">Settled Today</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-flow-credits">128.5</p>
-              <p className="text-sm text-mythic-text-muted">tCO₂ Anchored</p>
-            </div>
+                </div>
+              </div>
+            ))}
           </div>
-        </CardContent>
-      </Card>
+        ) : (
+          <div className="text-center py-16">
+            <div className="text-gray-400 text-6xl mb-4">📦</div>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">No listings found</h3>
+            <p className="text-gray-500 mb-6">Try adjusting your filters or create a new listing</p>
+            <Link
+              href="/marketplace/create"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <FiPlus />
+              <span>Create First Listing</span>
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
