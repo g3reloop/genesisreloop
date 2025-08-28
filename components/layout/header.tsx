@@ -58,7 +58,7 @@ export function Header() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-3 group">
+            <Link href="/" className="site-logo flex items-center space-x-3 group">
               <GenesisLogo size="md" className="transition-transform group-hover:scale-110" />
               <span className="text-2xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">
                 Genesis Reloop

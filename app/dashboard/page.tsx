@@ -13,8 +13,10 @@ import {
   Activity,
   DollarSign,
   Recycle,
-  Zap
+  Zap,
+  HelpCircle
 } from 'lucide-react'
+import { toast } from 'sonner'
 
 // Mock data for dashboard metrics
 const mockMetrics = {
@@ -62,6 +64,15 @@ const metricCards = [
 export default function DashboardPage() {
   const [realtimeMetrics, setRealtimeMetrics] = useState(mockMetrics)
   
+  const handleRestartTour = () => {
+    localStorage.removeItem('genesis-tour-completed')
+    localStorage.removeItem('genesis-first-login')
+    toast.success('Tutorial will start on your next page refresh')
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
+  }
+  
   // Simulate real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,11 +90,22 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-gradient mb-2">Dashboard</h1>
-        <p className="text-mythic-dark-500 dark:text-mythic-dark-400">
-          Real-time overview of your circular economy network
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent mb-2">Dashboard</h1>
+          <p className="text-mythic-text-muted">
+            Real-time overview of your circular economy network
+          </p>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleRestartTour}
+          className="flex items-center gap-2 text-mythic-text-muted hover:text-mythic-primary-500"
+        >
+          <HelpCircle className="h-4 w-4" />
+          Restart Tour
+        </Button>
       </div>
 
       {/* Metrics Grid */}

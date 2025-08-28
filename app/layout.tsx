@@ -7,6 +7,7 @@ import { Web3Provider } from "@/hooks/useWeb3";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { MythicBackgroundAnimated } from "@/components/ui/mythic-background";
 import { Toaster } from "sonner";
+import { ClientWrapper } from "@/components/layout/client-wrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -111,12 +112,14 @@ export default function RootLayout({
         
         <AuthProvider>
           <Web3Provider>
-            <Header />
-            <main id="main-content" className="flex-1 relative z-10" role="main" aria-label="Main content">
-              {children}
-            </main>
-            <Footer />
-            <Toaster richColors position="top-right" theme="dark" />
+            <ClientWrapper>
+              <Header />
+              <main id="main-content" className="flex-1 relative z-10" role="main" aria-label="Main content">
+                {children}
+              </main>
+              <Footer />
+              <Toaster richColors position="top-right" theme="dark" />
+            </ClientWrapper>
           </Web3Provider>
         </AuthProvider>
       </body>

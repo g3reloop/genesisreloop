@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
+import { toast } from 'sonner'
 import {
   Package,
   Filter,
@@ -14,7 +15,12 @@ import {
   Leaf,
   CheckCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  MapPin,
+  Calendar,
+  Info,
+  ShieldCheck,
+  Coins
 } from 'lucide-react'
 
 // Mock data for feedstock batches
@@ -123,10 +129,26 @@ const statusIcons = {
 export default function MarketplacePage() {
   const [activeTab, setActiveTab] = useState<'feedstock' | 'secondary'>('feedstock')
   const [filterLoopType, setFilterLoopType] = useState<'all' | 'SRL' | 'CRL'>('all')
+  const [selectedBatch, setSelectedBatch] = useState<string | null>(null)
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   const filteredBatches = mockBatches.filter(batch => 
     filterLoopType === 'all' || batch.loopType === filterLoopType
   )
+
+  const handleListBatch = () => {
+    setShowCreateModal(true)
+    toast.info('List Batch modal would open here')
+  }
+
+  const handleViewDetails = (batchId: string) => {
+    setSelectedBatch(batchId)
+    toast.info(`Viewing details for batch ${batchId}`)
+  }
+
+  const handleContactSeller = (productId: string) => {
+    toast.success('Contact request sent to seller')
+  }
 
   return (
     <div className="marketplace-root space-y-8 min-h-screen bg-black">
@@ -142,6 +164,7 @@ export default function MarketplacePage() {
           variant="primary" 
           glow
           data-test="list-srl-batches"
+          onClick={handleListBatch}
         >
           <Plus className="h-4 w-4 mr-2" />
           List SRL batches
@@ -238,23 +261,52 @@ export default function MarketplacePage() {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-mythic-text-muted">Quantity</p>
+                        <p className="text-mythic-text-muted flex items-center gap-1">
+                          <Package className="h-3 w-3" />
+                          Quantity
+                        </p>
                         <p className="font-semibold text-mythic-text-primary">{batch.quantity} kg</p>
                       </div>
                       {batch.fatContent && (
                         <div>
-                          <p className="text-mythic-text-muted">Fat Content</p>
+                          <p className="text-mythic-text-muted flex items-center gap-1">
+                            <Droplet className="h-3 w-3" />
+                            Fat Content
+                          </p>
                           <p className="font-semibold text-mythic-text-primary">{batch.fatContent}%</p>
                         </div>
                       )}
                       <div>
-                        <p className="text-mythic-text-muted">Price</p>
+                        <p className="text-mythic-text-muted flex items-center gap-1">
+                          <Coins className="h-3 w-3" />
+                          Price
+                        </p>
                         <p className="font-semibold text-mythic-text-primary">£{batch.price}/kg</p>
                       </div>
                       <div>
-                        <p className="text-mythic-text-muted">Location</p>
+                        <p className="text-mythic-text-muted flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          Location
+                        </p>
                         <p className="font-semibold text-mythic-text-primary">{batch.location}</p>
                       </div>
+                    </div>
+                    
+                    {/* GIRM Proof Badge */}
+                    <div className="flex items-center justify-between p-3 bg-mythic-primary-500/10 rounded-lg border border-mythic-primary-500/20">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="h-4 w-4 text-mythic-primary-500" />
+                        <span className="text-sm text-mythic-text-muted">GIRM Proof</span>
+                      </div>
+                      <span className="text-xs font-mono text-mythic-primary-500">
+                        {batch.girmProof === 'pending' ? 'Pending verification' : batch.girmProof}
+                      </span>
+                    </div>
+                    
+                    {/* Collection Date */}
+                    <div className="flex items-center gap-2 text-sm text-mythic-text-muted">
+                      <Calendar className="h-4 w-4" />
+                      <span>Listed {new Date(batch.createdAt).toLocaleDateString()}</span>
                     </div>
                     
                     <div className="flex items-center justify-between pt-2 border-t">
@@ -267,6 +319,7 @@ export default function MarketplacePage() {
                         variant={batch.loopType === 'SRL' ? 'secondary' : 'default'}
                         data-test="view-details"
                         className="bg-mythic-primary-500 text-mythic-dark-900 hover:bg-mythic-primary-600"
+                        onClick={() => handleViewDetails(batch.id)}
                       >
                         View Details
                       </Button>
@@ -324,6 +377,7 @@ export default function MarketplacePage() {
                       variant="accent"
                       data-test="contact-seller"
                       className="bg-mythic-primary-500 text-mythic-dark-900 hover:bg-mythic-primary-600"
+                      onClick={() => handleContactSeller(product.id)}
                     >
                       Contact Seller
                     </Button>
