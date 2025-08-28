@@ -1,30 +1,19 @@
-<svg width="32" height="32" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="120" height="120" fill="#000000"/>
-  <g opacity="0.9">
-    <!-- Top circle - Food Waste/Biogas -->
-    <circle cx="60" cy="35" r="22" stroke="#00C08B" stroke-width="3" fill="none"/>
+<svg width="32" height="32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#000000"/>
+  <g>
+    <!-- Top circle -->
+    <circle cx="100" cy="50" r="40" stroke="#00C08B" stroke-width="8" fill="none"/>
     
-    <!-- Right circle - UCO/Biodiesel -->
-    <circle cx="85" cy="60" r="22" stroke="#7EF5CF" stroke-width="3" fill="none"/>
+    <!-- Right circle -->
+    <circle cx="150" cy="100" r="40" stroke="#00C08B" stroke-width="8" fill="none"/>
     
-    <!-- Bottom circle - Community/DAO -->
-    <circle cx="60" cy="85" r="22" stroke="#ffcc00" stroke-width="3" fill="none"/>
+    <!-- Bottom circle -->
+    <circle cx="100" cy="150" r="40" stroke="#00C08B" stroke-width="8" fill="none"/>
     
-    <!-- Left circle - Technology/Agents -->
-    <circle cx="35" cy="60" r="22" stroke="#cc00ff" stroke-width="3" fill="none"/>
+    <!-- Left circle -->
+    <circle cx="50" cy="100" r="40" stroke="#00C08B" stroke-width="8" fill="none"/>
     
-    <!-- Connecting lines -->
-    <g opacity="0.6">
-      <line x1="60" y1="57" x2="60" y2="63" stroke="#E8FFF7" stroke-width="2"/>
-      <line x1="63" y1="60" x2="57" y2="60" stroke="#E8FFF7" stroke-width="2"/>
-      <line x1="44" y1="44" x2="50" y2="50" stroke="#E8FFF7" stroke-width="2"/>
-      <line x1="76" y1="44" x2="70" y2="50" stroke="#E8FFF7" stroke-width="2"/>
-      <line x1="76" y1="76" x2="70" y2="70" stroke="#E8FFF7" stroke-width="2"/>
-      <line x1="44" y1="76" x2="50" y2="70" stroke="#E8FFF7" stroke-width="2"/>
-    </g>
-    
-    <!-- Center Genesis point -->
-    <circle cx="60" cy="60" r="8" fill="#00C08B" opacity="0.8"/>
-    <circle cx="60" cy="60" r="4" fill="#E8FFF7"/>
+    <!-- Center circle -->
+    <circle cx="100" cy="100" r="12" stroke="#00C08B" stroke-width="8" fill="none"/>
   </g>
 </svg>

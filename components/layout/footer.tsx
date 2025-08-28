@@ -13,10 +13,22 @@ import {
 } from 'lucide-react'
 
 const footerLinks = [
+  { name: 'Marketplace', href: '/marketplace' },
+  { name: 'Secondary Products', href: '/marketplace/secondary' },
+  { name: 'SRL Batches', href: '/marketplace/srl-batches' },
+  { name: 'Processor Directory', href: '/processors' },
+  { name: 'Operator Console', href: '/operator' },
+  { name: 'Processes', href: '/processes' },
+  { name: 'Compliance (WTN)', href: '/compliance/wtn' },
+  { name: 'Collection Routes', href: '/collection-routes' },
+  { name: 'GIRM Credits', href: '/girm' },
+  { name: 'Treasury', href: '/treasury' },
+  { name: 'Agents', href: '/agents' },
   { name: 'Docs', href: '/docs' },
   { name: 'Methodology', href: '/docs/methodology' },
+  { name: 'Tutorial', href: '/tutorial' },
   { name: 'Contact', href: '/contact' },
-  { name: 'Tutorial', href: '/tutorial' }
+  { name: 'Join the Network', href: '/join' }
 ]
 
 
@@ -56,7 +68,7 @@ export function Footer() {
           {/* Links Section */}
           <div className="lg:col-span-4">
             <h3 className="text-mythic-text-primary font-semibold mb-4">Quick Links</h3>
-            <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {footerLinks.map((link) => (
                 <li key={link.name}>
                   <Link
