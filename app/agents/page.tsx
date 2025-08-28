@@ -32,7 +32,7 @@ const agents: AgentInfo[] = [
     icon: <Search className="h-6 w-6" />,
     description: 'Tracks material flows across the loop. Provides full transparency on where waste goes and what it becomes.',
     category: 'compliance',
-    color: 'from-flow-credits to-mythic-gold-500'
+    color: 'from-mythic-flow-credits to-mythic-gold-500'
   },
   {
     name: 'RouteGen',
@@ -46,14 +46,14 @@ const agents: AgentInfo[] = [
     icon: <ShoppingBag className="h-6 w-6" />,
     description: 'Finds buyers for recycled outputs like biogas or biodiesel. Matches supply to demand within Genesis loops.',
     category: 'matching',
-    color: 'from-flow-byproduct to-flow-feedstock'
+    color: 'from-mythic-flow-byproduct to-mythic-flow-feedstock'
   },
   {
     name: 'ByproductMatcher',
     icon: <Beaker className="h-6 w-6" />,
     description: 'Allocates loop byproducts (digestate, glycerol) into new value streams. Prevents waste, ensures total utilisation.',
     category: 'matching',
-    color: 'from-flow-reputation to-mythic-primary-500'
+    color: 'from-mythic-flow-reputation to-mythic-primary-500'
   },
   {
     name: 'CarbonVerifier',
@@ -67,21 +67,21 @@ const agents: AgentInfo[] = [
     icon: <AlertTriangle className="h-6 w-6" />,
     description: 'Automates paperwork and compliance processes. Keeps every loop aligned with regulations.',
     category: 'compliance',
-    color: 'from-status-warning to-status-active'
+    color: 'from-mythic-status-warning to-mythic-status-active'
   },
   {
     name: 'ReputationBot',
     icon: <Award className="h-6 w-6" />,
     description: 'Builds transparent trust scores for suppliers, labs, and buyers. Helps users choose reliable partners.',
     category: 'reputation',
-    color: 'from-flow-reputation to-flow-credits'
+    color: 'from-mythic-flow-reputation to-mythic-flow-credits'
   },
   {
     name: 'LoopAuditBot',
     icon: <Search className="h-6 w-6" />,
     description: 'Audits the integrity of loops. Detects anomalies, flags risks, and ensures loops remain regenerative.',
     category: 'compliance',
-    color: 'from-status-error to-status-warning'
+    color: 'from-mythic-status-error to-mythic-status-warning'
   },
   {
     name: 'LoopInsurer',
@@ -95,7 +95,7 @@ const agents: AgentInfo[] = [
     icon: <DollarSign className="h-6 w-6" />,
     description: 'Monitors financial flows in the loop economy. Ensures liquidity for operators and smooth DAO allocation.',
     category: 'finance',
-    color: 'from-flow-credits to-mythic-gold-400'
+    color: 'from-mythic-flow-credits to-mythic-gold-400'
   }
 ]
 
@@ -181,7 +181,7 @@ export default function AgentsPage() {
             className="text-center mb-12"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-mythic-primary-500 via-mythic-accent-300 to-flow-credits bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-mythic-primary-500 via-mythic-accent-300 to-mythic-flow-credits bg-clip-text text-transparent">
                 Genesis AI Agents
               </span>
             </h1>
