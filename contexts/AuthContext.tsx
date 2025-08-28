@@ -25,6 +25,20 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+// Feature gating configuration
+const PROTECTED_ROUTES: Record<string, boolean> = {
+  '/agents': false, // Public but limited functionality
+  '/agents/:id': true, // Requires auth
+  '/operator': true,
+  '/monitor': true,
+  '/monitoring': true,
+  '/treasury': true,
+  '/proposals': true,
+  '/collection-routes': true,
+  '/ops': true,
+  '/micro-collection': true,
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)

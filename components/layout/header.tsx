@@ -24,47 +24,12 @@ import {
 } from 'lucide-react'
 
 const navigation = [
-  { 
-    name: 'Loops', 
-    href: '/loops',
-    dropdown: [
-      { name: 'Loop Overview', href: '/loops' },
-      { name: 'Heat Cascade Planner', href: '/heat-cascade' },
-      { name: 'Secondary Products', href: '/secondary' }
-    ]
-  },
-  { 
-    name: 'Trade', 
-    href: '/marketplace',
-    dropdown: [
-      { name: 'GIRM Credits', href: '/girm' },
-      { name: 'Marketplace', href: '/marketplace' },
-      { name: 'Secondary Products', href: '/secondary' }
-    ]
-  },
-  { 
-    name: 'Operate', 
-    href: '#',
-    dropdown: [
-      { name: 'Operator Console', href: '/ops' },
-      { name: 'Collection Routes', href: '/micro-collection' },
-      { name: 'Compliance', href: '/compliance' },
-      { name: 'Processors', href: '/processors' }
-    ]
-  },
-  { 
-    name: 'Build', 
-    href: '#',
-    dropdown: [
-      { name: 'Request RFQ', href: '/rfq' },
-      { name: 'Processor Directory', href: '/processors' },
-      { name: 'Join Network', href: '/join' }
-    ]
-  },
-  { name: 'DAO', href: '/dao' },
-  { name: 'Treasury', href: '/treasury' },
+  { name: 'Marketplace', href: '/marketplace' },
+  { name: 'Agents', href: '/agents' },
   { name: 'Docs', href: '/docs' },
-  { name: 'Contact', href: '/contact' }
+  { name: 'GIRM', href: '/girm' },
+  { name: 'Contact', href: '/contact' },
+  { name: 'Join the Network', href: '/join' }
 ]
 
 export function Header() {
@@ -286,6 +251,22 @@ export function Header() {
                 )}
               </div>
             ))}
+            
+            {/* Add Login to mobile menu when user is not logged in */}
+            {!user && (
+              <Link
+                href="/login"
+                className={cn(
+                  "block px-4 py-3 text-base font-medium rounded-lg transition-colors",
+                  pathname === '/login'
+                    ? "text-mythic-primary-500 bg-mythic-primary-500/10"
+                    : "text-mythic-text-muted hover:text-mythic-text-primary hover:bg-mythic-primary-500/10"
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+            )}
             
             {/* Mobile Quick Links */}
             <div className="border-t border-mythic-primary-500/10 pt-4 mt-4 flex flex-wrap gap-2">

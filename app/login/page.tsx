@@ -35,13 +35,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 relative">
+      <Card className="w-full max-w-md bg-mythic-dark-900/50 border-mythic-primary-500/20">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">
             Genesis Reloop Login
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-mythic-text-muted">
             Enter your credentials to access the platform
           </CardDescription>
         </CardHeader>
@@ -55,7 +55,7 @@ export default function LoginPage() {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-mythic-text-muted">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -64,11 +64,12 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                className="bg-[var(--field-bg)] border-[var(--field-border)] text-[var(--ink-strong)] placeholder:text-[var(--placeholder)] focus:border-mythic-primary-500 focus:ring-mythic-primary-500"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-mythic-text-muted">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -77,6 +78,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                className="bg-[var(--field-bg)] border-[var(--field-border)] text-[var(--ink-strong)] placeholder:text-[var(--placeholder)] focus:border-mythic-primary-500 focus:ring-mythic-primary-500"
               />
             </div>
           </CardContent>
@@ -84,7 +86,7 @@ export default function LoginPage() {
           <CardFooter className="flex flex-col space-y-4">
             <Button 
               type="submit" 
-              className="w-full"
+              className="w-full bg-mythic-primary-500 hover:bg-mythic-primary-600 text-black font-semibold"
               disabled={loading}
             >
               {loading ? (
@@ -97,14 +99,14 @@ export default function LoginPage() {
               )}
             </Button>
             
-            <div className="text-sm text-gray-600 text-center">
-              <p className="font-semibold mb-2">Demo Credentials:</p>
+            <div className="text-sm text-mythic-text-muted text-center">
+              <p className="font-semibold mb-2 text-mythic-text-primary">Demo Credentials:</p>
               <div className="space-y-1 text-xs">
-                <p><strong>Admin:</strong> admin@genesisreloop.com / password</p>
-                <p><strong>Supplier:</strong> supplier@example.com / password</p>
-                <p><strong>Collector:</strong> collector@example.com / password</p>
-                <p><strong>Processor:</strong> processor@example.com / password</p>
-                <p><strong>Buyer:</strong> buyer@example.com / password</p>
+                <p><strong className="text-mythic-primary-500">Admin:</strong> admin@genesisreloop.com / password</p>
+                <p><strong className="text-mythic-primary-500">Supplier:</strong> supplier@example.com / password</p>
+                <p><strong className="text-mythic-primary-500">Collector:</strong> collector@example.com / password</p>
+                <p><strong className="text-mythic-primary-500">Processor:</strong> processor@example.com / password</p>
+                <p><strong className="text-mythic-primary-500">Buyer:</strong> buyer@example.com / password</p>
               </div>
             </div>
           </CardFooter>

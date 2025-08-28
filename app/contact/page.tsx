@@ -7,75 +7,76 @@ import Link from 'next/link'
 
 export default function ContactPage() {
   return (
-    <div className="container mx-auto px-4 py-16 max-w-6xl">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-            Connect to the DAO.
-          </span>
-        </h1>
-        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-          Deploy nodes. Request audits. Join community governance.
-        </p>
-      </div>
+    <div className="min-h-screen bg-black text-mythic-text-primary py-24 relative">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">
+              Connect to the DAO.
+            </span>
+          </h1>
+          <p className="text-xl text-mythic-text-muted max-w-3xl mx-auto">
+            Deploy nodes. Request audits. Join community governance.
+          </p>
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <Card>
+          <Card className="bg-mythic-dark-900/50 border-mythic-primary-500/20">
             <CardHeader>
-              <CardTitle>Node Deployment Request</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-mythic-text-primary">Node Deployment Request</CardTitle>
+              <CardDescription className="text-mythic-text-muted">
                 Submit details. Community node will verify within 24 hours.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">First Name</label>
+                  <label className="text-sm font-medium mb-2 block text-mythic-text-muted">First Name</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 rounded-md border border-gray-700 bg-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-3 py-2 rounded-md bg-[var(--field-bg)] border border-[var(--field-border)] text-[var(--ink-strong)] placeholder:text-[var(--placeholder)] focus:border-mythic-primary-500 focus:ring-1 focus:ring-mythic-primary-500"
                     placeholder="John"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Last Name</label>
+                  <label className="text-sm font-medium mb-2 block text-mythic-text-muted">Last Name</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 rounded-md border border-gray-700 bg-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-3 py-2 rounded-md bg-[var(--field-bg)] border border-[var(--field-border)] text-[var(--ink-strong)] placeholder:text-[var(--placeholder)] focus:border-mythic-primary-500 focus:ring-1 focus:ring-mythic-primary-500"
                     placeholder="Doe"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="text-sm font-medium mb-2 block">Email</label>
+                <label className="text-sm font-medium mb-2 block text-mythic-text-muted">Email</label>
                 <input
                   type="email"
-                  className="w-full px-3 py-2 rounded-md border border-gray-700 bg-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 rounded-md bg-[var(--field-bg)] border border-[var(--field-border)] text-[var(--ink-strong)] placeholder:text-[var(--placeholder)] focus:border-mythic-primary-500 focus:ring-1 focus:ring-mythic-primary-500"
                   placeholder="john@company.com"
                 />
               </div>
               
               <div>
-                <label className="text-sm font-medium mb-2 block">Node Name</label>
+                <label className="text-sm font-medium mb-2 block text-mythic-text-muted">Node Name</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 rounded-md border border-gray-700 bg-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 rounded-md bg-[var(--field-bg)] border border-[var(--field-border)] text-[var(--ink-strong)] placeholder:text-[var(--placeholder)] focus:border-mythic-primary-500 focus:ring-1 focus:ring-mythic-primary-500"
                   placeholder="Community Kitchen Node"
                 />
               </div>
               
               <div>
-                <label className="text-sm font-medium mb-2 block">Node Details</label>
+                <label className="text-sm font-medium mb-2 block text-mythic-text-muted">Node Details</label>
                 <textarea
-                  className="w-full px-3 py-2 rounded-md border border-gray-700 bg-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 rounded-md bg-[var(--field-bg)] border border-[var(--field-border)] text-[var(--ink-strong)] placeholder:text-[var(--placeholder)] focus:border-mythic-primary-500 focus:ring-1 focus:ring-mythic-primary-500 resize-none"
                   rows={4}
                   placeholder="Material types. Volumes. Loop preference (SRL/CRL)."
                 />
               </div>
               
-              <Button className="w-full" size="lg">
+              <Button className="w-full bg-mythic-primary-500 hover:bg-mythic-primary-600 text-black font-semibold" size="lg">
                 Submit to DAO
               </Button>
             </CardContent>
@@ -83,34 +84,34 @@ export default function ContactPage() {
         </div>
 
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-mythic-dark-900/50 border-mythic-primary-500/20">
             <CardHeader>
-              <CardTitle>Community Nodes</CardTitle>
+              <CardTitle className="text-mythic-text-primary">Community Nodes</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start space-x-3">
-                <Mail className="h-5 w-5 text-emerald-500 mt-0.5" />
+                <Mail className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
                 <div>
-                  <p className="font-medium">Email</p>
-                  <a href="mailto:ops@genesisreloop.com" className="text-sm text-gray-400 hover:text-emerald-400 transition-colors">
+                  <p className="font-medium text-mythic-text-primary">Email</p>
+                  <a href="mailto:ops@genesisreloop.com" className="text-sm text-mythic-text-muted hover:text-mythic-primary-500 transition-colors">
                     ops@genesisreloop.com
                   </a>
                 </div>
               </div>
               
               <div className="flex items-start space-x-3">
-                <Phone className="h-5 w-5 text-emerald-500 mt-0.5" />
+                <Phone className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
                 <div>
-                  <p className="font-medium">Phone</p>
-                  <p className="text-sm text-gray-400">+44 20 1234 5678</p>
+                  <p className="font-medium text-mythic-text-primary">Phone</p>
+                  <p className="text-sm text-mythic-text-muted">+44 20 1234 5678</p>
                 </div>
               </div>
               
               <div className="flex items-start space-x-3">
-                <MapPin className="h-5 w-5 text-emerald-500 mt-0.5" />
+                <MapPin className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
                 <div>
-                  <p className="font-medium">Office</p>
-                  <p className="text-sm text-gray-400">
+                  <p className="font-medium text-mythic-text-primary">Office</p>
+                  <p className="text-sm text-mythic-text-muted">
                     123 Sustainability Street<br />
                     London, EC1A 1BB<br />
                     United Kingdom
@@ -119,10 +120,10 @@ export default function ContactPage() {
               </div>
               
               <div className="flex items-start space-x-3">
-                <Clock className="h-5 w-5 text-emerald-500 mt-0.5" />
+                <Clock className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
                 <div>
-                  <p className="font-medium">Business Hours</p>
-                  <p className="text-sm text-gray-400">
+                  <p className="font-medium text-mythic-text-primary">Business Hours</p>
+                  <p className="text-sm text-mythic-text-muted">
                     Mon-Fri: 9:00 AM - 6:00 PM GMT<br />
                     Sat-Sun: Closed
                   </p>
@@ -131,16 +132,16 @@ export default function ContactPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-mythic-dark-900/50 border-mythic-primary-500/20">
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle className="text-mythic-text-primary">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link 
                 href="mailto:ops@genesisreloop.com" 
                 className="w-full"
               >
-                <Button className="w-full justify-center" variant="outline">
+                <Button className="w-full justify-center border-mythic-primary-500/20 hover:bg-mythic-primary-500/10" variant="outline">
                   <Mail className="h-4 w-4 mr-2" />
                   Email Us
                 </Button>
@@ -152,7 +153,7 @@ export default function ContactPage() {
                 rel="noopener noreferrer"
                 className="w-full"
               >
-                <Button className="w-full justify-center bg-mythic-primary-500 hover:bg-mythic-primary-600 text-white">
+                <Button className="w-full justify-center bg-mythic-primary-500 hover:bg-mythic-primary-600 text-black font-semibold">
                   <Calendar className="h-4 w-4 mr-2" />
                   Book a 30-min intro call
                 </Button>
@@ -176,6 +177,7 @@ export default function ContactPage() {
           </Card>
         </div>
       </div>
+    </div>
     </div>
   )
 }

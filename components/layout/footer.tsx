@@ -12,40 +12,13 @@ import {
   Recycle
 } from 'lucide-react'
 
-const footerLinks = {
-  loops: [
-    { name: 'Loop Overview', href: '/loops' },
-    { name: 'Heat Cascade', href: '/heat-cascade' },
-    { name: 'Secondary Products', href: '/secondary' },
-    { name: 'Processors', href: '/processors' },
-    { name: 'Micro-Collection', href: '/micro-collection' }
-  ],
-  trade: [
-    { name: 'GIRM Credits', href: '/girm' },
-    { name: 'Marketplace', href: '/marketplace' },
-    { name: 'Secondary Products', href: '/secondary' },
-    { name: 'Compliance', href: '/compliance' }
-  ],
-  build: [
-    { name: 'Request RFQ', href: '/rfq' },
-    { name: 'Join Network', href: '/join' },
-    { name: 'Operator Console', href: '/ops' },
-    { name: 'Documentation', href: '/docs' }
-  ],
-  governance: [
-    { name: 'DAO Overview', href: '/dao' },
-    { name: 'Submit Proposal', href: '/dao#proposals' },
-    { name: 'Treasury', href: '/dao#treasury' },
-    { name: 'About', href: '/about' }
-  ]
-}
-
-const socialLinks = [
-  { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/genesisreloop' },
-  { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/company/genesisreloop' },
-  { name: 'GitHub', icon: Github, href: 'https://github.com/warren-code/reloop-platform' },
-  { name: 'Discord', icon: MessageCircle, href: 'https://discord.gg/genesisreloop' }
+const footerLinks = [
+  { name: 'Docs', href: '/docs' },
+  { name: 'Methodology', href: '/docs/methodology' },
+  { name: 'Contact', href: '/contact' },
+  { name: 'Tutorial', href: '/tutorial' }
 ]
+
 
 export function Footer() {
   return (
@@ -80,59 +53,11 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Links Sections */}
-          <div>
-            <h3 className="text-mythic-text-primary font-semibold mb-4">Loops</h3>
-            <ul className="space-y-2">
-              {footerLinks.loops.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-mythic-text-primary font-semibold mb-4">Trade</h3>
-            <ul className="space-y-2">
-              {footerLinks.trade.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-mythic-text-primary font-semibold mb-4">Build</h3>
-            <ul className="space-y-2">
-              {footerLinks.build.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-mythic-text-primary font-semibold mb-4">Governance</h3>
-            <ul className="space-y-2">
-              {footerLinks.governance.map((link) => (
+          {/* Links Section */}
+          <div className="lg:col-span-4">
+            <h3 className="text-mythic-text-primary font-semibold mb-4">Quick Links</h3>
+            <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {footerLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -177,21 +102,7 @@ export function Footer() {
               © 2024 Genesis Reloop. Turn waste into community wealth. No ESG theatre.
             </div>
             <div className="flex items-center gap-4">
-              {socialLinks.map((social) => {
-                const Icon = social.icon
-                return (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors"
-                    aria-label={social.name}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </a>
-                )
-              })}
+              {/* Social icons removed per requirements */}
             </div>
           </div>
         </div>
