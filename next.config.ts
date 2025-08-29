@@ -11,6 +11,15 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+    unoptimized: true, // This will help with Netlify deployments
+  },
 };
 
 export default nextConfig;

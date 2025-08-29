@@ -42,7 +42,7 @@ const mockListings: Listing[] = [
       verified: true
     },
     location: 'Downtown District',
-    images: ['/api/placeholder/300/200'],
+    images: ['https://via.placeholder.com/300x200.png?text=Vegetable+Scraps'],
     createdAt: '2024-01-15'
   },
   {
@@ -60,7 +60,7 @@ const mockListings: Listing[] = [
       verified: true
     },
     location: 'Industrial Zone',
-    images: ['/api/placeholder/300/200'],
+    images: ['https://via.placeholder.com/300x200.png?text=Cooking+Oil'],
     createdAt: '2024-01-14'
   },
   {
@@ -78,7 +78,7 @@ const mockListings: Listing[] = [
       verified: true
     },
     location: 'Green Valley',
-    images: ['/api/placeholder/300/200'],
+    images: ['https://via.placeholder.com/300x200.png?text=Compost+Bags'],
     createdAt: '2024-01-13'
   }
 ]

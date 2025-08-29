@@ -15,6 +15,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://genesisreloop.com'),
   title: "Genesis Reloop — Community Loops for Energy & Food",
   description: "Waste to Fuel. Fuel to Food. Loops that Pay Communities. Turn local waste into local fuel with modular biogas and biodiesel loops. GIRM credits lower costs. DAO funds the next loop.",
   keywords: "Genesis Reloop, SRL, stabilized recursive loop, food waste biogas, UCO biodiesel, modular processing, heat cascading, GIRM credits, DAO governance, community energy, waste to fuel, circular economy",
