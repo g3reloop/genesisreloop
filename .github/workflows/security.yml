@@ -1,0 +1,24 @@
+name: security-scan
+on: [push, pull_request]
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '18' }
+      - run: npm ci
+      - name: Snyk test
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+  zap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: OWASP ZAP Baseline
+        uses: zaproxy/action-baseline@v0.13.0
+        with:
+          target: ${{ secrets.PUBLIC_BASE_URL }}
+          token: ${{ secrets.GITHUB_TOKEN }}

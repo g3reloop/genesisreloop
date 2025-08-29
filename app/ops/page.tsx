@@ -376,6 +376,31 @@ export default function OperatorConsole() {
               </div>
             </div>
 
+            {/* Security Section */}
+            <div className="glass rounded-xl p-6 border border-mythic-primary-500/20">
+              <h3 className="font-semibold text-mythic-text-primary mb-4 flex items-center gap-2">
+                <Shield className="h-5 w-5 text-mythic-accent-300" />
+                Security
+              </h3>
+              <div className="space-y-2">
+                <button 
+                  id="btn-list-waf" 
+                  className="w-full px-4 py-3 bg-mythic-dark-900 text-mythic-text-primary rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all text-sm text-left flex items-center justify-between"
+                >
+                  List WAF Rules
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <button className="w-full px-4 py-3 bg-mythic-dark-900 text-mythic-text-primary rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all text-sm text-left flex items-center justify-between">
+                  View Security Alerts
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <button className="w-full px-4 py-3 bg-mythic-dark-900 text-mythic-text-primary rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all text-sm text-left flex items-center justify-between">
+                  Run Security Scan
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
             {/* Performance Trends */}
             <div className="glass rounded-xl p-6 border border-mythic-primary-500/20">
               <h3 className="font-semibold text-mythic-text-primary mb-4">Performance Trends</h3>
