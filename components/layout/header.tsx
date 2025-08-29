@@ -21,7 +21,8 @@ import {
   LogOut,
   User,
   BarChart3,
-  LayoutDashboard
+  LayoutDashboard,
+  Shield
 } from 'lucide-react'
 
 const navigation = [
@@ -164,10 +165,16 @@ export function Header() {
                 </Link>
               )}
               {user && user.role === 'admin' && (
-                <Link href="/monitoring" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
-                  <BarChart3 className="h-4 w-4" />
-                  <span className="text-sm font-medium">Monitor</span>
-                </Link>
+                <>
+                  <Link href="/monitoring" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                    <BarChart3 className="h-4 w-4" />
+                    <span className="text-sm font-medium">Monitor</span>
+                  </Link>
+                  <Link href="/security" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                    <Shield className="h-4 w-4" />
+                    <span className="text-sm font-medium">Security</span>
+                  </Link>
+                </>
               )}
             </div>
 

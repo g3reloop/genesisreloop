@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { 
   Activity, AlertCircle, TrendingUp, Thermometer, 
   Droplet, Factory, Zap, Package, BarChart3, 
@@ -383,13 +384,13 @@ export default function OperatorConsole() {
                 Security
               </h3>
               <div className="space-y-2">
-                <button 
-                  id="btn-list-waf" 
-                  className="w-full px-4 py-3 bg-mythic-dark-900 text-mythic-text-primary rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all text-sm text-left flex items-center justify-between"
+                <Link
+                  href="/security"
+                  className="w-full px-4 py-3 bg-mythic-primary-500/20 text-mythic-primary-500 rounded-lg hover:bg-mythic-primary-500/30 transition-all font-semibold text-sm text-left flex items-center justify-between"
                 >
-                  List WAF Rules
+                  Security Dashboard
                   <ArrowRight className="h-4 w-4" />
-                </button>
+                </Link>
                 <button className="w-full px-4 py-3 bg-mythic-dark-900 text-mythic-text-primary rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all text-sm text-left flex items-center justify-between">
                   View Security Alerts
                   <ArrowRight className="h-4 w-4" />
