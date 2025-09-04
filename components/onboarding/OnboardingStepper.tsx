@@ -144,13 +144,13 @@ export default function OnboardingStepper() {
   const [userId, setUserId] = useState<string>('')
   
   const router = useRouter()
-  const supabase = createClientComponentClient()
 
   useEffect(() => {
     loadOnboardingState()
   }, [])
 
   const loadOnboardingState = async () => {
+    const supabase = createClientComponentClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       router.push('/login')
@@ -186,6 +186,7 @@ export default function OnboardingStepper() {
   }
 
   const saveProgress = async () => {
+    const supabase = createClientComponentClient()
     const { error } = await supabase
       .from('onboarding_states')
       .update({ 
@@ -266,6 +267,7 @@ export default function OnboardingStepper() {
 
     setLoading(true)
     try {
+      const supabase = createClientComponentClient()
       // Update onboarding state as submitted
       const { error } = await supabase
         .from('onboarding_states')
