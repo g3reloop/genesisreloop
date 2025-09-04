@@ -13,13 +13,13 @@ export default function ApplicationSubmittedPage() {
   const [businessName, setBusinessName] = useState('')
   const [email, setEmail] = useState('')
   const router = useRouter()
-  const supabase = createClientComponentClient()
 
   useEffect(() => {
     loadUserInfo()
   }, [])
 
   const loadUserInfo = async () => {
+    const supabase = createClientComponentClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       router.push('/login')
