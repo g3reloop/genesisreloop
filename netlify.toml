@@ -60,7 +60,7 @@
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
-    Access-Control-Allow-Origin = "$NEXT_PUBLIC_APP_URL"
+    Access-Control-Allow-Origin = "*"
 
 # Redirects for API routes (if using Netlify Functions)
 [[redirects]]
