@@ -3,7 +3,7 @@
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "18.18.0"
   NPM_FLAGS = "--legacy-peer-deps"
   CANVAS_BINARY_HOST_MIRROR = "https://github.com/Automattic/node-canvas/releases/download"
 
