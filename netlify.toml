@@ -69,13 +69,12 @@
   status = 200
   force = false
 
-# Handle trailing slashes
-[[redirects]]
-  from = "/*"
-  to = "/:splat/"
-  status = 301
-  conditions = {Language = ["en"], Country = ["US"]}
-  force = false
+# Handle trailing slashes - removed conditions due to Netlify parsing issue
+# [[redirects]]
+#   from = "/*"
+#   to = "/:splat/"
+#   status = 301
+#   force = false
 
 # Environment-specific contexts
 [context.production]
@@ -92,23 +91,10 @@
 [context.branch-deploy]
   environment = { NODE_ENV = "development" }
 
-# Post-processing optimizations
+# Post-processing optimizations - simplified
+# Next.js handles its own optimization, so we skip Netlify's processing
 [build.processing]
-  skip_processing = false
-
-[build.processing.css]
-  bundle = true
-  minify = true
-
-[build.processing.js]
-  bundle = true
-  minify = true
-
-[build.processing.html]
-  pretty_urls = true
-
-[build.processing.images]
-  compress = true
+  skip_processing = true
 
 # Edge Functions (if needed)
 # [[edge_functions]]
