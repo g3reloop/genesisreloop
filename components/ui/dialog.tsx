@@ -180,7 +180,6 @@ export {
   Dialog,
   DialogPortal,
   DialogOverlay,
-  DialogClose: DialogContent,
   DialogTrigger,
   DialogContent,
   DialogHeader,
