@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid Supabase initialization during build
+export const dynamic = 'force-dynamic'
+
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -95,7 +98,6 @@ function AddListingPageContent() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   
   const router = useRouter()
-  const supabase = createClientComponentClient()
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
@@ -161,6 +163,7 @@ function AddListingPageContent() {
     setLoading(true)
     
     try {
+      const supabase = createClientComponentClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
