@@ -4,6 +4,8 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  NPM_FLAGS = "--legacy-peer-deps"
+  CANVAS_BINARY_HOST_MIRROR = "https://github.com/Automattic/node-canvas/releases/download"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
