@@ -60,7 +60,6 @@ export default function MessagesPage() {
   const [unreadCount, setUnreadCount] = useState(0)
   
   const router = useRouter()
-  const supabase = createClientComponentClient()
 
   useEffect(() => {
     loadConversations()
@@ -73,6 +72,7 @@ export default function MessagesPage() {
 
   const loadConversations = async () => {
     try {
+      const supabase = createClientComponentClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         router.push('/login')
@@ -142,6 +142,7 @@ export default function MessagesPage() {
   }
 
   const setupRealtimeSubscription = async () => {
+    const supabase = createClientComponentClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
