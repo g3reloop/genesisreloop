@@ -113,7 +113,6 @@ export default function AgentsPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   
   const router = useRouter()
-  const supabase = createClientComponentClient()
 
   useEffect(() => {
     loadUserAndAgents()
@@ -122,6 +121,7 @@ export default function AgentsPage() {
   const loadUserAndAgents = async () => {
     try {
       // Get user
+      const supabase = createClientComponentClient()
       const { data: { user: authUser } } = await supabase.auth.getUser()
       
       if (authUser) {

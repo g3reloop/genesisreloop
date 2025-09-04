@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // This will help with Netlify deployments
   },
+  // Use SSR for all pages to avoid prerendering issues with Supabase
+  experimental: {
+    // This ensures pages are rendered at request time, not build time
+    appDir: true,
+  },
 };
 
 export default nextConfig;
