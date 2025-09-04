@@ -1,348 +1,500 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FiShoppingCart, FiPlus, FiTruck, FiPackage } from 'react-icons/fi'
-import Link from 'next/link'
-import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { 
+  Search, 
+  Filter, 
+  Plus, 
+  MapPin, 
+  Package, 
+  Building2,
+  ShieldCheck,
+  ChevronRight,
+  ChevronLeft,
+  ChevronsLeft,
+  ChevronsRight 
+} from 'lucide-react'
+import { motion } from 'framer-motion'
 import { toast } from 'react-hot-toast'
 
 interface Listing {
   id: string
   title: string
   description: string
-  price: number
-  unit: string
+  category: string
+  waste_stream: string
   quantity: number
-  category: 'food-waste' | 'cooking-oil' | 'recycled-product'
-  status: 'available' | 'pending' | 'sold'
-  seller: {
-    name: string
-    rating: number
-    verified: boolean
+  unit: string
+  price: number
+  currency: string
+  location: {
+    city?: string
+    country?: string
   }
-  location: string
-  images: string[]
-  createdAt: string
+  status: 'active' | 'paused' | 'sold' | 'archived'
+  created_at: string
+  seller_id: string
+  profiles: {
+    id: string
+    business_name: string
+    verified: boolean
+    role: string
+  }
+  media?: {
+    images?: string[]
+  }
 }
 
-// Mock data for demonstration
-const mockListings: Listing[] = [
-  {
-    id: '1',
-    title: 'Fresh Vegetable Scraps',
-    description: 'Mixed vegetable trimmings from restaurant prep, perfect for composting',
-    price: 15,
-    unit: 'kg',
-    quantity: 50,
-    category: 'food-waste',
-    status: 'available',
-    seller: {
-      name: 'Green Restaurant',
-      rating: 4.8,
-      verified: true
-    },
-    location: 'Downtown District',
-    images: ['https://via.placeholder.com/300x200.png?text=Vegetable+Scraps'],
-    createdAt: '2024-01-15'
-  },
-  {
-    id: '2',
-    title: 'Used Cooking Oil - High Quality',
-    description: 'Clean used cooking oil, filtered and ready for biodiesel processing',
-    price: 25,
-    unit: 'liter',
-    quantity: 100,
-    category: 'cooking-oil',
-    status: 'available',
-    seller: {
-      name: 'City Diner',
-      rating: 4.5,
-      verified: true
-    },
-    location: 'Industrial Zone',
-    images: ['https://via.placeholder.com/300x200.png?text=Cooking+Oil'],
-    createdAt: '2024-01-14'
-  },
-  {
-    id: '3',
-    title: 'Recycled Compost Bags',
-    description: 'Eco-friendly compost bags made from recycled materials',
-    price: 45,
-    unit: 'pack',
-    quantity: 30,
-    category: 'recycled-product',
-    status: 'available',
-    seller: {
-      name: 'EcoProducts Co.',
-      rating: 4.9,
-      verified: true
-    },
-    location: 'Green Valley',
-    images: ['https://via.placeholder.com/300x200.png?text=Compost+Bags'],
-    createdAt: '2024-01-13'
-  }
+const categories = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'Used Cooking Oil', label: 'Used Cooking Oil' },
+  { value: 'Food Waste', label: 'Food Waste' },
+  { value: 'Agricultural Waste', label: 'Agricultural Waste' },
+  { value: 'Packaging Waste', label: 'Packaging Waste' },
+  { value: 'Other', label: 'Other' }
+]
+
+const wasteStreams = [
+  'All Waste Streams',
+  'Used Cooking Oil (UCO)',
+  'Food Waste - Pre-consumer',
+  'Food Waste - Post-consumer',
+  'Agricultural Waste',
+  'Other Organic Waste'
 ]
 
 export default function MarketplacePage() {
   const [listings, setListings] = useState<Listing[]>([])
   const [filteredListings, setFilteredListings] = useState<Listing[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<string>('newest')
-  const [isLoading, setIsLoading] = useState(true)
-  const [cartItems, setCartItems] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedWasteStream, setSelectedWasteStream] = useState('All Waste Streams')
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' })
+  const [showFilters, setShowFilters] = useState(false)
+  const [userRole, setUserRole] = useState<string>('')
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(12)
+  const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
+  
+  const router = useRouter()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
-    // Simulate loading data
-    const loadListings = async () => {
-      setIsLoading(true)
-      // In production, this would be an API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setListings(mockListings)
-      setFilteredListings(mockListings)
-      setIsLoading(false)
-    }
     loadListings()
+    checkUserRole()
   }, [])
 
   useEffect(() => {
-    // Filter listings
+    filterListings()
+  }, [listings, searchQuery, selectedCategory, selectedWasteStream, priceRange])
+
+  const checkUserRole = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      
+      if (profile) {
+        setUserRole(profile.role)
+      }
+    }
+  }
+
+  const loadListings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('listings')
+        .select(`
+          *,
+          profiles!seller_id (
+            id,
+            business_name,
+            verified,
+            role
+          )
+        `)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      setListings(data || [])
+      setFilteredListings(data || [])
+    } catch (error) {
+      console.error('Error loading listings:', error)
+      toast.error('Failed to load listings')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const filterListings = () => {
     let filtered = [...listings]
-    
+
+    // Search filter
+    if (searchQuery) {
+      filtered = filtered.filter(listing =>
+        listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        listing.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        listing.profiles.business_name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Category filter
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(listing => listing.category === selectedCategory)
     }
 
-    // Sort listings
-    if (sortBy === 'newest') {
-      filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    } else if (sortBy === 'price-low') {
-      filtered.sort((a, b) => a.price - b.price)
-    } else if (sortBy === 'price-high') {
-      filtered.sort((a, b) => b.price - a.price)
+    // Waste stream filter
+    if (selectedWasteStream !== 'All Waste Streams') {
+      filtered = filtered.filter(listing => listing.waste_stream === selectedWasteStream)
+    }
+
+    // Price range filter
+    if (priceRange.min) {
+      filtered = filtered.filter(listing => listing.price >= parseFloat(priceRange.min))
+    }
+    if (priceRange.max) {
+      filtered = filtered.filter(listing => listing.price <= parseFloat(priceRange.max))
     }
 
     setFilteredListings(filtered)
-  }, [selectedCategory, sortBy, listings])
-
-  const addToCart = (listingId: string) => {
-    if (cartItems.includes(listingId)) {
-      toast.error('Item already in cart')
-      return
-    }
-    setCartItems([...cartItems, listingId])
-    toast.success('Added to cart')
   }
 
-  const categoryStyles = {
-    'food-waste': 'bg-mythic-primary-500/20 text-mythic-primary-400 border border-mythic-primary-500/30',
-    'cooking-oil': 'bg-mythic-accent-500/20 text-mythic-accent-400 border border-mythic-accent-500/30',
-    'recycled-product': 'bg-mythic-secondary-500/20 text-mythic-secondary-400 border border-mythic-secondary-500/30'
-  }
-
-  const categoryIcons = {
-    'food-waste': <FiPackage />,
-    'cooking-oil': <FiTruck />,
-    'recycled-product': <FiShoppingCart />
-  }
+  const canCreateListing = userRole === 'supplier' || userRole === 'processor' || userRole === 'admin'
+  
+  // Get paginated listings
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedListings = filteredListings.slice(startIndex, endIndex)
+  
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, selectedCategory, selectedWasteStream, priceRange])
 
   return (
-    <div className="min-h-screen pt-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-black pt-20">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent mb-4">Marketplace</h1>
-          <p className="text-mythic-text-muted text-lg max-w-2xl mx-auto">Browse and purchase waste materials and recycled products from verified suppliers</p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-mythic-primary to-mythic-accent bg-clip-text text-transparent">
+              Genesis Reloop Marketplace
+            </h1>
+            <p className="text-mythic-text-muted mt-2">
+              Transform waste into value through our circular economy network
+            </p>
+          </div>
+          
+          {canCreateListing && (
+            <Button
+              onClick={() => router.push('/marketplace/add')}
+              className="bg-mythic-primary hover:bg-mythic-primary/90 text-black font-semibold"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Listing
+            </Button>
+          )}
         </div>
 
-        {/* Action Bar */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
-          <div className="flex flex-wrap gap-2 w-full lg:w-auto">
-            {/* Category Filters */}
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedCategory === 'all'
-                  ? 'bg-mythic-primary-500 text-white'
-                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
-              }`}
+        {/* Search and Filter Bar */}
+        <div className="glass rounded-lg p-4 mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-mythic-text-muted" />
+              <Input
+                type="text"
+                placeholder="Search listings, sellers, or locations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-[var(--field-bg)] border-[var(--field-border)] text-[var(--ink-strong)]"
+              />
+            </div>
+            
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full md:w-[200px] bg-[var(--field-bg)] border-[var(--field-border)]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map(category => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="border-mythic-primary/20"
             >
-              All Categories
-            </button>
-            <button
-              onClick={() => setSelectedCategory('food-waste')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedCategory === 'food-waste'
-                  ? 'bg-mythic-primary-500 text-white'
-                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
-              }`}
-            >
-              Food Waste
-            </button>
-            <button
-              onClick={() => setSelectedCategory('cooking-oil')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedCategory === 'cooking-oil'
-                  ? 'bg-mythic-primary-500 text-white'
-                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
-              }`}
-            >
-              Cooking Oil
-            </button>
-            <button
-              onClick={() => setSelectedCategory('recycled-product')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedCategory === 'recycled-product'
-                  ? 'bg-mythic-primary-500 text-white'
-                  : 'bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary border border-mythic-primary-500/20'
-              }`}
-            >
-              Recycled Products
-            </button>
+              <Filter className="h-4 w-4 mr-2" />
+              Filters
+            </Button>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-            {/* Sort Dropdown */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-mythic-primary-500/20 bg-mythic-dark-800 text-mythic-text-primary focus:ring-2 focus:ring-mythic-primary-500 focus:border-mythic-primary-500 w-full sm:w-auto"
-            >
-              <option value="newest">Newest First</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-            </select>
+          {/* Advanced Filters */}
+          {showFilters && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-4 border-t border-mythic-primary/20">
+              <div className="space-y-2">
+                <Label htmlFor="wasteStream">Waste Stream</Label>
+                <Select value={selectedWasteStream} onValueChange={setSelectedWasteStream}>
+                  <SelectTrigger className="bg-[var(--field-bg)] border-[var(--field-border)]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {wasteStreams.map(stream => (
+                      <SelectItem key={stream} value={stream}>
+                        {stream}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* Add Listing Button */}
-            <Link
-              href="/marketplace/create"
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-mythic-primary-500 text-white rounded-lg hover:bg-mythic-primary-600 transition-colors w-full sm:w-auto"
-            >
-              <FiPlus />
-              <span>Add Listing</span>
-            </Link>
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="priceMin">Min Price (£)</Label>
+                <Input
+                  id="priceMin"
+                  type="number"
+                  placeholder="0"
+                  value={priceRange.min}
+                  onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
+                  className="bg-[var(--field-bg)] border-[var(--field-border)]"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="priceMax">Max Price (£)</Label>
+                <Input
+                  id="priceMax"
+                  type="number"
+                  placeholder="10000"
+                  value={priceRange.max}
+                  onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
+                  className="bg-[var(--field-bg)] border-[var(--field-border)]"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Cart Indicator */}
-        {cartItems.length > 0 && (
-          <div className="mb-6 p-4 bg-mythic-primary-500/10 border border-mythic-primary-500/20 rounded-lg flex items-center justify-between">
-            <span className="text-mythic-text-primary font-medium">
-              {cartItems.length} item{cartItems.length > 1 ? 's' : ''} in cart
-            </span>
-            <Link
-              href="/marketplace/cart"
-              className="text-mythic-primary-500 hover:text-mythic-primary-400 font-medium transition-colors"
-            >
-              View Cart →
-            </Link>
+        {/* Results Count */}
+        <div className="mb-4 flex justify-between items-center">
+          <p className="text-mythic-text-muted">
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredListings.length)} of {filteredListings.length} listings
+          </p>
+          
+          <div className="flex items-center gap-2">
+            <Label htmlFor="perPage" className="text-sm text-mythic-text-muted">Per page:</Label>
+            <Select value={itemsPerPage.toString()} onValueChange={(value) => {
+              setItemsPerPage(parseInt(value))
+              setCurrentPage(1)
+            }}>
+              <SelectTrigger id="perPage" className="w-[80px] h-8 bg-[var(--field-bg)] border-[var(--field-border)]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="24">24</SelectItem>
+                <SelectItem value="48">48</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        )}
+        </div>
 
         {/* Listings Grid */}
-        {isLoading ? (
+        {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-mythic-dark-800 rounded-xl border border-mythic-primary-500/20 p-6 animate-pulse">
-                <div className="h-48 bg-mythic-dark-700 rounded-lg mb-4"></div>
-                <div className="h-6 bg-mythic-dark-700 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-mythic-dark-700 rounded w-full mb-4"></div>
-                <div className="h-10 bg-mythic-dark-700 rounded"></div>
-              </div>
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="glass rounded-lg h-64 animate-pulse" />
             ))}
           </div>
-        ) : filteredListings.length > 0 ? (
+        ) : paginatedListings.length > 0 ? (
+          <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredListings.map((listing) => (
-              <div key={listing.id} className="bg-mythic-dark-800 rounded-xl border border-mythic-primary-500/20 hover:border-mythic-primary-500/40 transition-all hover:shadow-lg hover:shadow-mythic-primary-500/10">
-                <div className="relative h-48 bg-mythic-dark-700 rounded-t-xl overflow-hidden">
-                  <Image
-                    src={listing.images[0]}
-                    alt={listing.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute top-2 right-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${categoryStyles[listing.category]}`}>
-                      {listing.category.replace('-', ' ')}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-mythic-text-primary mb-2">
-                    {listing.title}
-                  </h3>
-                  
-                  <p className="text-mythic-text-muted text-sm mb-4 line-clamp-2">
-                    {listing.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <span className="text-2xl font-bold text-mythic-primary-500">
-                        ${listing.price}
-                      </span>
-                      <span className="text-mythic-text-muted text-sm ml-1">
-                        /{listing.unit}
+            {paginatedListings.map((listing, index) => (
+              <motion.div
+                key={listing.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Card 
+                  className="bg-mythic-dark-900/50 border-mythic-primary/20 hover:border-mythic-primary/40 transition-all duration-300 cursor-pointer h-full"
+                  onClick={() => router.push(`/marketplace/${listing.id}`)}
+                >
+                  {/* Image or Placeholder */}
+                  <div className="relative h-48 bg-mythic-dark-800 rounded-t-lg overflow-hidden">
+                    {listing.media?.images?.[0] ? (
+                      <img
+                        src={listing.media.images[0]}
+                        alt={listing.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="h-16 w-16 text-mythic-primary/30" />
+                      </div>
+                    )}
+                    
+                    {/* Price Badge */}
+                    <div className="absolute top-2 right-2 bg-black/80 backdrop-blur rounded px-2 py-1">
+                      <span className="text-mythic-primary font-semibold">
+                        £{listing.price.toFixed(2)}/{listing.unit}
                       </span>
                     </div>
-                    <span className="text-sm text-mythic-text-muted">
-                      {listing.quantity} {listing.unit}s available
-                    </span>
                   </div>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-mythic-text-primary">
-                        {listing.seller.name}
+
+                  <CardHeader className="pb-3">
+                    <CardTitle className="line-clamp-1 text-mythic-text-primary">
+                      {listing.title}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2 text-mythic-text-muted">
+                      {listing.description}
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="space-y-3">
+                    {/* Quantity and Location */}
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-mythic-text-muted">
+                        {listing.quantity} {listing.unit} available
                       </span>
-                      {listing.seller.verified && (
-                        <span className="text-xs bg-mythic-secondary-500/20 text-mythic-secondary-400 px-2 py-0.5 rounded-full border border-mythic-secondary-500/30">
-                          Verified
+                      <span className="flex items-center gap-1 text-mythic-text-muted">
+                        <MapPin className="h-3 w-3" />
+                        {listing.location?.city || 'Location TBA'}
+                      </span>
+                    </div>
+
+                    {/* Seller Info */}
+                    <div className="flex items-center justify-between pt-2 border-t border-mythic-primary/10">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-mythic-text-muted" />
+                        <span className="text-sm text-mythic-text-muted">
+                          {listing.profiles.business_name}
                         </span>
+                      </div>
+                      {listing.profiles.verified && (
+                        <Badge variant="outline" className="border-mythic-primary/50 text-mythic-primary">
+                          <ShieldCheck className="h-3 w-3 mr-1" />
+                          Verified
+                        </Badge>
                       )}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-mythic-accent-500">★</span>
-                      <span className="text-sm text-mythic-text-muted">{listing.seller.rating}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/marketplace/${listing.id}`}
-                      className="flex-1 text-center px-4 py-2 border border-mythic-primary-500/20 text-mythic-text-muted rounded-lg hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary hover:border-mythic-primary-500/40 transition-all"
-                    >
+
+                    {/* View Details Link */}
+                    <div className="flex items-center justify-end text-mythic-primary text-sm font-medium group">
                       View Details
-                    </Link>
-                    <button
-                      onClick={() => addToCart(listing.id)}
-                      disabled={cartItems.includes(listing.id)}
-                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
-                        cartItems.includes(listing.id)
-                          ? 'bg-mythic-dark-700 text-mythic-text-muted cursor-not-allowed opacity-50'
-                          : 'bg-mythic-primary-500 text-white hover:bg-mythic-primary-600'
-                      }`}
-                    >
-                      {cartItems.includes(listing.id) ? 'In Cart' : 'Add to Cart'}
-                    </button>
-                  </div>
-                </div>
-              </div>
+                      <ChevronRight className="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
+          
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="border-mythic-primary/20"
+              >
+                <ChevronsLeft className="h-4 w-4" />
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="border-mythic-primary/20"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="flex items-center gap-1">
+                {/* Show page numbers */}
+                {(() => {
+                  const pages = []
+                  const maxButtons = 5
+                  let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2))
+                  let endPage = Math.min(totalPages, startPage + maxButtons - 1)
+                  
+                  if (endPage - startPage < maxButtons - 1) {
+                    startPage = Math.max(1, endPage - maxButtons + 1)
+                  }
+                  
+                  for (let i = startPage; i <= endPage; i++) {
+                    pages.push(
+                      <Button
+                        key={i}
+                        variant={i === currentPage ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(i)}
+                        className={i === currentPage 
+                          ? "bg-mythic-primary text-black" 
+                          : "border-mythic-primary/20"}
+                      >
+                        {i}
+                      </Button>
+                    )
+                  }
+                  return pages
+                })()}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="border-mythic-primary/20"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="border-mythic-primary/20"
+              >
+                <ChevronsRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+          </>
         ) : (
           <div className="text-center py-16">
-            <div className="text-mythic-text-muted text-6xl mb-4">📦</div>
-            <h3 className="text-xl font-semibold text-mythic-text-primary mb-2">No listings found</h3>
-            <p className="text-mythic-text-muted mb-6">Try adjusting your filters or create a new listing</p>
-            <Link
-              href="/marketplace/create"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-mythic-primary-500 text-white rounded-lg hover:bg-mythic-primary-600 transition-colors"
-            >
-              <FiPlus />
-              <span>Create First Listing</span>
-            </Link>
+            <Package className="h-16 w-16 text-mythic-primary/30 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-mythic-text-primary mb-2">
+              No listings found
+            </h3>
+            <p className="text-mythic-text-muted">
+              Try adjusting your filters or search query
+            </p>
           </div>
         )}
       </div>

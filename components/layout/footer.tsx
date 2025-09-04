@@ -1,35 +1,40 @@
 import Link from 'next/link'
 import { GenesisLogo } from '@/components/ui/genesis-logo'
 import { 
-  Twitter, 
-  Linkedin, 
-  Github, 
-  Youtube,
-  MessageCircle,
+  ArrowRight,
   Mail,
   MapPin,
-  Phone,
-  Recycle
+  Shield,
+  FileText
 } from 'lucide-react'
+import { brandConfig } from '@/config/brand.config'
 
-const footerLinks = [
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Secondary Products', href: '/marketplace/secondary' },
-  { name: 'SRL Batches', href: '/marketplace/srl-batches' },
-  { name: 'Processor Directory', href: '/processors' },
-  { name: 'Operator Console', href: '/operator' },
-  { name: 'Processes', href: '/processes' },
-  { name: 'Compliance (WTN)', href: '/compliance/wtn' },
-  { name: 'Collection Routes', href: '/collection-routes' },
-  { name: 'GIRM Credits', href: '/girm' },
-  { name: 'Treasury', href: '/treasury' },
-  { name: 'Agents', href: '/agents' },
-  { name: 'Docs', href: '/docs' },
-  { name: 'Methodology', href: '/docs/methodology' },
-  { name: 'Tutorial', href: '/tutorial' },
-  { name: 'Contact', href: '/contact' },
-  { name: 'Join the Network', href: '/join' }
-]
+const navigation = {
+  main: [
+    { name: 'Platform', href: '/' },
+    { name: 'How it Works', href: '/how-it-works' },
+    { name: 'Supply Chains', href: '/supply-chains' },
+    { name: 'Governance', href: '/governance' },
+    { name: 'GIRM Credits', href: '/girm' },
+    { name: 'Learn', href: '/learn' },
+    { name: 'Partners', href: '/partners' }
+  ],
+  resources: [
+    { name: 'Documentation', href: '/docs' },
+    { name: 'Methodology', href: '/docs/girm-methodology' },
+    { name: 'API Reference', href: '/docs/api' },
+    { name: 'Charter', href: '/docs/charter' }
+  ],
+  legal: brandConfig.footer.legal,
+  agents: [
+    { name: 'FeedstockMatcher', href: '/agents' },
+    { name: 'TraceBot', href: '/agents' },
+    { name: 'RouteGen', href: '/agents' },
+    { name: 'CarbonVerifier', href: '/agents' },
+    { name: 'ComplianceClerk', href: '/agents' },
+    { name: 'ReputationBot', href: '/agents' }
+  ]
+}
 
 
 export function Footer() {
@@ -37,9 +42,9 @@ export function Footer() {
     <footer id="footer-navigation" className="relative z-20 bg-black border-t border-mythic-primary-500/10 mt-auto" role="contentinfo">
       {/* Main Footer */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
           {/* Brand Section */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Link href="/" className="inline-flex items-center space-x-3 mb-4">
               <GenesisLogo size="lg" />
               <span className="text-2xl font-bold text-mythic-text-primary">Genesis Reloop</span>
@@ -66,20 +71,76 @@ export function Footer() {
           </div>
 
           {/* Links Section */}
-          <div className="lg:col-span-4">
-            <h3 className="text-mythic-text-primary font-semibold mb-4">Quick Links</h3>
-            <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {footerLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="lg:col-span-9">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {/* Main Navigation */}
+              <div>
+                <h3 className="text-mythic-text-primary font-semibold mb-4">Platform</h3>
+                <ul className="space-y-2">
+                  {navigation.main.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Resources */}
+              <div>
+                <h3 className="text-mythic-text-primary font-semibold mb-4">Resources</h3>
+                <ul className="space-y-2">
+                  {navigation.resources.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* AI Agents */}
+              <div>
+                <h3 className="text-mythic-text-primary font-semibold mb-4">AI Agents</h3>
+                <ul className="space-y-2">
+                  {navigation.agents.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Legal */}
+              <div>
+                <h3 className="text-mythic-text-primary font-semibold mb-4">Legal</h3>
+                <ul className="space-y-2">
+                  {navigation.legal.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-mythic-text-muted hover:text-mythic-primary-500 transition-colors text-sm"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 

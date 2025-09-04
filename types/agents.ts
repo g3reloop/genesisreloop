@@ -26,6 +26,7 @@ export interface FeedstockLot {
     lat: number
     lng: number
     address: string
+    name?: string
   }
   windowStart: Date
   windowEnd: Date
@@ -37,6 +38,7 @@ export interface FeedstockLot {
   supplierId: string
   srlHint?: boolean // Supplier indicates this could be part of SRL
   createdAt: Date
+  collectionDate?: Date
 }
 
 // Match result from FeedstockMatcher
@@ -49,6 +51,10 @@ export interface ProcessorMatch {
   routeEta: Date
   srlScore: number // 0-1, how well this fits SRL pattern
   notes?: string
+  aiRecommendations?: {
+    carbonImpact: string
+    recommendations: string[]
+  }
 }
 
 // Batch for traceability

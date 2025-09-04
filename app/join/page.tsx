@@ -116,21 +116,16 @@ export default function JoinPage() {
   const handleContinue = () => {
     if (!selectedRole) return
     
-    // Route based on selected role
-    switch(selectedRole) {
-      case 'supplier':
-        router.push('/onboard-supplier')
-        break
-      case 'collector':
-        router.push('/join/collector')
-        break
-      case 'operator':
-        router.push('/join/operator')
-        break
-      case 'investor':
-        router.push('/join/investor')
-        break
+    // Map roles to the simplified roles in signup
+    const roleMapping: { [key: string]: string } = {
+      'supplier': 'supplier',
+      'collector': 'supplier', // Collectors are suppliers in the simplified model
+      'operator': 'processor',
+      'investor': 'buyer'
     }
+    
+    const mappedRole = roleMapping[selectedRole] || 'supplier'
+    router.push(`/signup?role=${mappedRole}`)
   }
 
   return (

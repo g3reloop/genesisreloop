@@ -1,428 +1,463 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { agentService, AGENTS, type AgentType } from '@/lib/agents/agent-service'
 import { 
-  Bot, MessageSquare, X, Send,
-  Truck, Recycle, Route, ShoppingBag, Beaker,
-  Shield, Award, Search, AlertTriangle, DollarSign,
-  Loader2, Minimize2, Maximize2, Square, FileText
+  Brain, 
+  Route, 
+  Leaf, 
+  ShieldCheck, 
+  TrendingUp, 
+  Users, 
+  ArrowRight,
+  Lock,
+  Unlock,
+  Calculator,
+  DollarSign,
+  Shield,
+  Vote,
+  Network,
+  HelpCircle,
+  Loader2,
+  AlertCircle,
+  FileCheck,
+  Recycle,
+  MapPin,
+  BarChart3,
+  Coins,
+  Send,
+  MessageSquare,
+  X,
+  Sparkles,
+  Search,
+  Beaker,
+  Award
 } from 'lucide-react'
-import { MythicBackground } from '@/components/ui/mythic-background'
-import { cn } from '@/lib/utils/cn'
+import { toast } from 'react-hot-toast'
+import { cn } from '@/lib/utils'
 
-interface AgentInfo {
-  name: string
-  icon: React.ReactNode
-  description: string
-  category: 'matching' | 'compliance' | 'finance' | 'reputation'
-  color: string
+// Icon mapping for agent types
+const AGENT_ICONS: Record<AgentType, React.ReactNode> = {
+  feedstock_matcher: <Recycle className="h-6 w-6" />,
+  traceability_tracker: <Search className="h-6 w-6" />,
+  route_optimizer: <Route className="h-6 w-6" />,
+  byproduct_matcher: <Beaker className="h-6 w-6" />,
+  buyer_discovery: <Users className="h-6 w-6" />,
+  carbon_verification: <Leaf className="h-6 w-6" />,
+  compliance_checker: <ShieldCheck className="h-6 w-6" />,
+  reputation_scorer: <Award className="h-6 w-6" />,
+  dynamic_pricing: <TrendingUp className="h-6 w-6" />,
+  predictive_supply: <BarChart3 className="h-6 w-6" />,
+  insurance_calculator: <Shield className="h-6 w-6" />,
+  finance_advisor: <DollarSign className="h-6 w-6" />,
+  dao_governance: <Vote className="h-6 w-6" />,
+  loop_expander: <Network className="h-6 w-6" />,
+  consumer_guide: <HelpCircle className="h-6 w-6" />
 }
 
-const agents: AgentInfo[] = [
-  {
-    name: 'FeedstockMatcher',
-    icon: <Recycle className="h-6 w-6" />,
-    description: 'Connects waste suppliers to compatible recycling plants. Optimises feedstock alignment to maximise efficiency.',
-    category: 'matching',
-    color: 'from-mythic-primary-500 to-mythic-accent-300'
-  },
-  {
-    name: 'TraceBot',
-    icon: <Search className="h-6 w-6" />,
-    description: 'Tracks material flows across the loop. Provides full transparency on where waste goes and what it becomes.',
-    category: 'compliance',
-    color: 'from-mythic-flow-credits to-mythic-gold-500'
-  },
-  {
-    name: 'RouteGen',
-    icon: <Route className="h-6 w-6" />,
-    description: 'Designs decentralised logistics routes for collection and delivery. Minimises cost, maximises loop efficiency.',
-    category: 'matching',
-    color: 'from-mythic-teal-500 to-mythic-emerald-500'
-  },
-  {
-    name: 'BuyerDiscoveryBot',
-    icon: <ShoppingBag className="h-6 w-6" />,
-    description: 'Finds buyers for recycled outputs like biogas or biodiesel. Matches supply to demand within Genesis loops.',
-    category: 'matching',
-    color: 'from-mythic-flow-byproduct to-mythic-flow-feedstock'
-  },
-  {
-    name: 'ByproductMatcher',
-    icon: <Beaker className="h-6 w-6" />,
-    description: 'Allocates loop byproducts (digestate, glycerol) into new value streams. Prevents waste, ensures total utilisation.',
-    category: 'matching',
-    color: 'from-mythic-flow-reputation to-mythic-primary-500'
-  },
-  {
-    name: 'CarbonVerifier',
-    icon: <Shield className="h-6 w-6" />,
-    description: 'Calculates and verifies carbon savings per loop. Issues GIRM credits tied to real tonnage conversion.',
-    category: 'compliance',
-    color: 'from-mythic-emerald-500 to-mythic-teal-500'
-  },
-  {
-    name: 'ComplianceClerk',
-    icon: <AlertTriangle className="h-6 w-6" />,
-    description: 'Automates paperwork and compliance processes. Keeps every loop aligned with regulations.',
-    category: 'compliance',
-    color: 'from-mythic-status-warning to-mythic-status-active'
-  },
-  {
-    name: 'ReputationBot',
-    icon: <Award className="h-6 w-6" />,
-    description: 'Builds transparent trust scores for suppliers, labs, and buyers. Helps users choose reliable partners.',
-    category: 'reputation',
-    color: 'from-mythic-flow-reputation to-mythic-flow-credits'
-  },
-  {
-    name: 'LoopAuditBot',
-    icon: <Search className="h-6 w-6" />,
-    description: 'Audits the integrity of loops. Detects anomalies, flags risks, and ensures loops remain regenerative.',
-    category: 'compliance',
-    color: 'from-mythic-status-error to-mythic-status-warning'
-  },
-  {
-    name: 'LoopInsurer',
-    icon: <Shield className="h-6 w-6" />,
-    description: 'Provides risk coverage for loops. Protects operators against disruptions or unexpected failures.',
-    category: 'finance',
-    color: 'from-mythic-dark-600 to-mythic-dark-500'
-  },
-  {
-    name: 'LiquidityBot',
-    icon: <DollarSign className="h-6 w-6" />,
-    description: 'Monitors financial flows in the loop economy. Ensures liquidity for operators and smooth DAO allocation.',
-    category: 'finance',
-    color: 'from-mythic-flow-credits to-mythic-gold-400'
-  }
-]
+// Category mapping
+const AGENT_CATEGORIES: Record<AgentType, string> = {
+  feedstock_matcher: 'matching',
+  traceability_tracker: 'operations',
+  route_optimizer: 'operations',
+  byproduct_matcher: 'matching',
+  buyer_discovery: 'matching',
+  carbon_verification: 'compliance',
+  compliance_checker: 'compliance',
+  reputation_scorer: 'reputation',
+  dynamic_pricing: 'finance',
+  predictive_supply: 'analytics',
+  insurance_calculator: 'finance',
+  finance_advisor: 'finance',
+  dao_governance: 'governance',
+  loop_expander: 'innovation',
+  consumer_guide: 'education'
+}
+
+// Category colors
+const CATEGORY_COLORS: Record<string, string> = {
+  matching: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+  operations: 'bg-green-500/10 text-green-500 border-green-500/20',
+  compliance: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
+  reputation: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+  finance: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+  analytics: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
+  governance: 'bg-pink-500/10 text-pink-500 border-pink-500/20',
+  innovation: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+  education: 'bg-teal-500/10 text-teal-500 border-teal-500/20'
+}
 
 interface ChatMessage {
-  role: 'user' | 'agent'
+  id: string
+  role: 'user' | 'assistant'
   content: string
   timestamp: Date
+  loading?: boolean
 }
 
 export default function AgentsPage() {
-  const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
-  const [chatMessages, setChatMessages] = useState<Record<string, ChatMessage[]>>({})
+  const [user, setUser] = useState<any>(null)
+  const [availableAgents, setAvailableAgents] = useState<Array<{ type: AgentType; agent: typeof AGENTS[AgentType] }>>([])
+  const [selectedAgent, setSelectedAgent] = useState<AgentType | null>(null)
+  const [chatMessages, setChatMessages] = useState<Record<AgentType, ChatMessage[]>>({} as any)
   const [inputMessage, setInputMessage] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const [filter, setFilter] = useState<'all' | 'matching' | 'compliance' | 'finance' | 'reputation'>('all')
-  const [drawerState, setDrawerState] = useState<'closed' | 'minimized' | 'open' | 'fullscreen'>('open')
+  const [isLoading, setIsLoading] = useState(true)
+  const [isChatting, setIsChatting] = useState(false)
+  const [categoryFilter, setCategoryFilter] = useState<string>('all')
+  
+  const router = useRouter()
+  const supabase = createClientComponentClient()
 
-  const filteredAgents = filter === 'all' 
-    ? agents 
-    : agents.filter(agent => agent.category === filter)
+  useEffect(() => {
+    loadUserAndAgents()
+  }, [])
 
-  const openChat = (agentName: string) => {
-    setSelectedAgent(agentName)
-    // Initialize chat if not exists
-    if (!chatMessages[agentName]) {
-      setChatMessages({
-        ...chatMessages,
-        [agentName]: [{
-          role: 'agent',
-          content: `Hello! I'm ${agentName}. How can I help you today?`,
-          timestamp: new Date()
-        }]
-      })
+  const loadUserAndAgents = async () => {
+    try {
+      // Get user
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      
+      if (authUser) {
+        // Get user profile
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authUser.id)
+          .single()
+        
+        setUser({ ...authUser, ...profile })
+      }
+      
+      // Get available agents
+      const agents = await agentService.getAvailableAgents(authUser?.id)
+      setAvailableAgents(agents)
+    } catch (error) {
+      console.error('Error loading agents:', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  const sendMessage = async () => {
-    if (!inputMessage.trim() || !selectedAgent) return
-
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || !selectedAgent || isChatting) return
+    
     const userMessage: ChatMessage = {
+      id: Date.now().toString(),
       role: 'user',
       content: inputMessage,
       timestamp: new Date()
     }
-
+    
+    const loadingMessage: ChatMessage = {
+      id: (Date.now() + 1).toString(),
+      role: 'assistant',
+      content: '...',
+      timestamp: new Date(),
+      loading: true
+    }
+    
+    // Update messages
     setChatMessages(prev => ({
       ...prev,
-      [selectedAgent]: [...(prev[selectedAgent] || []), userMessage]
+      [selectedAgent]: [...(prev[selectedAgent] || []), userMessage, loadingMessage]
     }))
-
+    
     setInputMessage('')
-    setIsTyping(true)
-
-    // Simulate agent response
-    setTimeout(() => {
-      const agentResponse: ChatMessage = {
-        role: 'agent',
-        content: `I understand you're asking about "${inputMessage}". Let me process that request for you...`,
-        timestamp: new Date()
-      }
-
+    setIsChatting(true)
+    
+    try {
+      // Get agent response
+      const response = await agentService.chat(selectedAgent, userMessage.content, {
+        userId: user?.id,
+        userRole: user?.role,
+        businessType: user?.business_type
+      })
+      
+      // Replace loading message with actual response
       setChatMessages(prev => ({
         ...prev,
-        [selectedAgent]: [...(prev[selectedAgent] || []), agentResponse]
+        [selectedAgent]: prev[selectedAgent].map(msg => 
+          msg.id === loadingMessage.id 
+            ? { ...msg, content: response.content, loading: false }
+            : msg
+        )
       }))
-      setIsTyping(false)
-    }, 1500)
+      
+      // Log usage if user is authenticated
+      if (user && response.usage) {
+        await agentService.logUsage(selectedAgent, user.id, {
+          prompt: response.usage.prompt_tokens,
+          completion: response.usage.completion_tokens
+        })
+      }
+    } catch (error) {
+      console.error('Error chatting with agent:', error)
+      
+      // Show error message
+      setChatMessages(prev => ({
+        ...prev,
+        [selectedAgent]: prev[selectedAgent].map(msg => 
+          msg.id === loadingMessage.id 
+            ? { ...msg, content: 'Sorry, I encountered an error. Please try again.', loading: false }
+            : msg
+        )
+      }))
+      
+      toast.error('Failed to get agent response')
+    } finally {
+      setIsChatting(false)
+    }
   }
 
-  const selectedAgentInfo = agents.find(a => a.name === selectedAgent)
+  const openChat = (agentType: AgentType) => {
+    setSelectedAgent(agentType)
+    
+    // Initialize chat if not exists
+    if (!chatMessages[agentType]) {
+      const agent = AGENTS[agentType]
+      setChatMessages(prev => ({
+        ...prev,
+        [agentType]: [{
+          id: '0',
+          role: 'assistant',
+          content: `Hello! I'm the ${agent.name}. ${agent.description} How can I help you today?`,
+          timestamp: new Date()
+        }]
+      }))
+    }
+  }
+
+  // Get unique categories
+  const categories = Array.from(new Set(Object.values(AGENT_CATEGORIES)))
+  const filteredAgents = categoryFilter === 'all' 
+    ? availableAgents 
+    : availableAgents.filter(({ type }) => AGENT_CATEGORIES[type] === categoryFilter)
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black pt-20 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-mythic-primary" />
+      </div>
+    )
+  }
 
   return (
-    <div className="relative min-h-screen bg-black">
-      {/* Mythic Background */}
-      <MythicBackground variant="flow" opacity={0.03} />
-      
-      <div className="relative pt-24 pb-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-mythic-primary-500 via-mythic-accent-300 to-mythic-flow-credits bg-clip-text text-transparent">
-                Genesis AI Agents
-              </span>
-            </h1>
-            <p className="text-xl text-mythic-text-muted max-w-3xl mx-auto">
-              Intelligent agents powering the decentralised loop economy. 
-              Click any agent to start a conversation.
-            </p>
-          </motion.div>
+    <div className="min-h-screen bg-black pt-20">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-mythic-text-primary mb-4">
+            AI Agent Hub
+          </h1>
+          <p className="text-xl text-mythic-text-muted max-w-3xl mx-auto">
+            Intelligent agents powering the circular economy. Access role-based AI assistants 
+            to optimize your operations.
+          </p>
+          
+          {!user && (
+            <Alert className="mt-6 max-w-2xl mx-auto">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Sign in to access all agents. Currently showing public agents only.
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
 
-          {/* Filter Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-wrap justify-center gap-3 mb-12"
+        {/* Category Filter */}
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <Button
+            variant={categoryFilter === 'all' ? 'default' : 'outline'}
+            onClick={() => setCategoryFilter('all')}
+            size="sm"
           >
-            {(['all', 'matching', 'compliance', 'finance', 'reputation'] as const).map(category => (
-              <button
-                key={category}
-                onClick={() => setFilter(category)}
-                className={cn(
-                  "px-6 py-2 rounded-full font-medium transition-all",
-                  filter === category 
-                    ? "bg-mythic-primary-500/20 text-mythic-primary-500 border-2 border-mythic-primary-500/50" 
-                    : "text-mythic-text-muted border-2 border-mythic-primary-500/20 hover:border-mythic-primary-500/40 hover:text-mythic-text-primary"
-                )}
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </button>
-            ))}
-          </motion.div>
+            All
+          </Button>
+          {categories.map(category => (
+            <Button
+              key={category}
+              variant={categoryFilter === category ? 'default' : 'outline'}
+              onClick={() => setCategoryFilter(category)}
+              size="sm"
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </Button>
+          ))}
+        </div>
 
-          {/* Agent Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {filteredAgents.map((agent, index) => (
-              <motion.div
-                key={agent.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                onClick={() => openChat(agent.name)}
+        {/* Agents Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {filteredAgents.map(({ type, agent }) => {
+            const category = AGENT_CATEGORIES[type]
+            const hasAccess = agent.freeAccess || !!user
+            
+            return (
+              <Card 
+                key={type}
                 className={cn(
-                  "group cursor-pointer rounded-2xl p-6",
-                  "bg-mythic-dark-900/50 backdrop-blur-sm",
-                  "border-2 border-mythic-primary-500/10",
-                  "hover:border-mythic-primary-500/50",
-                  "hover:shadow-lg hover:shadow-mythic-primary-500/10",
-                  "transition-all duration-300"
+                  "bg-mythic-dark-900/50 border-mythic-primary/20 transition-all cursor-pointer",
+                  hasAccess 
+                    ? "hover:border-mythic-primary/50 hover:shadow-lg hover:shadow-mythic-primary/20" 
+                    : "opacity-60 cursor-not-allowed"
                 )}
+                onClick={() => hasAccess && openChat(type)}
               >
-                {/* Icon with gradient background */}
-                <div className={cn(
-                  "w-16 h-16 rounded-xl mb-4",
-                  "bg-gradient-to-br flex items-center justify-center",
-                  "group-hover:scale-110 transition-transform duration-300",
-                  agent.color
-                )}>
-                  <div className="text-white">
-                    {agent.icon}
+                <CardHeader>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-3 rounded-lg bg-mythic-primary/10 text-mythic-primary">
+                      {AGENT_ICONS[type]}
+                    </div>
+                    {!hasAccess && (
+                      <Lock className="h-5 w-5 text-mythic-text-muted" />
+                    )}
                   </div>
-                </div>
+                  <CardTitle className="text-mythic-text-primary">
+                    {agent.name}
+                  </CardTitle>
+                  <CardDescription className="text-mythic-text-muted">
+                    {agent.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <Badge className={cn("border", CATEGORY_COLORS[category])}>
+                      {category}
+                    </Badge>
+                    {hasAccess ? (
+                      <Button size="sm" variant="ghost">
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Chat
+                      </Button>
+                    ) : (
+                      <span className="text-sm text-mythic-text-muted">
+                        Sign in required
+                      </span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
 
-                {/* Agent Name */}
-                <h3 className="text-xl font-bold text-mythic-text-primary mb-2 group-hover:text-mythic-primary-500 transition-colors">
-                  {agent.name}
-                </h3>
-
-                {/* Description */}
-                <p className="text-mythic-text-muted text-sm leading-relaxed mb-4">
-                  {agent.description}
-                </p>
-
-                {/* Category Badge */}
-                <div className="flex items-center justify-between">
-                  <span className={cn(
-                    "px-3 py-1 rounded-full text-xs font-medium",
-                    "bg-mythic-primary-500/10 text-mythic-primary-500"
-                  )}>
-                    {agent.category}
-                  </span>
-                  <MessageSquare className="h-5 w-5 text-mythic-primary-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        {/* OpenRouter Status */}
+        <div className="text-center">
+          <Badge 
+            variant="outline" 
+            className={cn(
+              "border",
+              agentService.isConfigured() 
+                ? "border-green-500/50 text-green-500" 
+                : "border-yellow-500/50 text-yellow-500"
+            )}
+          >
+            <Sparkles className="h-3 w-3 mr-1" />
+            {agentService.isConfigured() ? 'AI Powered by OpenRouter' : 'Demo Mode - Configure OpenRouter for AI'}
+          </Badge>
         </div>
       </div>
 
-      {/* Chat Interface Modal */}
-      <AnimatePresence>
-        {selectedAgent && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedAgent(null)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40"
-            />
-
-            {/* Chat Window */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className={cn(
-                "fixed bg-mythic-dark-900 rounded-2xl shadow-2xl border-2 border-mythic-primary-500/20 z-50 flex flex-col transition-all duration-300",
-                drawerState === 'fullscreen' 
-                  ? "inset-4" 
-                  : drawerState === 'minimized'
-                  ? "md:right-8 md:bottom-8 md:w-80 md:h-16"
-                  : "inset-4 md:inset-auto md:right-8 md:bottom-8 md:w-96 md:h-[600px]"
-              )}
-            >
-              {/* Chat Header */}
-              <div className="p-6 border-b border-mythic-primary-500/10">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center",
-                      selectedAgentInfo?.color
-                    )}>
-                      <div className="text-white">
-                        {selectedAgentInfo?.icon}
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-mythic-text-primary">
-                        {selectedAgent}
-                      </h3>
-                      <p className="text-xs text-mythic-text-muted">Online</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {/* Drawer Controls */}
-                    <a
-                      href="/docs"
-                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
-                      title="Docs"
-                    >
-                      <FileText className="h-4 w-4" />
-                    </a>
-                    <button
-                      onClick={() => setDrawerState('minimized')}
-                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
-                      title="Minimize (Ctrl+\\)"
-                    >
-                      <Minimize2 className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => setDrawerState(drawerState === 'fullscreen' ? 'open' : 'fullscreen')}
-                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
-                      title="Fullscreen (Ctrl+Enter)"
-                    >
-                      {drawerState === 'fullscreen' ? <Square className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-                    </button>
-                    <button
-                      onClick={() => setSelectedAgent(null)}
-                      className="p-2 hover:bg-mythic-dark-800 rounded-lg transition-colors text-mythic-text-muted hover:text-mythic-primary-500"
-                      title="Close (Esc)"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
+      {/* Chat Drawer */}
+      {selectedAgent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setSelectedAgent(null)}
+          />
+          <div className="relative bg-mythic-dark-900 rounded-xl border border-mythic-primary/20 w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl">
+            {/* Chat Header */}
+            <div className="flex items-center justify-between p-4 border-b border-mythic-primary/20">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-mythic-primary/10 text-mythic-primary">
+                  {AGENT_ICONS[selectedAgent]}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-mythic-text-primary">
+                    {AGENTS[selectedAgent].name}
+                  </h3>
+                  <Badge className={cn("text-xs border", CATEGORY_COLORS[AGENT_CATEGORIES[selectedAgent]])}>
+                    {AGENT_CATEGORIES[selectedAgent]}
+                  </Badge>
                 </div>
               </div>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setSelectedAgent(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
 
-              {/* Chat Messages */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {chatMessages[selectedAgent]?.map((message, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={cn(
-                      "flex",
-                      message.role === 'user' ? 'justify-end' : 'justify-start'
-                    )}
-                  >
-                    <div className={cn(
-                      "max-w-[80%] rounded-2xl px-4 py-3",
-                      message.role === 'user'
-                        ? "bg-mythic-primary-500/20 text-mythic-text-primary"
-                        : "bg-mythic-dark-800 text-mythic-text-muted"
-                    )}>
-                      <p className="text-sm">{message.content}</p>
-                      <p className="text-xs opacity-50 mt-1">
-                        {message.timestamp.toLocaleTimeString()}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-                {isTyping && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex justify-start"
-                  >
-                    <div className="bg-mythic-dark-800 rounded-2xl px-4 py-3">
-                      <Loader2 className="h-4 w-4 animate-spin text-mythic-text-muted" />
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Chat Input */}
-              <div className="p-4 border-t border-mythic-primary-500/10">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    sendMessage()
-                  }}
-                  className="flex gap-2"
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {chatMessages[selectedAgent]?.map(message => (
+                <div
+                  key={message.id}
+                  className={cn(
+                    "flex",
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                  )}
                 >
-                  <input
-                    type="text"
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    className="flex-1 px-4 py-2 rounded-lg bg-mythic-dark-800 text-mythic-text-primary placeholder-mythic-text-muted focus:outline-none focus:ring-2 focus:ring-mythic-primary-500/50"
-                  />
-                  <button
-                    type="submit"
-                    disabled={!inputMessage.trim()}
+                  <div
                     className={cn(
-                      "p-2 rounded-lg transition-all",
-                      inputMessage.trim()
-                        ? "bg-mythic-primary-500 text-white hover:bg-mythic-primary-400"
-                        : "bg-mythic-dark-800 text-mythic-text-muted cursor-not-allowed"
+                      "max-w-[80%] rounded-lg px-4 py-2",
+                      message.role === 'user'
+                        ? "bg-mythic-primary/20 text-mythic-text-primary"
+                        : "bg-mythic-dark-800 text-mythic-text-secondary"
                     )}
                   >
-                    <Send className="h-5 w-5" />
-                  </button>
-                </form>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                    {message.loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <p className="whitespace-pre-wrap">{message.content}</p>
+                    )}
+                    <p className="text-xs opacity-50 mt-1">
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Chat Input */}
+            <div className="p-4 border-t border-mythic-primary/20">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  handleSendMessage()
+                }}
+                className="flex gap-2"
+              >
+                <Input
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  disabled={isChatting}
+                  className="flex-1 bg-[var(--field-bg)] border-[var(--field-border)]"
+                />
+                <Button
+                  type="submit"
+                  disabled={!inputMessage.trim() || isChatting}
+                >
+                  {isChatting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

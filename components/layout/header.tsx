@@ -22,16 +22,31 @@ import {
   User,
   BarChart3,
   LayoutDashboard,
-  Shield
+  Shield,
+  Navigation
 } from 'lucide-react'
 
 const navigation = [
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Agents', href: '/agents' },
-  { name: 'Docs', href: '/docs' },
-  { name: 'GIRM', href: '/girm' },
-  { name: 'Contact', href: '/contact' },
-  { name: 'Join the Network', href: '/join' }
+  { name: 'Platform', href: '/' },
+  { name: 'How it Works', href: '/how-it-works' },
+  { name: 'Supply Chains', href: '/supply-chains' },
+  { name: 'Governance', href: '/governance' },
+  { name: 'GIRM Credits', href: '/girm' },
+  { 
+    name: 'AI Agents', 
+    href: '/agents',
+    dropdown: [
+      { name: 'All Agents', href: '/agents' },
+      { name: 'FeedstockMatcher', href: '/agents?agent=feedstock-matcher' },
+      { name: 'TraceBot', href: '/agents?agent=trace-bot' },
+      { name: 'RouteGen', href: '/agents?agent=route-gen' },
+      { name: 'CarbonVerifier', href: '/agents?agent=carbon-verifier' },
+      { name: 'ComplianceClerk', href: '/agents?agent=compliance-clerk' },
+      { name: 'ReputationBot', href: '/agents?agent=reputation-bot' }
+    ]
+  },
+  { name: 'Learn', href: '/learn' },
+  { name: 'Partners', href: '/partners' }
 ]
 
 export function Header() {
@@ -158,10 +173,10 @@ export function Header() {
                 <FileText className="h-4 w-4" />
                 <span className="text-sm font-medium">WTN</span>
               </Link>
-              {user && canAccessRoute('/agents') && (
-                <Link href="/agents" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
-                  <Activity className="h-4 w-4" />
-                  <span className="text-sm font-medium">Agents</span>
+              {user && (
+                <Link href="/logistics/route-planner" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                  <Navigation className="h-4 w-4" />
+                  <span className="text-sm font-medium">Routes</span>
                 </Link>
               )}
               {user && user.role === 'admin' && (
@@ -321,14 +336,14 @@ export function Header() {
                 <Coins className="h-4 w-4" />
                 GIRM
               </Link>
-              {user && canAccessRoute('/agents') && (
+              {user && (
                 <Link 
-                  href="/agents" 
+                  href="/logistics/route-planner" 
                   className="px-4 py-2 rounded-lg bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary transition-all flex items-center gap-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Activity className="h-4 w-4" />
-                  Agents
+                  <Navigation className="h-4 w-4" />
+                  Routes
                 </Link>
               )}
               {user && user.role === 'admin' && (

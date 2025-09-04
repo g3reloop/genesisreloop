@@ -1,5 +1,6 @@
 import { BaseAgent } from './base-agent'
 import { AgentJob, FeedstockLot, ProcessorMatch } from '@/types/agents'
+import { createChatCompletion, MODEL_PRESETS, TEMPERATURE_PRESETS, ChatCompletionMessageParam } from '@/lib/openrouter'
 
 interface MatcherConfig {
   maxDistanceKm: number
@@ -43,10 +44,15 @@ export class FeedstockMatcher extends BaseAgent {
     )
 
     // Sort by score
-    const sortedMatches = matches
+    let sortedMatches = matches
       .filter(m => m.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 10) // Top 10 matches
+
+    // Use AI to enhance matching with additional insights
+    if (sortedMatches.length > 0) {
+      sortedMatches = await this.enhanceMatchesWithAI(lot, sortedMatches)
+    }
 
     // Store matches in database
     await this.storeMatches(lot.id, sortedMatches)
@@ -225,5 +231,83 @@ export class FeedstockMatcher extends BaseAgent {
   private async storeMatches(lotId: string, matches: ProcessorMatch[]): Promise<void> {
     // In production, store in PostgreSQL
     console.log(`Storing ${matches.length} matches for lot ${lotId}`)
+  }
+
+  private async enhanceMatchesWithAI(lot: FeedstockLot, matches: ProcessorMatch[]): Promise<ProcessorMatch[]> {
+    try {
+      const messages: ChatCompletionMessageParam[] = [
+        {
+          role: 'system',
+          content: `You are an AI assistant for Genesis Reloop's circular economy platform. 
+          Your role is to optimize waste feedstock matching between suppliers and processors.
+          Consider factors like sustainability, carbon impact, local economy benefits, and efficiency.
+          You should enhance the matching scores and provide recommendations.`
+        },
+        {
+          role: 'user',
+          content: `Analyze these feedstock processor matches and provide enhanced insights:
+
+Feedstock Lot:
+- Type: ${lot.type}
+- Volume: ${lot.volume}kg
+- Location: ${lot.location.name || lot.location.address} (${lot.location.lat}, ${lot.location.lng})
+- SRL Participant: ${lot.srlHint ? 'Yes' : 'No'}
+- Collection Date: ${lot.collectionDate || new Date()}
+
+Current Matches:
+${matches.map((m, i) => `
+${i + 1}. ${m.processorName}
+   - Score: ${m.score.toFixed(2)}
+   - Distance: ${m.distanceKm.toFixed(1)}km
+   - Price: £${m.priceEstimate.toFixed(2)}
+   - SRL Score: ${m.srlScore.toFixed(2)}
+`).join('')}
+
+Provide:
+1. Which match is optimal for circular economy impact
+2. Any sustainability insights
+3. Recommendations for improved matching
+4. Carbon footprint considerations
+
+Respond in JSON format with structure:
+{
+  "optimalMatchIndex": number (0-based),
+  "insights": string,
+  "carbonImpact": string,
+  "recommendations": string[]
+}`
+        }
+      ];
+
+      const response = await createChatCompletion(messages, {
+        model: MODEL_PRESETS.balanced,
+        temperature: TEMPERATURE_PRESETS.deterministic,
+        max_tokens: 1000
+      });
+
+      const aiResponse = JSON.parse(response.choices[0].message.content || '{}');
+      
+      // Enhance the optimal match with AI insights
+      if (aiResponse.optimalMatchIndex !== undefined && matches[aiResponse.optimalMatchIndex]) {
+        matches[aiResponse.optimalMatchIndex].score *= 1.1; // 10% boost for AI recommendation
+        matches[aiResponse.optimalMatchIndex].notes = aiResponse.insights;
+      }
+
+      // Add AI recommendations to all matches
+      matches.forEach(match => {
+        if (!match.aiRecommendations) {
+          match.aiRecommendations = {
+            carbonImpact: aiResponse.carbonImpact,
+            recommendations: aiResponse.recommendations
+          };
+        }
+      });
+
+      // Re-sort by enhanced scores
+      return matches.sort((a, b) => b.score - a.score);
+    } catch (error) {
+      console.error('AI enhancement failed, returning original matches:', error);
+      return matches; // Fallback to original matches if AI fails
+    }
   }
 }

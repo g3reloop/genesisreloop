@@ -24,12 +24,17 @@
   --input: 168 54% 8%; /* #0B1E1A */
   --ring: 160 100% 38%; /* #00C08B */
   
-  /* Mythic Tech Theme Variables */
-  --mythic-primary: #00C08B;
+  /* Mythic Tech Theme Variables - WCAG AA Compliant */
+  --mythic-primary: #00C97A; /* Matches brand-emerald */
   --mythic-secondary: #0B1E1A;
   --mythic-accent: #7EF5CF;
-  --mythic-text-primary: #E8FFF7;
-  --mythic-text-muted: #A7D9C9;
+  --mythic-text-primary: #F0F6F3; /* Matches ink-strong */
+  --mythic-text-muted: #B8CCC3; /* Matches ink-muted */
+  
+  /* Dark mode specific overrides */
+  --mythic-dark-900: #0D0F12;
+  --mythic-dark-800: #12151A;
+  --mythic-dark-700: #1A1F27;
   
   /* Loop Colors */
   --loop-srl: #00C08B; /* Stabilized Recursive Loop */
@@ -42,18 +47,22 @@
   --flow-credits: #ffcc00;
   --flow-reputation: #cc00ff;
   
-  /* WCAG Contrast Compliant Colors */
+  /* WCAG AA Contrast Compliant Colors */
   --bg-obsidian: #0D0F12;
   --bg-panel: #12151A;
-  --ink-strong: #E6F1EA;
-  --ink: #CFE5DA;
-  --ink-muted: #A5B9B0;
-  --brand-emerald: #00B27A;
-  --accent-aqua: #25C2B4;
-  --danger: #FF5A5F;
-  --field-bg: #1A1F27;
-  --field-border: #2B3240;
-  --placeholder: #8FA3A0;
+  --ink-strong: #F0F6F3; /* Increased contrast from #E6F1EA */
+  --ink: #D8E8E0; /* Increased contrast from #CFE5DA */
+  --ink-muted: #B8CCC3; /* Increased contrast from #A5B9B0 */
+  --brand-emerald: #00C97A; /* Increased brightness from #00B27A */
+  --accent-aqua: #30D4C6; /* Increased brightness from #25C2B4 */
+  --danger: #FF6B70; /* Increased brightness from #FF5A5F */
+  --field-bg: #1F242D; /* Slightly lighter from #1A1F27 */
+  --field-border: #3A4251; /* Increased visibility from #2B3240 */
+  --placeholder: #9EB4B0; /* Better contrast from #8FA3A0 */
+  
+  /* Minimum font sizes for WCAG compliance */
+  --font-size-min: 14px;
+  --line-height-min: 1.5;
 }
 
 * {
@@ -71,6 +80,10 @@ body {
 body {
   font-family: 'Inter', system-ui, sans-serif;
   position: relative;
+  font-size: var(--font-size-min);
+  line-height: var(--line-height-min);
+  color: var(--ink-strong);
+  background-color: var(--bg-obsidian);
 }
 
 /* Mythic Tech Background Pattern - Encrypted Grid & Toroidal Loops */
@@ -297,8 +310,9 @@ body::before {
   
   /* Focus ring styles for accessibility */
   :focus-visible {
-    outline: 2px solid var(--brand-emerald) !important;
+    outline: 3px solid var(--brand-emerald) !important;
     outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 201, 122, 0.3) !important;
   }
   
   button:focus-visible,
@@ -306,8 +320,38 @@ body::before {
   input:focus-visible,
   textarea:focus-visible,
   select:focus-visible {
-    outline: 2px solid var(--brand-emerald) !important;
+    outline: 3px solid var(--brand-emerald) !important;
     outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 201, 122, 0.3) !important;
+  }
+  
+  /* Ensure minimum font sizes */
+  p, li, span, div, label {
+    font-size: max(var(--font-size-min), 1em);
+    line-height: var(--line-height-min);
+  }
+  
+  /* High contrast for small text */
+  small, .text-xs, .text-sm {
+    color: var(--ink-strong);
+    font-size: max(0.875rem, var(--font-size-min));
+  }
+  
+  /* Error states with proper contrast */
+  .text-red-500, .text-destructive {
+    color: var(--danger) !important;
+  }
+  
+  /* Link styles for better visibility */
+  a {
+    color: var(--brand-emerald);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  
+  a:hover {
+    color: var(--accent-aqua);
+    text-decoration-thickness: 2px;
   }
   
   /* Button contrast fixes */

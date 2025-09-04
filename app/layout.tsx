@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { MythicBackgroundAnimated } from "@/components/ui/mythic-background";
 import { Toaster } from "sonner";
 import { ClientWrapper } from "@/components/layout/client-wrapper";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,9 +17,9 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://genesisreloop.com'),
-  title: "Genesis Reloop — Community Loops for Energy & Food",
-  description: "Waste to Fuel. Fuel to Food. Loops that Pay Communities. Turn local waste into local fuel with modular biogas and biodiesel loops. GIRM credits lower costs. DAO funds the next loop.",
-  keywords: "Genesis Reloop, SRL, stabilized recursive loop, food waste biogas, UCO biodiesel, modular processing, heat cascading, GIRM credits, DAO governance, community energy, waste to fuel, circular economy",
+  title: "Genesis Reloop — Decentralized Circular Economy for Waste-to-Value",
+  description: "Connect feedstock suppliers, labs, and buyers. Automate deals, verify chain-of-custody, and issue GIRM Credits for measurable impact across UK/EU.",
+  keywords: "circular economy, waste to value, chemical recycling, DAO marketplace, verified chain of custody, UK, EU, Genesis, GIRM credits, feedstock routing, escrow, SRL",
   authors: [{ name: "Genesis Reloop DAO" }],
   creator: "Genesis Protocol",
   publisher: "Genesis Reloop Community",
@@ -27,8 +28,8 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Genesis Reloop — Turn Local Waste into Local Fuel",
-    description: "Waste to Fuel. Fuel to Food. Loops that Pay Communities. Modular biogas and biodiesel loops that turn waste into local fuel and fertilizer. GIRM credits lower costs. DAO funds the next loop.",
+    title: "Genesis Reloop — Close loops. Build industry.",
+    description: "Marketplace that turns waste into verified products with DAO governance and measurable impact.",
     type: "website",
     siteName: "Genesis Reloop",
     locale: "en_US",
@@ -37,14 +38,14 @@ export const metadata: Metadata = {
         url: "/genesis_triple_circle_hero.png",
         width: 1200,
         height: 630,
-        alt: "Genesis Reloop - Community Loops for Energy & Food",
+        alt: "Genesis Reloop - Decentralized Circular Economy",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Genesis Reloop — Turn Local Waste into Local Fuel",
-    description: "Waste to Fuel. Fuel to Food. Loops that Pay Communities.",
+    title: "Genesis Reloop — Close loops. Build industry.",
+    description: "Waste is stranded cashflow. Genesis Reloop routes feedstocks to labs and buyers with verifiable chain-of-custody and GIRM Credits.",
     images: ["/genesis_triple_circle_hero.png"],
   },
 };
@@ -60,7 +61,7 @@ export default function RootLayout({
     'name': 'Genesis Reloop',
     'alternateName': 'Genesis Reloop DAO',
     'url': 'https://genesisreloop.com',
-    'description': 'Community-owned infrastructure that turns local waste into local fuel. Food waste to biogas. UCO to biodiesel. GIRM credits lower costs. DAO funds the next loop.',
+    'description': 'Genesis Reloop matches waste feedstocks with certified labs and guaranteed buyers. Verifiable chain-of-custody, automated routing, and GIRM Credits for measurable impact.',
     'founder': {
       '@type': 'Person',
       'name': 'Warren Brown',
@@ -111,20 +112,24 @@ export default function RootLayout({
           Skip to footer
         </a>
         
-        <AuthProvider>
-          <Web3Provider>
-            <div className="flex flex-col min-h-screen relative z-10">
-              <ClientWrapper>
-                <Header />
-                <main id="main-content" className="flex-1" role="main" aria-label="Main content">
-                  {children}
-                </main>
-                <Footer />
-                <Toaster richColors position="top-right" theme="dark" />
-              </ClientWrapper>
-            </div>
-          </Web3Provider>
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <Web3Provider>
+              <div className="flex flex-col min-h-screen relative z-10">
+                <ClientWrapper>
+                  <Header />
+                  <main id="main-content" className="flex-1" role="main" aria-label="Main content">
+                    <ErrorBoundary>
+                      {children}
+                    </ErrorBoundary>
+                  </main>
+                  <Footer />
+                  <Toaster richColors position="top-right" theme="dark" />
+                </ClientWrapper>
+              </div>
+            </Web3Provider>
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
