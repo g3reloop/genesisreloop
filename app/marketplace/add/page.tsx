@@ -242,36 +242,37 @@ function AddListingPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-black pt-20">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="min-h-screen bg-black pt-20 pb-10">
+      <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Button
             variant="ghost"
-            onClick={() => router.back()}
-            className="mb-4"
+            onClick={() => router.push('/marketplace')}
+            className="mb-3 sm:mb-4 p-2 sm:p-2.5"
+            size="sm"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
+            <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-sm sm:text-base">Back</span>
           </Button>
           
-          <h1 className="text-3xl font-bold text-mythic-text-primary">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-mythic-text-primary mb-1 sm:mb-2">
             Create New Listing
           </h1>
-          <p className="text-mythic-text-muted mt-2">
-            List your waste materials for sale or trade
+          <p className="text-mythic-text-muted text-sm sm:text-base">
+            List your waste feedstock for the circular economy network
           </p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Basic Information */}
             <Card className="bg-mythic-dark-900/50 border-mythic-primary/20">
-              <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
-                <CardDescription>Provide details about your listing</CardDescription>
+              <CardHeader className="px-4 sm:px-6">
+                <CardTitle className="text-lg sm:text-xl">Basic Information</CardTitle>
+                <CardDescription className="text-sm">Provide details about your listing</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 px-4 sm:px-6">
                 <div className="space-y-2">
                   <Label htmlFor="title">
                     Title <span className="text-red-500">*</span>
@@ -305,13 +306,13 @@ function AddListingPageContent() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="category">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="category" className="text-sm">
                       Category <span className="text-red-500">*</span>
                     </Label>
                     <Select value={form.category} onValueChange={(value) => updateForm('category', value)}>
-                      <SelectTrigger className="bg-[var(--field-bg)] border-[var(--field-border)]">
+                      <SelectTrigger className="bg-[var(--field-bg)] border-[var(--field-border)] text-sm sm:text-base">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -323,16 +324,16 @@ function AddListingPageContent() {
                       </SelectContent>
                     </Select>
                     {errors.category && (
-                      <p className="text-sm text-red-500">{errors.category}</p>
+                      <p className="text-xs sm:text-sm text-red-500">{errors.category}</p>
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="wasteStream">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="wasteStream" className="text-sm">
                       Waste Stream <span className="text-red-500">*</span>
                     </Label>
                     <Select value={form.waste_stream} onValueChange={(value) => updateForm('waste_stream', value)}>
-                      <SelectTrigger className="bg-[var(--field-bg)] border-[var(--field-border)]">
+                      <SelectTrigger className="bg-[var(--field-bg)] border-[var(--field-border)] text-sm sm:text-base">
                         <SelectValue placeholder="Select waste stream" />
                       </SelectTrigger>
                       <SelectContent>
@@ -344,7 +345,7 @@ function AddListingPageContent() {
                       </SelectContent>
                     </Select>
                     {errors.waste_stream && (
-                      <p className="text-sm text-red-500">{errors.waste_stream}</p>
+                      <p className="text-xs sm:text-sm text-red-500">{errors.waste_stream}</p>
                     )}
                   </div>
                 </div>
@@ -353,11 +354,11 @@ function AddListingPageContent() {
 
             {/* Quantity and Pricing */}
             <Card className="bg-mythic-dark-900/50 border-mythic-primary/20">
-              <CardHeader>
-                <CardTitle>Quantity & Pricing</CardTitle>
-                <CardDescription>Specify available quantity and your pricing</CardDescription>
+              <CardHeader className="px-4 sm:px-6">
+                <CardTitle className="text-lg sm:text-xl">Quantity & Pricing</CardTitle>
+                <CardDescription className="text-sm">Specify available quantity and your pricing</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 px-4 sm:px-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="quantity">
@@ -507,11 +508,11 @@ function AddListingPageContent() {
 
             {/* Images */}
             <Card className="bg-mythic-dark-900/50 border-mythic-primary/20">
-              <CardHeader>
-                <CardTitle>Images (Optional)</CardTitle>
-                <CardDescription>Add up to 5 images of your material</CardDescription>
+              <CardHeader className="px-4 sm:px-6">
+                <CardTitle className="text-lg sm:text-xl">Images (Optional)</CardTitle>
+                <CardDescription className="text-sm">Add up to 5 images of your material</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 sm:px-6">
                 <div className="space-y-4">
                   {/* Image previews */}
                   {imagePreviews.length > 0 && (

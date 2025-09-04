@@ -19,10 +19,14 @@ import {
   Download,
   File,
   Image as ImageIcon,
-  Loader2
+  Loader2,
+  Route,
+  MapIcon
 } from 'lucide-react'
 import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns'
 import { toast } from 'react-hot-toast'
+import RouteShareCard from '@/components/messages/RouteShareCard'
+import ShareRouteModal from '@/components/messages/ShareRouteModal'
 
 interface Message {
   id: string
@@ -84,6 +88,7 @@ export default function ConversationPage() {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [userId, setUserId] = useState<string>('')
+  const [showRouteShare, setShowRouteShare] = useState(false)
   
   const supabase = createClientComponentClient()
 
@@ -224,17 +229,17 @@ export default function ConversationPage() {
     }
   }
 
-  const handleSendMessage = async (e?: React.FormEvent) => {
+  const handleSendMessage = async (e?: React.FormEvent, shareData?: any) => {
     e?.preventDefault()
     
-    if (!newMessage.trim() && attachments.length === 0) return
+    if (!newMessage.trim() && attachments.length === 0 && !shareData) return
     if (!conversation) return
 
     setSending(true)
 
     try {
       // Upload attachments if any
-      const attachmentData = []
+      const attachmentData = shareData ? [shareData] : []
       if (attachments.length > 0) {
         for (const file of attachments) {
           const fileExt = file.name.split('.').pop()
@@ -265,7 +270,7 @@ export default function ConversationPage() {
         .insert({
           conversation_id: conversation.id,
           sender_id: userId,
-          body: newMessage.trim(),
+          body: shareData ? `Shared a route: ${shareData.data.summary}` : newMessage.trim(),
           attachments: attachmentData.length > 0 ? attachmentData : null
         })
 
@@ -299,6 +304,10 @@ export default function ConversationPage() {
 
   const removeAttachment = (index: number) => {
     setAttachments(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const handleShareRoute = async (routeData: any) => {
+    await handleSendMessage(undefined, routeData)
   }
 
   const formatMessageDate = (date: string) => {
@@ -459,29 +468,48 @@ export default function ConversationPage() {
                       {/* Attachments */}
                       {message.attachments && message.attachments.length > 0 && (
                         <div className="mt-2 space-y-2">
-                          {message.attachments.map((attachment, i) => (
-                            <a
-                              key={i}
-                              href={attachment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                                isOwn
-                                  ? 'bg-black/20 hover:bg-black/30'
-                                  : 'bg-mythic-dark-900 hover:bg-mythic-dark-900/80'
-                              }`}
-                            >
-                              {attachment.type.startsWith('image/') ? (
-                                <ImageIcon className="h-4 w-4" />
-                              ) : (
-                                <File className="h-4 w-4" />
-                              )}
-                              <span className="text-xs flex-1 truncate">
-                                {attachment.name}
-                              </span>
-                              <Download className="h-3 w-3" />
-                            </a>
-                          ))}
+                          {message.attachments.map((attachment, i) => {
+                            // Check if it's a route attachment
+                            if (attachment.type === 'route' && attachment.data) {
+                              return (
+                                <RouteShareCard
+                                  key={i}
+                                  data={attachment.data}
+                                  compact={true}
+                                  onViewRoute={() => router.push(`/routes/${attachment.data.routeId}`)}
+                                  onContactCarrier={attachment.data.carrier ? 
+                                    () => router.push(`/carriers/${attachment.data.carrier.id}`) : 
+                                    undefined
+                                  }
+                                />
+                              )
+                            }
+                            
+                            // Regular file attachment
+                            return (
+                              <a
+                                key={i}
+                                href={attachment.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
+                                  isOwn
+                                    ? 'bg-black/20 hover:bg-black/30'
+                                    : 'bg-mythic-dark-900 hover:bg-mythic-dark-900/80'
+                                }`}
+                              >
+                                {attachment.type.startsWith('image/') ? (
+                                  <ImageIcon className="h-4 w-4" />
+                                ) : (
+                                  <File className="h-4 w-4" />
+                                )}
+                                <span className="text-xs flex-1 truncate">
+                                  {attachment.name}
+                                </span>
+                                <Download className="h-3 w-3" />
+                              </a>
+                            )
+                          })}
                         </div>
                       )}
                     </div>
@@ -552,6 +580,17 @@ export default function ConversationPage() {
               >
                 <Paperclip className="h-5 w-5" />
               </Button>
+              
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowRouteShare(true)}
+                disabled={sending}
+                title="Share Route"
+              >
+                <Route className="h-5 w-5" />
+              </Button>
 
               <Textarea
                 value={newMessage}
@@ -583,6 +622,14 @@ export default function ConversationPage() {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Route Share Modal */}
+      <ShareRouteModal
+        open={showRouteShare}
+        onClose={() => setShowRouteShare(false)}
+        onShare={handleShareRoute}
+        listingId={conversation?.listing_id}
+      />
     </div>
   )
 }

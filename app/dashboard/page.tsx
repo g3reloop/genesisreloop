@@ -23,18 +23,7 @@ import {
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
-
-// Mock data for dashboard metrics
-const mockMetrics = {
-  totalWasteCollected: 3456.78,
-  activeBatches: 12,
-  totalEarnings: 2345.67,
-  carbonOffset: 234.56,
-  pendingTransactions: 5,
-  verifiedSuppliers: 24,
-  systemEfficiency: 87.5,
-  monthlyGrowth: 23.4
-}
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 interface MetricCard {
   title: string
@@ -45,9 +34,45 @@ interface MetricCard {
   unit?: string
 }
 
+interface DashboardMetrics {
+  totalWasteCollected: number
+  activeBatches: number
+  totalEarnings: number
+  carbonOffset: number
+  pendingTransactions: number
+  verifiedSuppliers: number
+  systemEfficiency: number
+  monthlyGrowth: number
+}
+
+interface RecentActivity {
+  id: string
+  type: 'collection' | 'sale' | 'carbon'
+  title: string
+  description: string
+  amount: string
+  timestamp: string
+  icon: React.ElementType
+  iconColor: string
+  iconBg: string
+}
+
 export default function DashboardPage() {
-  const [realtimeMetrics, setRealtimeMetrics] = useState(mockMetrics)
+  const [metrics, setMetrics] = useState<DashboardMetrics>({
+    totalWasteCollected: 0,
+    activeBatches: 0,
+    totalEarnings: 0,
+    carbonOffset: 0,
+    pendingTransactions: 0,
+    verifiedSuppliers: 0,
+    systemEfficiency: 0,
+    monthlyGrowth: 0
+  })
+  
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
+  const [loading, setLoading] = useState(true)
   const { user } = useAuth()
+  const supabase = createClientComponentClient()
   
   const handleRestartTour = () => {
     localStorage.removeItem('genesis-tour-completed')
@@ -58,48 +83,204 @@ export default function DashboardPage() {
     }, 1000)
   }
   
-  // Simulate real-time updates
+  // Load real data from Supabase
   useEffect(() => {
-    const interval = setInterval(() => {
-      setRealtimeMetrics(prev => ({
-        ...prev,
-        totalWasteCollected: prev.totalWasteCollected + (Math.random() * 10 - 5),
-        carbonOffset: prev.carbonOffset + Math.random() * 0.5,
-        pendingTransactions: Math.max(0, prev.pendingTransactions + Math.floor(Math.random() * 3 - 1))
-      }))
-    }, 5000)
+    loadDashboardData()
     
-    return () => clearInterval(interval)
-  }, [])
+    // Set up real-time subscription for updates
+    const channel = supabase.channel('dashboard-updates')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'transactions' },
+        () => loadDashboardData()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'listings' },
+        () => loadDashboardData()
+      )
+      .subscribe()
+    
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [user])
+  
+  const loadDashboardData = async () => {
+    if (!user) return
+    
+    try {
+      // Get user's total waste collected
+      const { data: wasteData } = await supabase
+        .from('transactions')
+        .select('quantity')
+        .eq('seller_id', user.id)
+        .eq('status', 'completed')
+      
+      const totalWaste = wasteData?.reduce((sum, t) => sum + (t.quantity || 0), 0) || 0
+      
+      // Get active batches (active listings)
+      const { count: activeBatchesCount } = await supabase
+        .from('listings')
+        .select('*', { count: 'exact', head: true })
+        .eq('seller_id', user.id)
+        .eq('status', 'active')
+      
+      // Get total earnings
+      const { data: earningsData } = await supabase
+        .from('transactions')
+        .select('total_amount')
+        .eq('seller_id', user.id)
+        .eq('status', 'completed')
+      
+      const totalEarnings = earningsData?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+      
+      // Get carbon offset (from completed transactions)
+      const { data: carbonData } = await supabase
+        .from('carbon_credits')
+        .select('amount')
+        .eq('user_id', user.id)
+        .eq('status', 'verified')
+      
+      const carbonOffset = carbonData?.reduce((sum, c) => sum + (c.amount || 0), 0) || 0
+      
+      // Get pending transactions
+      const { count: pendingCount } = await supabase
+        .from('transactions')
+        .select('*', { count: 'exact', head: true })
+        .eq('seller_id', user.id)
+        .eq('status', 'pending')
+      
+      // Get verified suppliers count
+      const { count: verifiedCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('verified', true)
+        .in('role', ['supplier', 'processor'])
+      
+      // Calculate monthly growth (compare this month to last month)
+      const now = new Date()
+      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0)
+      
+      const { data: thisMonthData } = await supabase
+        .from('transactions')
+        .select('total_amount')
+        .eq('seller_id', user.id)
+        .eq('status', 'completed')
+        .gte('created_at', thisMonthStart.toISOString())
+      
+      const { data: lastMonthData } = await supabase
+        .from('transactions')
+        .select('total_amount')
+        .eq('seller_id', user.id)
+        .eq('status', 'completed')
+        .gte('created_at', lastMonthStart.toISOString())
+        .lte('created_at', lastMonthEnd.toISOString())
+      
+      const thisMonthTotal = thisMonthData?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+      const lastMonthTotal = lastMonthData?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+      const growth = lastMonthTotal > 0 ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100 : 0
+      
+      // Get recent activity
+      const { data: recentTransactions } = await supabase
+        .from('transactions')
+        .select(`
+          *,
+          listings (
+            title,
+            category
+          )
+        `)
+        .or(`seller_id.eq.${user.id},buyer_id.eq.${user.id}`)
+        .order('created_at', { ascending: false })
+        .limit(3)
+      
+      const activities: RecentActivity[] = recentTransactions?.map(t => {
+        if (t.type === 'sale') {
+          return {
+            id: t.id,
+            type: 'sale',
+            title: 'Marketplace Sale Completed',
+            description: `${t.listings?.title || 'Item'} • ${new Date(t.created_at).toLocaleTimeString()}`,
+            amount: `+£${t.total_amount?.toFixed(2) || '0.00'}`,
+            timestamp: t.created_at,
+            icon: ShoppingCart,
+            iconColor: 'text-mythic-secondary-500',
+            iconBg: 'bg-mythic-secondary-500/20'
+          }
+        } else {
+          return {
+            id: t.id,
+            type: 'collection',
+            title: `Batch #${t.id.slice(-8)} Collected`,
+            description: `${t.quantity}kg ${t.listings?.category || 'waste'} • ${new Date(t.created_at).toLocaleTimeString()}`,
+            amount: `+£${t.total_amount?.toFixed(2) || '0.00'}`,
+            timestamp: t.created_at,
+            icon: Truck,
+            iconColor: 'text-mythic-primary-500',
+            iconBg: 'bg-mythic-primary-500/20'
+          }
+        }
+      }) || []
+      
+      // Calculate system efficiency (ratio of completed to total transactions)
+      const { count: totalTransactions } = await supabase
+        .from('transactions')
+        .select('*', { count: 'exact', head: true })
+        .eq('seller_id', user.id)
+      
+      const efficiency = totalTransactions ? ((wasteData?.length || 0) / totalTransactions) * 100 : 0
+      
+      setMetrics({
+        totalWasteCollected: totalWaste,
+        activeBatches: activeBatchesCount || 0,
+        totalEarnings,
+        carbonOffset,
+        pendingTransactions: pendingCount || 0,
+        verifiedSuppliers: verifiedCount || 0,
+        systemEfficiency: efficiency,
+        monthlyGrowth: growth
+      })
+      
+      setRecentActivity(activities)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error loading dashboard data:', error)
+      toast.error('Failed to load dashboard data')
+      setLoading(false)
+    }
+  }
 
   const metricCards: MetricCard[] = [
     {
       title: 'Total Waste Collected',
-      value: `${realtimeMetrics.totalWasteCollected.toFixed(2)}`,
+      value: `${metrics.totalWasteCollected.toFixed(2)}`,
       unit: 'kg',
-      change: '+12.5%',
+      change: metrics.totalWasteCollected > 0 ? '+' : '0%',
       icon: Recycle,
       color: 'text-mythic-primary-500'
     },
     {
       title: 'Active Batches',
-      value: realtimeMetrics.activeBatches,
-      change: '+3 this week',
+      value: metrics.activeBatches,
+      change: metrics.activeBatches > 0 ? 'Active' : 'None',
       icon: Package,
       color: 'text-mythic-secondary-500'
     },
     {
       title: 'Total Earnings',
-      value: `£${realtimeMetrics.totalEarnings.toFixed(2)}`,
-      change: '+18.2%',
+      value: `£${metrics.totalEarnings.toFixed(2)}`,
+      change: metrics.monthlyGrowth > 0 ? `+${metrics.monthlyGrowth.toFixed(1)}%` : '0%',
       icon: DollarSign,
       color: 'text-mythic-accent-500'
     },
     {
       title: 'Carbon Offset',
-      value: `${realtimeMetrics.carbonOffset.toFixed(2)}`,
+      value: `${metrics.carbonOffset.toFixed(2)}`,
       unit: 'tCO₂',
-      change: '+8.7%',
+      change: metrics.carbonOffset > 0 ? 'Verified' : '0%',
       icon: Leaf,
       color: 'text-mythic-flow-credits'
     },
@@ -107,14 +288,14 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen pt-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="container mx-auto px-4 py-6 sm:py-8 lg:py-12">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 lg:mb-12 gap-4">
           <div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent mb-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent mb-2 sm:mb-4">
               Welcome back, {user?.name || 'User'}
             </h1>
-            <p className="text-mythic-text-muted text-lg">
+            <p className="text-mythic-text-muted text-sm sm:text-base lg:text-lg">
               Here's what's happening in your circular economy network today
             </p>
           </div>
@@ -122,31 +303,32 @@ export default function DashboardPage() {
             variant="ghost"
             size="sm"
             onClick={handleRestartTour}
-            className="flex items-center gap-2 text-mythic-text-muted hover:text-mythic-primary-500 mt-4 md:mt-0"
+            className="flex items-center gap-2 text-mythic-text-muted hover:text-mythic-primary-500"
           >
             <HelpCircle className="h-4 w-4" />
-            Restart Tour
+            <span className="hidden sm:inline">Restart Tour</span>
+            <span className="sm:hidden">Tour</span>
           </Button>
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-12">
           {metricCards.map((metric, index) => (
             <Card key={index} className="bg-mythic-dark-800 border-mythic-primary-500/20 hover:border-mythic-primary-500/40 transition-all hover:shadow-lg hover:shadow-mythic-primary-500/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-mythic-text-muted">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:p-4 pb-2">
+                <CardTitle className="text-xs sm:text-sm font-medium text-mythic-text-muted">
                   {metric.title}
                 </CardTitle>
-                <metric.icon className={cn("h-5 w-5", metric.color)} />
+                <metric.icon className={cn("h-4 w-4 sm:h-5 sm:w-5", metric.color)} />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-mythic-text-primary">
+              <CardContent className="p-3 sm:p-4 pt-0">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-mythic-text-primary">
                   {metric.value}
-                  {metric.unit && <span className="text-lg text-mythic-text-muted ml-1">{metric.unit}</span>}
+                  {metric.unit && <span className="text-sm sm:text-base lg:text-lg text-mythic-text-muted ml-1">{metric.unit}</span>}
                 </div>
-                <p className="text-xs text-mythic-secondary-500 flex items-center mt-2">
+                <p className="text-xs text-mythic-secondary-500 flex items-center mt-1 sm:mt-2">
                   <TrendingUp className="h-3 w-3 mr-1" />
-                  {metric.change}
+                  <span className="truncate">{metric.change}</span>
                 </p>
               </CardContent>
             </Card>
@@ -154,62 +336,55 @@ export default function DashboardPage() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8 lg:mb-12">
           {/* Recent Activity */}
           <Card className="lg:col-span-2 bg-mythic-dark-800 border-mythic-primary-500/20">
-            <CardHeader>
-              <div className="flex items-center justify-between">
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <CardTitle>Recent Activity</CardTitle>
-                  <CardDescription>Your latest transactions and updates</CardDescription>
+                  <CardTitle className="text-lg sm:text-xl">Recent Activity</CardTitle>
+                  <CardDescription className="text-sm">Your latest transactions and updates</CardDescription>
                 </div>
-                <Link href="/transactions" className="text-mythic-primary-500 hover:text-mythic-primary-400 text-sm font-medium flex items-center gap-1">
+                <Link href="/transactions" className="text-mythic-primary-500 hover:text-mythic-primary-400 text-sm font-medium flex items-center gap-1 self-start sm:self-auto">
                   View all
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-mythic-dark-700 rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-mythic-primary-500/20 rounded-lg">
-                      <Truck className="h-5 w-5 text-mythic-primary-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-mythic-text-primary">Batch #B2024-089 Collected</p>
-                      <p className="text-xs text-mythic-text-muted">50kg cooking oil • 2 hours ago</p>
-                    </div>
-                  </div>
-                  <span className="text-mythic-primary-500 font-semibold">+£125.00</span>
+            <CardContent className="p-4 sm:p-6 pt-0">
+              {loading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="h-20 bg-mythic-dark-700/50 rounded-lg animate-pulse" />
+                  ))}
                 </div>
-                
-                <div className="flex items-center justify-between p-4 bg-mythic-dark-700 rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-mythic-secondary-500/20 rounded-lg">
-                      <ShoppingCart className="h-5 w-5 text-mythic-secondary-500" />
+              ) : recentActivity.length > 0 ? (
+                <div className="space-y-3 sm:space-y-4">
+                  {recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-mythic-dark-700 rounded-lg gap-3">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className={`p-1.5 sm:p-2 ${activity.iconBg} rounded-lg flex-shrink-0`}>
+                          <activity.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${activity.iconColor}`} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-mythic-text-primary truncate">{activity.title}</p>
+                          <p className="text-xs text-mythic-text-muted">{activity.description}</p>
+                        </div>
+                      </div>
+                      <span className={`${activity.iconColor} font-semibold text-sm sm:text-base self-end sm:self-auto`}>
+                        {activity.amount}
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-mythic-text-primary">Marketplace Sale Completed</p>
-                      <p className="text-xs text-mythic-text-muted">Compost bags sold • 5 hours ago</p>
-                    </div>
-                  </div>
-                  <span className="text-mythic-secondary-500 font-semibold">+£45.00</span>
+                  ))}
                 </div>
-                
-                <div className="flex items-center justify-between p-4 bg-mythic-dark-700 rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-mythic-accent-500/20 rounded-lg">
-                      <Leaf className="h-5 w-5 text-mythic-accent-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-mythic-text-primary">Carbon Credits Earned</p>
-                      <p className="text-xs text-mythic-text-muted">Monthly allocation • 1 day ago</p>
-                    </div>
-                  </div>
-                  <span className="text-mythic-accent-500 font-semibold">+2.5 tCO₂</span>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-mythic-text-muted text-sm">No recent activity</p>
+                  <Link href="/marketplace" className="text-mythic-primary-500 text-sm hover:underline mt-2 inline-block">
+                    Browse marketplace to get started
+                  </Link>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -261,7 +436,7 @@ export default function DashboardPage() {
               <div className="flex items-center space-x-2">
                 <Activity className="h-4 w-4 text-mythic-secondary-500 animate-pulse" />
                 <span className="text-sm font-medium text-mythic-text-muted">
-                  System Efficiency: {realtimeMetrics.systemEfficiency}%
+                  System Efficiency: {metrics.systemEfficiency.toFixed(1)}%
                 </span>
               </div>
             </div>
@@ -280,7 +455,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-3xl font-bold text-mythic-accent-500">
-                  {realtimeMetrics.pendingTransactions}
+                  {metrics.pendingTransactions}
                 </span>
                 <Package className="h-8 w-8 text-mythic-accent-500/50" />
               </div>
@@ -297,7 +472,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-3xl font-bold text-mythic-primary-500">
-                  +{realtimeMetrics.monthlyGrowth}%
+                  {metrics.monthlyGrowth > 0 ? '+' : ''}{metrics.monthlyGrowth.toFixed(1)}%
                 </span>
                 <TrendingUp className="h-8 w-8 text-mythic-primary-500/50" />
               </div>
@@ -314,7 +489,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-3xl font-bold text-mythic-secondary-500">
-                  {realtimeMetrics.verifiedSuppliers}
+                  {metrics.verifiedSuppliers}
                 </span>
                 <Users className="h-8 w-8 text-mythic-secondary-500/50" />
               </div>

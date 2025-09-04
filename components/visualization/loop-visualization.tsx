@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 import { LoopNode, LoopFlow } from '@/lib/types'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 // Define the loop network structure
 const loopNodes: LoopNode[] = [
@@ -25,10 +26,83 @@ const loopFlows: LoopFlow[] = [
   { from: 'reputation_node', to: 'supplier_node', description: 'Trust feedback', color: 'var(--flow-reputation)' },
 ]
 
+interface RealTimeFlow {
+  id: string
+  fromType: string
+  toType: string
+  volume: number
+  timestamp: string
+}
+
 export function LoopVisualization() {
   const svgRef = useRef<SVGSVGElement>(null)
   const [activeAgents, setActiveAgents] = useState<string[]>([])
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
+  const [realTimeFlows, setRealTimeFlows] = useState<RealTimeFlow[]>([])
+  const supabase = createClientComponentClient()
+
+  // Load real-time transaction data
+  useEffect(() => {
+    loadRealTimeData()
+    
+    // Set up real-time subscription
+    const channel = supabase.channel('loop-visualization')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'transactions' },
+        (payload) => {
+          // Add new flow when transaction is created
+          if (payload.new.status === 'completed') {
+            loadRealTimeData()
+          }
+        }
+      )
+      .subscribe()
+    
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [])
+  
+  const loadRealTimeData = async () => {
+    try {
+      // Get recent completed transactions
+      const { data: transactions } = await supabase
+        .from('transactions')
+        .select(`
+          id,
+          quantity,
+          created_at,
+          listings (
+            category,
+            seller_id,
+            profiles!seller_id (
+              role
+            )
+          ),
+          profiles!buyer_id (
+            role
+          )
+        `)
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(5)
+      
+      if (transactions) {
+        const flows: RealTimeFlow[] = transactions.map(t => ({
+          id: t.id,
+          fromType: t.listings?.profiles?.role === 'supplier' ? 'feedstock_supplier' : 'collector',
+          toType: t.profiles?.role === 'processor' ? 'processor' : 'byproduct_market',
+          volume: t.quantity || 0,
+          timestamp: t.created_at
+        }))
+        
+        setRealTimeFlows(flows)
+      }
+    } catch (error) {
+      console.error('Error loading real-time data:', error)
+    }
+  }
 
   useEffect(() => {
     if (!svgRef.current) return
@@ -188,33 +262,74 @@ export function LoopVisualization() {
       .attr('dur', '2s')
       .attr('repeatCount', 'indefinite')
 
-    // Simulate agent activity
-    const simulateActivity = () => {
-      const randomNode = loopNodes[Math.floor(Math.random() * loopNodes.length)]
-      const randomAgent = randomNode.agents[Math.floor(Math.random() * randomNode.agents.length)]
-      
-      // Create activity pulse
-      const pulse = nodeGroup.append('circle')
-        .attr('cx', randomNode.x!)
-        .attr('cy', randomNode.y!)
-        .attr('r', 5)
-        .attr('fill', 'var(--mythic-primary-500)')
-        .attr('opacity', 1)
+    // Show real transaction activity
+    const showRealActivity = () => {
+      realTimeFlows.forEach((flow, index) => {
+        setTimeout(() => {
+          const sourceNode = loopNodes.find(n => n.type === flow.fromType)
+          const targetNode = loopNodes.find(n => n.type === flow.toType)
+          
+          if (sourceNode && targetNode) {
+            // Create particle for real flow
+            const particle = nodeGroup.append('circle')
+              .attr('cx', sourceNode.x!)
+              .attr('cy', sourceNode.y!)
+              .attr('r', Math.min(15, Math.max(5, flow.volume / 50)))
+              .attr('fill', 'var(--mythic-primary-500)')
+              .attr('opacity', 0.8)
 
-      pulse.transition()
-        .duration(1500)
-        .attr('r', 50)
-        .attr('opacity', 0)
-        .remove()
+            // Animate particle along path
+            particle.transition()
+              .duration(2000)
+              .ease(d3.easeCubicInOut)
+              .attr('cx', targetNode.x!)
+              .attr('cy', targetNode.y!)
+              .transition()
+              .duration(300)
+              .attr('r', 30)
+              .attr('opacity', 0)
+              .remove()
+            
+            // Show volume text
+            const volumeText = nodeGroup.append('text')
+              .attr('x', sourceNode.x!)
+              .attr('y', sourceNode.y! - 40)
+              .attr('text-anchor', 'middle')
+              .attr('font-size', '14px')
+              .attr('fill', 'var(--mythic-primary-500)')
+              .attr('font-weight', 'bold')
+              .text(`${flow.volume} kg`)
+              .attr('opacity', 0)
+              
+            volumeText.transition()
+              .duration(300)
+              .attr('opacity', 1)
+              .transition()
+              .delay(1700)
+              .duration(300)
+              .attr('opacity', 0)
+              .remove()
+          }
+        }, index * 1000)
+      })
     }
 
-    // Run activity simulation
-    const activityInterval = setInterval(simulateActivity, 3000)
+    // Show real activity on data change
+    if (realTimeFlows.length > 0) {
+      showRealActivity()
+    }
+    
+    // Periodically replay recent transactions
+    const activityInterval = setInterval(() => {
+      if (realTimeFlows.length > 0) {
+        showRealActivity()
+      }
+    }, 10000)
 
     return () => {
       clearInterval(activityInterval)
     }
-  }, [activeAgents])
+  }, [activeAgents, realTimeFlows])
 
   return (
     <div className="relative w-full h-[600px] bg-gradient-to-br from-mythic-dark-50/50 to-mythic-dark-100/50 dark:from-mythic-dark-900/50 dark:to-mythic-dark-950/50 rounded-xl overflow-hidden">
@@ -237,23 +352,30 @@ export function LoopVisualization() {
       
       {/* Legend */}
       <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-mythic-dark-900/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-        <div className="flex items-center space-x-4 text-xs">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-mythic-loop-srl rounded-full mr-1" />
-            <span>SRL Loop</span>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-4 text-xs">
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-mythic-loop-srl rounded-full mr-1" />
+              <span>SRL Loop</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-mythic-loop-crl rounded-full mr-1" />
+              <span>CRL Loop</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-mythic-flow-feedstock rounded-full mr-1" />
+              <span>Feedstock</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-mythic-flow-credits rounded-full mr-1" />
+              <span>Credits</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-mythic-loop-crl rounded-full mr-1" />
-            <span>CRL Loop</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-mythic-flow-feedstock rounded-full mr-1" />
-            <span>Feedstock</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-mythic-flow-credits rounded-full mr-1" />
-            <span>Credits</span>
-          </div>
+          {realTimeFlows.length > 0 && (
+            <div className="text-xs text-mythic-text-muted border-t pt-2">
+              Live: {realTimeFlows.length} recent transactions
+            </div>
+          )}
         </div>
       </div>
     </div>

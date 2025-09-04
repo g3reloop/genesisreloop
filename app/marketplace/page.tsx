@@ -191,12 +191,12 @@ export default function MarketplacePage() {
     <div className="min-h-screen bg-black pt-20">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-mythic-primary to-mythic-accent bg-clip-text text-transparent">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+          <div className="w-full sm:w-auto">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-mythic-primary to-mythic-accent bg-clip-text text-transparent">
               Genesis Reloop Marketplace
             </h1>
-            <p className="text-mythic-text-muted mt-2">
+            <p className="text-sm sm:text-base text-mythic-text-muted mt-1 sm:mt-2">
               Transform waste into value through our circular economy network
             </p>
           </div>
@@ -204,7 +204,7 @@ export default function MarketplacePage() {
           {canCreateListing && (
             <Button
               onClick={() => router.push('/marketplace/add')}
-              className="bg-mythic-primary hover:bg-mythic-primary/90 text-black font-semibold"
+              className="bg-mythic-primary hover:bg-mythic-primary/90 text-black font-semibold w-full sm:w-auto"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Listing
@@ -213,49 +213,52 @@ export default function MarketplacePage() {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="glass rounded-lg p-4 mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
+        <div className="glass rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-mythic-text-muted" />
               <Input
                 type="text"
-                placeholder="Search listings, sellers, or locations..."
+                placeholder="Search listings..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-[var(--field-bg)] border-[var(--field-border)] text-[var(--ink-strong)]"
+                className="pl-10 bg-[var(--field-bg)] border-[var(--field-border)] text-[var(--ink-strong)] text-sm sm:text-base"
               />
             </div>
             
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full md:w-[200px] bg-[var(--field-bg)] border-[var(--field-border)]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map(category => (
-                  <SelectItem key={category.value} value={category.value}>
-                    {category.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="flex-1 sm:flex-initial sm:w-[200px] bg-[var(--field-bg)] border-[var(--field-border)] text-sm sm:text-base">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(category => (
+                    <SelectItem key={category.value} value={category.value}>
+                      {category.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="border-mythic-primary/20"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="border-mythic-primary/20 text-sm sm:text-base"
+                size={"sm"}
+              >
+                <Filter className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Filters</span>
+              </Button>
+            </div>
           </div>
 
           {/* Advanced Filters */}
           {showFilters && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-4 border-t border-mythic-primary/20">
-              <div className="space-y-2">
-                <Label htmlFor="wasteStream">Waste Stream</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-mythic-primary/20">
+              <div className="space-y-1 sm:space-y-2">
+                <Label htmlFor="wasteStream" className="text-sm">Waste Stream</Label>
                 <Select value={selectedWasteStream} onValueChange={setSelectedWasteStream}>
-                  <SelectTrigger className="bg-[var(--field-bg)] border-[var(--field-border)]">
+                  <SelectTrigger className="bg-[var(--field-bg)] border-[var(--field-border)] text-sm sm:text-base">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -268,27 +271,27 @@ export default function MarketplacePage() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="priceMin">Min Price (£)</Label>
+              <div className="space-y-1 sm:space-y-2">
+                <Label htmlFor="priceMin" className="text-sm">Min Price (£)</Label>
                 <Input
                   id="priceMin"
                   type="number"
                   placeholder="0"
                   value={priceRange.min}
                   onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
-                  className="bg-[var(--field-bg)] border-[var(--field-border)]"
+                  className="bg-[var(--field-bg)] border-[var(--field-border)] text-sm sm:text-base"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="priceMax">Max Price (£)</Label>
+              <div className="space-y-1 sm:space-y-2">
+                <Label htmlFor="priceMax" className="text-sm">Max Price (£)</Label>
                 <Input
                   id="priceMax"
                   type="number"
                   placeholder="10000"
                   value={priceRange.max}
                   onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
-                  className="bg-[var(--field-bg)] border-[var(--field-border)]"
+                  className="bg-[var(--field-bg)] border-[var(--field-border)] text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -296,18 +299,18 @@ export default function MarketplacePage() {
         </div>
 
         {/* Results Count */}
-        <div className="mb-4 flex justify-between items-center">
-          <p className="text-mythic-text-muted">
-            Showing {startIndex + 1}-{Math.min(endIndex, filteredListings.length)} of {filteredListings.length} listings
+        <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <p className="text-sm sm:text-base text-mythic-text-muted">
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredListings.length)} of {filteredListings.length}
           </p>
           
           <div className="flex items-center gap-2">
-            <Label htmlFor="perPage" className="text-sm text-mythic-text-muted">Per page:</Label>
+            <Label htmlFor="perPage" className="text-xs sm:text-sm text-mythic-text-muted">Per page:</Label>
             <Select value={itemsPerPage.toString()} onValueChange={(value) => {
               setItemsPerPage(parseInt(value))
               setCurrentPage(1)
             }}>
-              <SelectTrigger id="perPage" className="w-[80px] h-8 bg-[var(--field-bg)] border-[var(--field-border)]">
+              <SelectTrigger id="perPage" className="w-[70px] sm:w-[80px] h-7 sm:h-8 bg-[var(--field-bg)] border-[var(--field-border)] text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -328,7 +331,7 @@ export default function MarketplacePage() {
           </div>
         ) : paginatedListings.length > 0 ? (
           <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {paginatedListings.map((listing, index) => (
               <motion.div
                 key={listing.id}

@@ -241,76 +241,80 @@ export default function Documentation() {
                       {/* Food Waste */}
                       <div>
                         <h4 className="font-semibold text-mythic-primary-500 mb-3">Food Waste → Biogas</h4>
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead>
-                              <tr className="border-b border-mythic-primary-500/20">
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-mythic-text-muted">Parameter</th>
-                                <th className="text-right py-3 px-4 text-sm font-semibold text-mythic-text-muted">Value</th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-mythic-text-muted">Unit</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr className="border-b border-mythic-primary-500/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Landfill CH₄ emission factor</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono">0.74</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">tCO₂e/tonne</td>
-                              </tr>
-                              <tr className="border-b border-mythic-primary-500/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Biogas utilization efficiency</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono">85%</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">-</td>
-                              </tr>
-                              <tr className="border-b border-mythic-primary-500/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Grid displacement factor</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono">0.233</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">kgCO₂/kWh</td>
-                              </tr>
-                              <tr className="border-b border-mythic-primary-500/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Net avoided per tonne</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono text-mythic-primary-500">0.92</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">tCO₂e</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                        <div className="overflow-x-auto -mx-4 sm:mx-0">
+                          <div className="inline-block min-w-full align-middle">
+                            <table className="min-w-full">
+                              <thead>
+                                <tr className="border-b border-mythic-primary-500/20">
+                                  <th className="text-left py-2 sm:py-3 px-4 text-xs sm:text-sm font-semibold text-mythic-text-muted whitespace-nowrap">Parameter</th>
+                                  <th className="text-right py-2 sm:py-3 px-4 text-xs sm:text-sm font-semibold text-mythic-text-muted whitespace-nowrap">Value</th>
+                                  <th className="text-left py-2 sm:py-3 px-4 text-xs sm:text-sm font-semibold text-mythic-text-muted whitespace-nowrap">Unit</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-mythic-primary-500/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Landfill CH₄ emission factor</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono whitespace-nowrap">0.74</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">tCO₂e/tonne</td>
+                                </tr>
+                                <tr className="border-b border-mythic-primary-500/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Biogas utilization efficiency</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono whitespace-nowrap">85%</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">-</td>
+                                </tr>
+                                <tr className="border-b border-mythic-primary-500/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Grid displacement factor</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono whitespace-nowrap">0.233</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">kgCO₂/kWh</td>
+                                </tr>
+                                <tr className="border-b border-mythic-primary-500/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Net avoided per tonne</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono text-mythic-primary-500 whitespace-nowrap">0.92</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">tCO₂e</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
 
                       {/* UCO */}
                       <div>
                         <h4 className="font-semibold text-mythic-accent-300 mb-3">UCO → Biodiesel</h4>
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead>
-                              <tr className="border-b border-mythic-accent-300/20">
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-mythic-text-muted">Parameter</th>
-                                <th className="text-right py-3 px-4 text-sm font-semibold text-mythic-text-muted">Value</th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-mythic-text-muted">Unit</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr className="border-b border-mythic-accent-300/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Diesel emission factor</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono">3.16</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">kgCO₂e/L</td>
-                              </tr>
-                              <tr className="border-b border-mythic-accent-300/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Biodiesel lifecycle emissions</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono">0.27</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">kgCO₂e/L</td>
-                              </tr>
-                              <tr className="border-b border-mythic-accent-300/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Conversion efficiency</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono">0.9</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">L biodiesel/L UCO</td>
-                              </tr>
-                              <tr className="border-b border-mythic-accent-300/10">
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary">Net avoided per litre UCO</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-primary text-right font-mono text-mythic-accent-300">2.60</td>
-                                <td className="py-3 px-4 text-sm text-mythic-text-muted">kgCO₂e</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                        <div className="overflow-x-auto -mx-4 sm:mx-0">
+                          <div className="inline-block min-w-full align-middle">
+                            <table className="min-w-full">
+                              <thead>
+                                <tr className="border-b border-mythic-accent-300/20">
+                                  <th className="text-left py-2 sm:py-3 px-4 text-xs sm:text-sm font-semibold text-mythic-text-muted whitespace-nowrap">Parameter</th>
+                                  <th className="text-right py-2 sm:py-3 px-4 text-xs sm:text-sm font-semibold text-mythic-text-muted whitespace-nowrap">Value</th>
+                                  <th className="text-left py-2 sm:py-3 px-4 text-xs sm:text-sm font-semibold text-mythic-text-muted whitespace-nowrap">Unit</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-mythic-accent-300/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Diesel emission factor</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono whitespace-nowrap">3.16</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">kgCO₂e/L</td>
+                                </tr>
+                                <tr className="border-b border-mythic-accent-300/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Biodiesel lifecycle emissions</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono whitespace-nowrap">0.27</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">kgCO₂e/L</td>
+                                </tr>
+                                <tr className="border-b border-mythic-accent-300/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Conversion efficiency</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono whitespace-nowrap">0.9</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">L biodiesel/L UCO</td>
+                                </tr>
+                                <tr className="border-b border-mythic-accent-300/10">
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary whitespace-nowrap">Net avoided per litre UCO</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-primary text-right font-mono text-mythic-accent-300 whitespace-nowrap">2.60</td>
+                                  <td className="py-2 sm:py-3 px-4 text-xs sm:text-sm text-mythic-text-muted whitespace-nowrap">kgCO₂e</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
                     </div>

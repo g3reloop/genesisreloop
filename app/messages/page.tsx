@@ -238,39 +238,41 @@ export default function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-black pt-20">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8 max-w-4xl">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-3xl font-bold text-mythic-text-primary">
-              Messages
-            </h1>
+        <div className="mb-4 sm:mb-6 lg:mb-8">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-mythic-text-primary mb-1 sm:mb-2">
+                Messages
+              </h1>
+              <p className="text-sm sm:text-base text-mythic-text-muted">
+                Manage your conversations with buyers and sellers
+              </p>
+            </div>
             {unreadCount > 0 && (
-              <Badge className="bg-mythic-primary text-black">
+              <Badge variant="default" className="bg-mythic-primary text-black">
                 {unreadCount} unread
               </Badge>
             )}
           </div>
-          <p className="text-mythic-text-muted">
-            Manage your conversations with buyers and sellers
-          </p>
         </div>
 
         {/* Search Bar */}
-        <div className="relative mb-6">
+        <div className="relative mb-4 sm:mb-6">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-mythic-text-muted" />
           <Input
             type="text"
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-[var(--field-bg)] border-[var(--field-border)]"
+            className="pl-10 bg-[var(--field-bg)] border-[var(--field-border)] text-sm sm:text-base"
           />
         </div>
 
         {/* Conversations List */}
         {filteredConversations.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {filteredConversations.map((conversation) => {
               const otherParty = getOtherParty(conversation)
               const lastMessage = conversation.messages[0]
@@ -284,12 +286,12 @@ export default function MessagesPage() {
                   }`}
                   onClick={() => router.push(`/messages/${conversation.id}`)}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex items-start gap-3 sm:gap-4">
                       {/* Avatar or Product Image */}
                       <div className="flex-shrink-0">
                         {conversation.listings.media?.images?.[0] ? (
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-mythic-dark-800">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-mythic-dark-800">
                             <img
                               src={conversation.listings.media.images[0]}
                               alt={conversation.listings.title}
@@ -297,8 +299,8 @@ export default function MessagesPage() {
                             />
                           </div>
                         ) : (
-                          <Avatar className="w-12 h-12">
-                            <AvatarFallback className="bg-mythic-primary/20 text-mythic-primary">
+                          <Avatar className="w-10 h-10 sm:w-12 sm:h-12">
+                            <AvatarFallback className="bg-mythic-primary/20 text-mythic-primary text-xs sm:text-sm">
                               {getInitials(otherParty.business_name)}
                             </AvatarFallback>
                           </Avatar>
@@ -307,22 +309,22 @@ export default function MessagesPage() {
 
                       {/* Conversation Details */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-1">
-                          <div>
-                            <h3 className="font-semibold text-mythic-text-primary flex items-center gap-2">
-                              {otherParty.business_name}
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-1 gap-1 sm:gap-0">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-mythic-text-primary text-sm sm:text-base flex items-center gap-2">
+                              <span className="truncate">{otherParty.business_name}</span>
                               {otherParty.verified && (
-                                <Badge variant="outline" className="text-xs border-mythic-primary/50">
+                                <Badge variant="outline" className="text-xs border-mythic-primary/50 shrink-0">
                                   Verified
                                 </Badge>
                               )}
                             </h3>
-                            <p className="text-sm text-mythic-text-muted flex items-center gap-1">
-                              <Package className="h-3 w-3" />
-                              {conversation.listings.title}
+                            <p className="text-xs sm:text-sm text-mythic-text-muted flex items-center gap-1">
+                              <Package className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{conversation.listings.title}</span>
                             </p>
                           </div>
-                          <div className="text-right">
+                          <div className="text-right flex items-center gap-2 sm:block">
                             <p className="text-xs text-mythic-text-muted flex items-center gap-1">
                               <Clock className="h-3 w-3" />
                               {formatDistanceToNow(new Date(conversation.last_message_at), {
@@ -330,7 +332,7 @@ export default function MessagesPage() {
                               })}
                             </p>
                             {lastMessage && lastMessage.sender_id === userId && (
-                              <CheckCheck className={`h-4 w-4 mt-1 ${
+                              <CheckCheck className={`h-4 w-4 mt-1 hidden sm:block ${
                                 lastMessage.read_at ? 'text-mythic-primary' : 'text-mythic-text-muted'
                               }`} />
                             )}
@@ -338,7 +340,7 @@ export default function MessagesPage() {
                         </div>
                         
                         {lastMessage && (
-                          <p className={`text-sm line-clamp-1 ${
+                          <p className={`text-xs sm:text-sm line-clamp-1 ${
                             unread ? 'text-mythic-text-primary font-medium' : 'text-mythic-text-muted'
                           }`}>
                             {lastMessage.sender_id === userId && (
