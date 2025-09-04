@@ -51,7 +51,7 @@ export default function LearnPage() {
               {[
                 {
                   title: "Start with your waste",
-                  body: "Upload a spec and ask, "What loop fits this?"",
+                  body: "Upload a spec and ask, 'What loop fits this?'",
                   icon: Upload,
                   example: "I have 500kg/week of restaurant food waste with 15% contamination. What processes work best?"
                 },
