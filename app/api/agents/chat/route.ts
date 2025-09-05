@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { agentService } from '@/lib/agents/agent-service'
+import { chatWithAgent } from '@/lib/agents/agent-service-api'
 import type { AgentType } from '@/lib/agents/agent-constants'
 
 export async function POST(request: NextRequest) {
@@ -13,8 +13,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Call the actual agent service (server-side only)
-    const response = await agentService.chat(
+    // Call the simplified agent service (server-side only, no Supabase)
+    const response = await chatWithAgent(
       agentType as AgentType,
       message,
       context
