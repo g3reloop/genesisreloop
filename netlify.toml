@@ -6,6 +6,7 @@
   NODE_VERSION = "20.10.0"
   NPM_FLAGS = "--legacy-peer-deps"
   CANVAS_BINARY_HOST_MIRROR = "https://github.com/Automattic/node-canvas/releases/download"
+  NODE_ENV = "production"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
