@@ -4,18 +4,24 @@
 echo "🔐 Generating secure secrets for ReLoop Platform production deployment..."
 echo ""
 
+# Check if Node.js is available
+if ! command -v node &> /dev/null; then
+    echo "❌ Node.js is required to generate secrets. Please install Node.js first."
+    exit 1
+fi
+
 # Generate NEXTAUTH_SECRET
-NEXTAUTH_SECRET=$(openssl rand -base64 32)
+NEXTAUTH_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('base64'))")
 echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET"
 echo ""
 
 # Generate JWT_SECRET
-JWT_SECRET=$(openssl rand -base64 32)
+JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('base64'))")
 echo "JWT_SECRET=$JWT_SECRET"
 echo ""
 
 # Generate SUPABASE_JWT_SECRET (if needed)
-SUPABASE_JWT_SECRET=$(openssl rand -base64 32)
+SUPABASE_JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('base64'))")
 echo "SUPABASE_JWT_SECRET=$SUPABASE_JWT_SECRET"
 echo ""
 
