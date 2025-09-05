@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "20.10.0"
+  SECRETS_SCAN_OMIT_PATHS = "public/**,**/*.docx,**/*.pdf,.next/**,.netlify/**,node_modules/**"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
