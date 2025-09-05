@@ -7,8 +7,9 @@ import { Web3Provider } from "@/hooks/useWeb3";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { MythicBackgroundAnimated } from "@/components/ui/mythic-background";
 import { Toaster } from "sonner";
-import { ClientWrapper } from "@/components/layout/client-wrapper";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ClientWrapper } from "@/components/layout/client-wrapper"
+import { ErrorBoundary } from "@/components/ErrorBoundary"
+import { SafeClientWrapper } from "@/components/SafeClientWrapper"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -112,24 +113,26 @@ export default function RootLayout({
           Skip to footer
         </a>
         
-        <ErrorBoundary>
-          <AuthProvider>
-            <Web3Provider>
-              <div className="flex flex-col min-h-screen relative z-10">
-                <ClientWrapper>
-                  <Header />
-                  <main id="main-content" className="flex-1" role="main" aria-label="Main content">
-                    <ErrorBoundary>
-                      {children}
-                    </ErrorBoundary>
-                  </main>
-                  <Footer />
-                  <Toaster richColors position="top-right" theme="dark" />
-                </ClientWrapper>
-              </div>
-            </Web3Provider>
-          </AuthProvider>
-        </ErrorBoundary>
+        <SafeClientWrapper>
+          <ErrorBoundary>
+            <AuthProvider>
+              <Web3Provider>
+                <div className="flex flex-col min-h-screen relative z-10">
+                  <ClientWrapper>
+                    <Header />
+                    <main id="main-content" className="flex-1" role="main" aria-label="Main content">
+                      <ErrorBoundary>
+                        {children}
+                      </ErrorBoundary>
+                    </main>
+                    <Footer />
+                    <Toaster richColors position="top-right" theme="dark" />
+                  </ClientWrapper>
+                </div>
+              </Web3Provider>
+            </AuthProvider>
+          </ErrorBoundary>
+        </SafeClientWrapper>
       </body>
     </html>
   );
