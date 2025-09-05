@@ -1,0 +1,33 @@
+<svg viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#000000"/>
+  
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.1" />
+      <stop offset="50%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Genesis Logo - centered and larger -->
+  <g transform="translate(600, 315)">
+    <!-- Outer circles -->
+    <circle cx="0" cy="-80" r="80" stroke="#10b981" stroke-width="8" fill="none" opacity="0.8"/>
+    <circle cx="80" cy="0" r="80" stroke="#10b981" stroke-width="8" fill="none" opacity="0.8"/>
+    <circle cx="0" cy="80" r="80" stroke="#10b981" stroke-width="8" fill="none" opacity="0.8"/>
+    <circle cx="-80" cy="0" r="80" stroke="#10b981" stroke-width="8" fill="none" opacity="0.8"/>
+    <!-- Center circle -->
+    <circle cx="0" cy="0" r="24" stroke="#10b981" stroke-width="8" fill="none"/>
+  </g>
+  
+  <!-- Text overlay -->
+  <text x="600" y="500" text-anchor="middle" fill="#10b981" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="bold">
+    Genesis Reloop
+  </text>
+  <text x="600" y="540" text-anchor="middle" fill="#a7f3d0" font-family="system-ui, -apple-system, sans-serif" font-size="24">
+    Decentralized Circular Economy
+  </text>
+</svg>
