@@ -114,7 +114,8 @@ export default function RootLayout({
           Skip to footer
         </a>
         
-        <SafeClientWrapper>
+        {/* Temporarily disabled SafeClientWrapper for debugging */}
+        {/* <SafeClientWrapper> */}
           <ErrorBoundary>
             <DebugErrorBoundary name="AuthProvider">
               <AuthProvider>
@@ -143,7 +144,7 @@ export default function RootLayout({
               </AuthProvider>
             </DebugErrorBoundary>
           </ErrorBoundary>
-        </SafeClientWrapper>
+        {/* </SafeClientWrapper> */}
       </body>
     </html>
   );
