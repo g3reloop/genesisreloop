@@ -26,7 +26,7 @@ This project uses Supabase for authentication and database operations, but the e
    NEXT_PUBLIC_SUPABASE_URL=https://[YOUR-PROJECT-REF].supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=[your-anon-key]
    SUPABASE_SERVICE_ROLE_KEY=[your-service-role-key]
-   SUPABASE_JWT_SECRET=[your-jwt-secret]
+   SUPABASE_JWT_SECRET=[Get from Supabase or generate using: openssl rand -base64 32]
    SUPABASE_DATABASE_URL=[your-database-url]
    ```
 
@@ -54,7 +54,7 @@ Add ALL of these to Netlify's environment variables:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-SUPABASE_JWT_SECRET=
+SUPABASE_JWT_SECRET=[Get from Supabase or generate]
 SUPABASE_DATABASE_URL=
 
 # Database (already in .env.local)
@@ -62,8 +62,8 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/reloop_dev
 
 # Auth (already in .env.local)
 NEXTAUTH_URL=https://[your-app].netlify.app
-NEXTAUTH_SECRET=development-secret-change-in-production
-JWT_SECRET=development-jwt-secret
+NEXTAUTH_SECRET=[Generate using: openssl rand -base64 32]
+JWT_SECRET=[Generate using: openssl rand -base64 32]
 
 # Optional but recommended
 NODE_ENV=production

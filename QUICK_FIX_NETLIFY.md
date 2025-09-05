@@ -18,8 +18,8 @@ SUPABASE_SERVICE_ROLE_KEY=[Your service_role key - click eye icon to reveal]
 # Copy from your DATABASE_URL (or get from Supabase Dashboard → Settings → Database)
 SUPABASE_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/reloop_dev
 
-# Use this exact value (generated for you)
-JWT_SECRET=QeTtv9kgsWEysRKXBNNRYumSx6hR8OuOzkRH73yqpEg=
+# Generate a secure JWT secret
+JWT_SECRET=[Generate using: openssl rand -base64 32]
 ```
 
 ### 2. How to Add to Netlify:

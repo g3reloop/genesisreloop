@@ -14,7 +14,7 @@ You need to add the following environment variables to your Netlify deployment:
 NEXT_PUBLIC_SUPABASE_URL=https://[YOUR-PROJECT-REF].supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
-SUPABASE_JWT_SECRET=your-jwt-secret-here
+SUPABASE_JWT_SECRET=[Get from Supabase Dashboard or generate using: openssl rand -base64 32]
 ```
 
 ### 2. Database URLs (REQUIRED)
@@ -26,8 +26,8 @@ SUPABASE_DATABASE_URL=postgresql://postgres.[YOUR-PROJECT-REF]:[YOUR-PASSWORD]@a
 ### 3. Authentication (REQUIRED)
 ```
 NEXTAUTH_URL=https://your-netlify-app.netlify.app
-NEXTAUTH_SECRET=generate-a-32-character-secret
-JWT_SECRET=generate-another-32-character-secret
+NEXTAUTH_SECRET=[Generate using: openssl rand -base64 32]
+JWT_SECRET=[Generate using: openssl rand -base64 32]
 ```
 
 ### 4. Other Important Variables

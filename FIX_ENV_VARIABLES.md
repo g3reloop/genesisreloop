@@ -19,7 +19,7 @@ Add these lines to your `.env.local` file:
 NEXT_PUBLIC_SUPABASE_URL=https://[YOUR-PROJECT-REF].supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
-SUPABASE_JWT_SECRET=your-jwt-secret-here
+SUPABASE_JWT_SECRET=[Generate using: openssl rand -base64 32]
 
 # Also add this (same as DATABASE_URL)
 SUPABASE_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/reloop_dev

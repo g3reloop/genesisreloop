@@ -17,12 +17,12 @@ Before deploying to Netlify, you must set the following environment variables in
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-SUPABASE_JWT_SECRET=your-supabase-jwt-secret
+SUPABASE_JWT_SECRET=[Get from Supabase Dashboard Settings → API → JWT Secret]
 DATABASE_URL=your-supabase-database-url
 
 # NextAuth Configuration
 NEXTAUTH_URL=https://your-app.netlify.app
-NEXTAUTH_SECRET=generate-a-secure-random-string
+NEXTAUTH_SECRET=[Generate using: openssl rand -base64 32]
 ```
 
 #### Optional Variables (for production)
