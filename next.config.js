@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
@@ -20,6 +19,8 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // This will help with Netlify deployments
   },
+  // Explicitly set output directory
+  distDir: '.next',
 };
 
-export default nextConfig;
+module.exports = nextConfig;
