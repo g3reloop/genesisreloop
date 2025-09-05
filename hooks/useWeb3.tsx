@@ -25,7 +25,13 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
 
   // Listen for account changes
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.ethereum) return
+    if (typeof window === 'undefined') return
+
+    // Check if ethereum provider exists
+    if (!window.ethereum) {
+      console.warn('No Web3 wallet detected. Web3 features will be disabled.')
+      return
+    }
 
     const handleAccountsChanged = (accounts: string[]) => {
       if (accounts.length === 0) {
@@ -40,25 +46,41 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
       // Do not automatically reload - let the app handle chain changes gracefully
     }
 
-    window.ethereum.on('accountsChanged', handleAccountsChanged)
-    window.ethereum.on('chainChanged', handleChainChanged)
+    try {
+      window.ethereum.on('accountsChanged', handleAccountsChanged)
+      window.ethereum.on('chainChanged', handleChainChanged)
 
-    // Check if already connected
-    window.ethereum.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
-      if (accounts.length > 0) {
-        setAccount(accounts[0])
-      }
-    })
+      // Check if already connected
+      window.ethereum.request({ method: 'eth_accounts' })
+        .then((accounts: string[]) => {
+          if (accounts.length > 0) {
+            setAccount(accounts[0])
+          }
+        })
+        .catch((err) => {
+          console.warn('Failed to get accounts:', err)
+        })
 
-    // Get current chain
-    window.ethereum.request({ method: 'eth_chainId' }).then((chainId: string) => {
-      setChainId(parseInt(chainId, 16))
-    })
+      // Get current chain
+      window.ethereum.request({ method: 'eth_chainId' })
+        .then((chainId: string) => {
+          setChainId(parseInt(chainId, 16))
+        })
+        .catch((err) => {
+          console.warn('Failed to get chain ID:', err)
+        })
+    } catch (error) {
+      console.error('Error setting up Web3 listeners:', error)
+    }
 
     return () => {
       if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
-        window.ethereum.removeListener('chainChanged', handleChainChanged)
+        try {
+          window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
+          window.ethereum.removeListener('chainChanged', handleChainChanged)
+        } catch (error) {
+          // Ignore cleanup errors
+        }
       }
     }
   }, [])

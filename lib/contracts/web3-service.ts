@@ -65,7 +65,7 @@ export class Web3Service {
 
   async connectWallet(): Promise<string> {
     if (typeof window === 'undefined' || !window.ethereum) {
-      throw new Error('No Web3 wallet detected')
+      throw new Error('No Web3 wallet detected. Please install MetaMask or another Web3 wallet.')
     }
 
     try {
@@ -82,8 +82,13 @@ export class Web3Service {
       }
 
       return address
-    } catch (error) {
-      throw new Error(`Failed to connect wallet: ${error}`)
+    } catch (error: any) {
+      if (error.code === -32002) {
+        throw new Error('Wallet connection already pending. Please check your wallet.')
+      } else if (error.code === 4001) {
+        throw new Error('User rejected wallet connection.')
+      }
+      throw new Error(`Failed to connect wallet: ${error.message || error}`)
     }
   }
 
@@ -101,16 +106,28 @@ export class Web3Service {
       // This error code indicates that the chain has not been added to MetaMask
       if (switchError.code === 4902) {
         const config = CHAIN_CONFIG[chainId]
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [{
-            chainId: hexChainId,
-            chainName: config.name,
-            rpcUrls: [config.rpcUrl],
-            blockExplorerUrls: [config.blockExplorer],
-            nativeCurrency: config.nativeCurrency,
-          }],
-        })
+        if (!config) {
+          throw new Error(`Unsupported chain ID: ${chainId}`)
+        }
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: hexChainId,
+              chainName: config.name,
+              rpcUrls: [config.rpcUrl],
+              blockExplorerUrls: [config.blockExplorer],
+              nativeCurrency: config.nativeCurrency,
+            }],
+          })
+        } catch (addError: any) {
+          if (addError.code === 4001) {
+            throw new Error('User rejected adding the network')
+          }
+          throw addError
+        }
+      } else if (switchError.code === 4001) {
+        throw new Error('User rejected switching network')
       } else {
         throw switchError
       }

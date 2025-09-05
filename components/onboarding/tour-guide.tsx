@@ -107,10 +107,18 @@ export function TourGuide({ onComplete, startTour = false }: TourGuideProps) {
   const updateHighlight = () => {
     if (!currentTourStep) return
     
-    const targetElement = document.querySelector(currentTourStep.target)
-    if (targetElement) {
-      const rect = targetElement.getBoundingClientRect()
-      setHighlightBox(rect)
+    try {
+      const targetElement = document.querySelector(currentTourStep.target)
+      if (targetElement) {
+        const rect = targetElement.getBoundingClientRect()
+        setHighlightBox(rect)
+      } else {
+        console.warn(`Tour target element not found: ${currentTourStep.target}`)
+        setHighlightBox(null)
+      }
+    } catch (error) {
+      console.error('Error updating tour highlight:', error)
+      setHighlightBox(null)
     }
   }
 

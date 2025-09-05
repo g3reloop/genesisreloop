@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 import { ClientWrapper } from "@/components/layout/client-wrapper"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { SafeClientWrapper } from "@/components/SafeClientWrapper"
+import { DebugErrorBoundary } from "@/components/DebugErrorBoundary"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -115,22 +116,32 @@ export default function RootLayout({
         
         <SafeClientWrapper>
           <ErrorBoundary>
-            <AuthProvider>
-              <Web3Provider>
-                <div className="flex flex-col min-h-screen relative z-10">
-                  <ClientWrapper>
-                    <Header />
-                    <main id="main-content" className="flex-1" role="main" aria-label="Main content">
-                      <ErrorBoundary>
-                        {children}
-                      </ErrorBoundary>
-                    </main>
-                    <Footer />
-                    <Toaster richColors position="top-right" theme="dark" />
-                  </ClientWrapper>
-                </div>
-              </Web3Provider>
-            </AuthProvider>
+            <DebugErrorBoundary name="AuthProvider">
+              <AuthProvider>
+                <DebugErrorBoundary name="Web3Provider">
+                  <Web3Provider>
+                    <div className="flex flex-col min-h-screen relative z-10">
+                      <DebugErrorBoundary name="ClientWrapper">
+                        <ClientWrapper>
+                          <DebugErrorBoundary name="Header">
+                            <Header />
+                          </DebugErrorBoundary>
+                          <main id="main-content" className="flex-1" role="main" aria-label="Main content">
+                            <DebugErrorBoundary name="Main Content">
+                              {children}
+                            </DebugErrorBoundary>
+                          </main>
+                          <DebugErrorBoundary name="Footer">
+                            <Footer />
+                          </DebugErrorBoundary>
+                          <Toaster richColors position="top-right" theme="dark" />
+                        </ClientWrapper>
+                      </DebugErrorBoundary>
+                    </div>
+                  </Web3Provider>
+                </DebugErrorBoundary>
+              </AuthProvider>
+            </DebugErrorBoundary>
           </ErrorBoundary>
         </SafeClientWrapper>
       </body>
