@@ -1,10 +1,11 @@
-'use client'
-
 export default function TestPage() {
   return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-4xl font-bold mb-4">Test Page</h1>
-      <p>If you can see this, the basic app structure is working.</p>
+    <div style={{ background: 'black', color: 'white', padding: '50px', minHeight: '100vh' }}>
+      <h1 style={{ fontSize: '48px', marginBottom: '20px' }}>Genesis Reloop Test Page</h1>
+      <p style={{ fontSize: '24px', marginBottom: '20px' }}>If you can see this styled text, basic rendering works.</p>
+      <div style={{ background: '#10b981', padding: '20px', borderRadius: '8px', marginTop: '20px' }}>
+        <p>This should have a green background.</p>
+      </div>
     </div>
-  )
+  );
 }
