@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
   ArrowRight, 
   Network, 
@@ -35,6 +35,21 @@ const iconMap = {
 
 export default function HomePage() {
   const { home } = pageContent
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  // Show content immediately on server render, animate on client
+  const animationProps = mounted ? {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8 }
+  } : {
+    initial: false,
+    animate: { opacity: 1, y: 0 }
+  }
   
   return (
     <div className="relative">
@@ -51,50 +66,28 @@ export default function HomePage() {
         {/* Hero Content */}
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            {...animationProps}
             className="text-center max-w-5xl mx-auto"
           >
             {/* Pretitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-mythic-accent-300 text-sm font-semibold tracking-wider uppercase mb-4"
-            >
+            <p className="text-mythic-accent-300 text-sm font-semibold tracking-wider uppercase mb-4">
               {home.hero.pretitle}
-            </motion.p>
+            </p>
 
             {/* Main Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6"
-            >
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
               <span className="bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">
                 {home.hero.title}
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-xl text-mythic-text-muted mb-12 max-w-3xl mx-auto"
-            >
+            <p className="text-xl text-mythic-text-muted mb-12 max-w-3xl mx-auto">
               {home.hero.subtitle}
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href={home.hero.primaryCta.href}
                 className="group px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200 flex items-center justify-center gap-2"
@@ -108,7 +101,7 @@ export default function HomePage() {
               >
                 {home.hero.secondaryCta.label}
               </Link>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -122,9 +115,9 @@ export default function HomePage() {
               return (
                 <motion.div
                   key={prop.title}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={mounted ? { opacity: 0, y: 20 } : false}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
+                  transition={{ delay: mounted ? 0.1 * index : 0 }}
                   className="glass rounded-xl p-6 border border-mythic-primary-500/10 hover:border-mythic-primary-500/30 transition-all"
                 >
                   <Icon className="h-10 w-10 text-mythic-primary-500 mb-4" />
@@ -141,7 +134,7 @@ export default function HomePage() {
       <section className="py-24 relative">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={mounted ? { opacity: 0, y: 20 } : false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="max-w-4xl mx-auto text-center"
@@ -155,10 +148,10 @@ export default function HomePage() {
               {home.proof.bullets.map((bullet, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={mounted ? { opacity: 0, x: -20 } : false}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.1 * index }}
+                  transition={{ delay: mounted ? 0.1 * index : 0 }}
                   className="flex items-start gap-3 text-left"
                 >
                   <CheckCircle className="h-5 w-5 text-mythic-accent-300 mt-0.5 flex-shrink-0" />
@@ -174,7 +167,7 @@ export default function HomePage() {
       <section className="py-24 relative bg-mythic-dark-900/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={mounted ? { opacity: 0, y: 20 } : false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center mb-16"
@@ -199,10 +192,10 @@ export default function HomePage() {
               return (
                 <motion.div
                   key={segment.title}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={mounted ? { opacity: 0, y: 20 } : false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.1 * index }}
+                  transition={{ delay: mounted ? 0.1 * index : 0 }}
                   className="glass rounded-xl p-6 border border-mythic-primary-500/10 hover:border-mythic-primary-500/30 transition-all flex flex-col"
                 >
                   <Icon className="h-12 w-12 text-mythic-primary-500 mb-4" />
@@ -226,7 +219,7 @@ export default function HomePage() {
       <section className="py-24 relative">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={mounted ? { opacity: 0, y: 20 } : false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center"
@@ -238,10 +231,10 @@ export default function HomePage() {
               {home.socialProof.kpis.map((kpi, index) => (
                 <motion.div
                   key={kpi.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={mounted ? { opacity: 0, scale: 0.9 } : false}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.1 * index }}
+                  transition={{ delay: mounted ? 0.1 * index : 0 }}
                   className="glass rounded-lg p-6 text-center"
                 >
                   <div className="text-3xl font-bold text-mythic-accent-300 mb-2">{kpi.value}</div>
@@ -258,7 +251,7 @@ export default function HomePage() {
       <section className="py-24 relative">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={mounted ? { opacity: 0, y: 20 } : false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="max-w-3xl mx-auto text-center glass rounded-2xl p-12 border border-mythic-primary-500/20"
