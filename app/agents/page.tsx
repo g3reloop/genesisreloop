@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { agentService, AGENTS, type AgentType } from '@/lib/agents/agent-service'
+import { agentServiceClient as agentService, isConfigured } from '@/lib/agents/agent-service-client'
+import { AGENTS, type AgentType } from '@/lib/agents/agent-constants'
 import { 
   Brain, 
   Route, 
@@ -299,7 +300,7 @@ export default function AgentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {filteredAgents.map(({ type, agent }) => {
             const category = AGENT_CATEGORIES[type]
-            const hasAccess = agent.freeAccess || !!user
+            const hasAccess = !!user // All agents require authentication for now
             
             return (
               <Card 
@@ -356,13 +357,13 @@ export default function AgentsPage() {
             variant="outline" 
             className={cn(
               "border",
-              agentService.isConfigured() 
+              isConfigured() 
                 ? "border-green-500/50 text-green-500" 
                 : "border-yellow-500/50 text-yellow-500"
             )}
           >
             <Sparkles className="h-3 w-3 mr-1" />
-            {agentService.isConfigured() ? 'AI Powered by OpenRouter' : 'Demo Mode - Configure OpenRouter for AI'}
+            {isConfigured() ? 'AI Powered by OpenRouter' : 'Demo Mode - Configure OpenRouter for AI'}
           </Badge>
         </div>
       </div>

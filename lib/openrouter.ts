@@ -1,14 +1,34 @@
 import OpenAI from 'openai';
 
-// Initialize OpenRouter client
-export const openrouter = new OpenAI({
-  baseURL: process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY || '',
-  defaultHeaders: {
-    'HTTP-Referer': process.env.OPENROUTER_SITE_URL || 'https://genesisreloop.com',
-    'X-Title': process.env.OPENROUTER_SITE_NAME || 'Genesis Reloop Platform',
-  },
-});
+// Lazy initialization of OpenRouter client
+let openrouterInstance: OpenAI | null = null;
+
+// Get or create OpenRouter client (server-side only)
+function getOpenRouter(): OpenAI {
+  if (typeof window !== 'undefined') {
+    throw new Error('OpenRouter cannot be used on the client side for security reasons');
+  }
+  
+  if (!openrouterInstance) {
+    openrouterInstance = new OpenAI({
+      baseURL: process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1',
+      apiKey: process.env.OPENROUTER_API_KEY || '',
+      defaultHeaders: {
+        'HTTP-Referer': process.env.OPENROUTER_SITE_URL || 'https://genesisreloop.com',
+        'X-Title': process.env.OPENROUTER_SITE_NAME || 'Genesis Reloop Platform',
+      },
+    });
+  }
+  
+  return openrouterInstance;
+}
+
+// Export getter instead of instance
+export const openrouter = {
+  get chat() {
+    return getOpenRouter().chat;
+  }
+};
 
 // Default model configuration
 export const DEFAULT_MODEL = process.env.OPENROUTER_DEFAULT_MODEL || 'anthropic/claude-3.5-sonnet';
@@ -61,12 +81,16 @@ export async function createChatCompletion(
   messages: OpenAI.Chat.ChatCompletionMessageParam[],
   options: OpenRouterOptions = {}
 ) {
+  if (typeof window !== 'undefined') {
+    throw new Error('OpenRouter cannot be used on the client side for security reasons');
+  }
+  
   if (!isOpenRouterConfigured()) {
     throw new Error('OpenRouter API key not configured. Please set OPENROUTER_API_KEY in your .env.local file.');
   }
 
   try {
-    const response = await openrouter.chat.completions.create({
+    const response = await getOpenRouter().chat.completions.create({
       model: options.model || DEFAULT_MODEL,
       messages,
       temperature: options.temperature ?? TEMPERATURE_PRESETS.balanced,
