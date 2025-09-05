@@ -1,6 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+// Force dynamic rendering to avoid Supabase initialization during build
+export const dynamic = 'force-dynamic'
+
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid Supabase initialization during build
+export const dynamic = 'force-dynamic'
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
