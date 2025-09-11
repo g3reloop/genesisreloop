@@ -12,6 +12,8 @@ const navigation = [
   { path: '/ops-code', title: 'Ops Code' },
   { path: '/dao', title: 'DAO & Allocation' },
   { path: '/docs', title: 'Operator Docs' },
+  { path: '/girm', title: 'GIRM' },
+  { path: '/dashboard', title: 'Dashboard' },
   { path: '/references', title: 'References' }
 ]
 
