@@ -23,7 +23,7 @@ import {
 } from 'lucide-react'
 import { AnimatedParticles } from '@/components/animated-particles'
 import { GenesisLogoWatermark } from '@/components/ui/genesis-logo'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/cn'
 import { brandConfig, pageContent } from '@/config/brand.config'
 
 const iconMap = {

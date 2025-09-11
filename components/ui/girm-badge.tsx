@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/cn'
 import { CheckCircle, Clock, AlertCircle, Shield } from 'lucide-react'
 
 export interface GirmBadgeProps {

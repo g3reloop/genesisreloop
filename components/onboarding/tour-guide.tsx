@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/cn'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 

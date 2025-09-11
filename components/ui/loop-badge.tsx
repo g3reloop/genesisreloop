@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/cn'
 
 export interface LoopBadgeProps {
   type: 'SRL' | 'CRL'

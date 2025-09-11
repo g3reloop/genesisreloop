@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/cn'
 import { Button } from '@/components/ui/button'
 import { WalletConnect } from '@/components/Web3/WalletConnect'
 import {

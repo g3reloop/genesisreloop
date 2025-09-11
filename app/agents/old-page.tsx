@@ -14,7 +14,7 @@ import {
   Users, Calculator, Vote, Network, HelpCircle
 } from 'lucide-react'
 import { MythicBackground } from '@/components/ui/mythic-background'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/cn'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

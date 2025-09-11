@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/cn'
 import { 
   BarChart3, 
   TrendingUp, 
