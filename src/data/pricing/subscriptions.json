@@ -1,0 +1,15 @@
+{
+  "tiers": [
+    {"name":"Small Suppliers","monthlyGBP":49,"perBatchGBP":5},
+    {"name":"Medium/Large Suppliers","monthlyGBP":199,"perBatchGBP":0},
+    {"name":"Micro-collectors","monthlyGBP":29},
+    {"name":"Buyers","txFeePct":1.5}
+  ],
+  "services": [
+    {"name":"Compliance pack (per movement)","gbp":12},
+    {"name":"On-chain escrow (per order)","gbp":18},
+    {"name":"ZK proof generation (per batch)","gbp":6},
+    {"name":"Priority routing (per vehicle/month)","gbp":25},
+    {"name":"Premium agent bundle (per org/month)","gbp":149}
+  ]
+}

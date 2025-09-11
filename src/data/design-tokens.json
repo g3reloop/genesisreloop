@@ -1,0 +1,15 @@
+{
+  "colors": {
+    "backgrounds": {"obsidian": "#0b0f14", "midnight": "#101828", "forest": "#003B2D"},
+    "accents": {"emerald": "#00D084", "auroraCyan": "#28F2E4", "solarGold": "#f5c84b"},
+    "highlights": {"spectralViolet": "#8E6CFF", "bioelectricCoral": "#FF6C8E"},
+    "text": {"snowWhite": "#E9F4FF", "ashGrey": "#A3AAB8"}
+  },
+  "typography": {
+    "primarySans": ["Inter", "Work Sans", "system-ui", "sans-serif"],
+    "mythicSerif": ["Fraunces", "Spectral", "serif"],
+    "mono": ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"]
+  },
+  "shapes": {"recursion": "circles-within-circles", "toroids": true, "spirals": true, "mandelbulbLinework": true},
+  "motion": {"parallax": true, "fractalReveal": true, "pulseRecursion": true}
+}

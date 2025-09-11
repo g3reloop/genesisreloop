@@ -1,0 +1,15 @@
+{
+  "name":"Compost Recursive Economic Loop",
+  "flow":[
+    {"stage":"Feedstock","desc":"Food scraps, green waste; contaminants pre-checked"},
+    {"stage":"Shred & Mix","desc":"Target C:N 25-30:1; 50-60% moisture"},
+    {"stage":"Aerate & Monitor","desc":"Temp 55-65°C sanitization → O2 >10%"},
+    {"stage":"Cure","desc":"4-6 weeks; moisture 35-45%"},
+    {"stage":"Screen & Certify","desc":"Particle size, path. reduction, metals"},
+    {"stage":"Distribute","desc":"Sell to farms, urban soil, reclamation"},
+    {"stage":"Ledger + GIRM","desc":"Quantify diversion, soil C gains"}
+  ],
+  "agents":["TraceBot","CarbonVerifier","LoopAuditBot"],
+  "revenueNodes":["tippingFees","compostSales","GIRM"],
+  "ux":"Loop Diagram Canvas shows inflows/outflows; every action logs to Genesis Ledger Panel"
+}

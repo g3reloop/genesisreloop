@@ -1,7 +1,7 @@
 'use client'
 
-import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/src/components/genesis/RecursiveCard'
-import { Button } from '@/src/components/ui/button'
+import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/components/genesis/RecursiveCard'
+import { Button } from '@/components/ui/button'
 import { Lock, Download, FileCode, Wrench, Fuel, Package, Cpu } from 'lucide-react'
 import { useState } from 'react'
 

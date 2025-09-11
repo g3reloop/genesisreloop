@@ -23,8 +23,6 @@ const nextConfig = {
   distDir: '.next',
   // Ensure proper production optimization
   reactStrictMode: true,
-  // Disable SWC minification if it's causing issues
-  swcMinify: true,
   // Ensure proper module transpilation
   transpilePackages: ['framer-motion'],
 };

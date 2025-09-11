@@ -1,4 +1,4 @@
-import { RecursiveCard, CardContent } from '@/src/components/genesis/RecursiveCard'
+import { RecursiveCard, CardContent } from '@/components/genesis/RecursiveCard'
 import { BookOpen } from 'lucide-react'
 
 interface Reference {

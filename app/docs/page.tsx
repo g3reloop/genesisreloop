@@ -1,9 +1,9 @@
 'use client'
 
-import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/src/components/genesis/RecursiveCard'
+import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/components/genesis/RecursiveCard'
 import { FileText, Download, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 
 interface SOPPack {
   pack_id: string

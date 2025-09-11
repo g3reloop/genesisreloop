@@ -1,4 +1,4 @@
-import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/src/components/genesis/RecursiveCard'
+import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/components/genesis/RecursiveCard'
 import { PieChart, TrendingUp, Calendar } from 'lucide-react'
 
 export default function DAOPage() {

@@ -1,6 +1,6 @@
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/src/components/genesis/RecursiveCard'
+import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/components/genesis/RecursiveCard'
 import { ArrowRight } from 'lucide-react'
 
 // Three-up tier cards

@@ -7,12 +7,16 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit",
+    "format": "prettier -w .",
+    "test": "vitest run",
+    "test:ui": "playwright test",
+    "check:all": "pnpm typecheck && pnpm lint && pnpm test && pnpm test:ui",
     "postinstall": "prisma generate || echo 'Prisma generate failed, continuing...'",
     "prisma:generate": "prisma generate"
   },
@@ -41,6 +45,9 @@
     "@supabase/supabase-js": "^2.57.0",
     "@tanstack/react-query": "^5.85.5",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
     "autoprefixer": "^10.4.21",
@@ -75,20 +82,24 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.3.3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
     "zod": "^4.0.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@netlify/plugin-nextjs": "^5.12.1",
+    "@playwright/test": "^1.47.2",
+    "@testing-library/react": "^14.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/d3": "^7.4.3",
     "@types/socket.io": "^3.0.0",
     "@types/socket.io-client": "^1.4.36",
+    "@vitejs/plugin-react": "^4.3.1",
     "eslint": "^9",
-    "eslint-config-next": "15.5.0"
+    "eslint-config-next": "15.5.0",
+    "jsdom": "^24.1.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2",
+    "vitest": "^2.0.5"
   },
   "overrides": {
     "react": "^18.3.1",

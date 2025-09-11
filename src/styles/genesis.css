@@ -1,0 +1,51 @@
+/* Genesis Quintuple Theme Variables */
+@layer base {
+  :root {
+    --earth-obsidian:#0b0f14; --earth-midnight:#101828; --earth-forest:#003B2D;
+    --acc-emerald:#00D084; --acc-cyan:#28F2E4; --acc-gold:#f5c84b;
+    --hi-violet:#8E6CFF; --hi-coral:#FF6C8E;
+    --txt-snow:#E9F4FF; --txt-ash:#A3AAB8;
+    --radius-xs:6px; --radius-sm:10px; --radius-md:14px; --radius-lg:20px; --radius-xl:28px; --radius-pill:999px;
+    --shadow-mythic:0 0 0 1px rgba(0,208,132,.15),0 0 24px rgba(0,208,132,.10);
+    --shadow-violet:0 0 0 1px rgba(142,108,255,.15),0 0 24px rgba(142,108,255,.10);
+    --dur-fast:.16s; --dur-base:.28s; --dur-slow:.6s; --dur-parallax:30s;
+    --ease-inout:cubic-bezier(0.4,0,0.2,1);
+    --noise-texture:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAIElEQVQoU2NkYGD4z0AeYGIgGJqYwQwGQ4aG8R8AAgwAAI0mB5mW4K8yAAAAAElFTkSuQmCC');
+  }
+}
+
+/* Earthly base surfaces */
+.gen-earth-surface { background: radial-gradient(1200px 800px at 20% 10%, rgba(40,242,228,0.06), transparent), radial-gradient(1000px 600px at 80% 100%, rgba(0,208,132,0.05), transparent), linear-gradient(#0b0f14,#101828); }
+.gen-obsidian { background-color: var(--earth-obsidian); }
+.gen-midnight { background-color: var(--earth-midnight); }
+.gen-forest { background-color: var(--earth-forest); }
+
+/* Recursion rings & torus accents */
+.gen-ring { box-shadow: inset 0 0 0 1px rgba(233,244,255,0.06), inset 0 0 40px rgba(0,208,132,0.05); border-radius: var(--radius-lg); }
+.gen-torus-border { border-image: conic-gradient(from 90deg, rgba(40,242,228,.25), rgba(0,208,132,.25), rgba(245,200,75,.25), rgba(40,242,228,.25)) 1; border-width: 1px; border-style: solid; }
+
+/* Fractal lattice (SVG pattern as background) */
+.gen-fractal-lattice { background-image: radial-gradient(circle at 50% 50%, rgba(142,108,255,0.06) 0%, transparent 60%), repeating-conic-gradient(from 0deg, rgba(233,244,255,0.025) 0deg 6deg, transparent 6deg 12deg); mask-image: radial-gradient(1200px 800px at 50% 50%, #000 30%, transparent 80%); }
+
+/* Mythic glyph watermark */
+.gen-glyph-watermark { opacity: .05; filter: drop-shadow(0 0 1px rgba(233,244,255,.15)); }
+
+/* Tech blueprint lines */
+.gen-blueprint { background-image: linear-gradient(rgba(233,244,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(233,244,255,0.04) 1px, transparent 1px); background-size: 24px 24px, 24px 24px; }
+
+/* Motion */
+@keyframes gen-parallax { from { transform: translate3d(0,0,0); } to { transform: translate3d(0, -2%, 0); } }
+@keyframes gen-ringPulse { 0%,100% { box-shadow: var(--shadow-mythic); } 50% { box-shadow: var(--shadow-violet); } }
+@keyframes gen-scrollUnfurl { 0% { transform: scaleY(.98); opacity:.0 } 100% { transform: scaleY(1); opacity:1 } }
+@keyframes gen-recursiveZoom { 0% { transform: scale(.985); filter: blur(.5px) } 100% { transform: scale(1); filter: blur(0) } }
+
+.anim-parallax { animation: gen-parallax var(--dur-parallax) linear infinite; }
+.anim-ring { animation: gen-ringPulse 6s var(--ease-inout) infinite; }
+.anim-unfurl { animation: gen-scrollUnfurl .5s var(--ease-inout) both; }
+.anim-zoom { animation: gen-recursiveZoom .35s var(--ease-inout) both; }
+
+/* Utilities */
+.gen-noise { background-image: var(--noise-texture); opacity:.05; mix-blend-mode: overlay; }
+.gen-glow-emerald { box-shadow: var(--shadow-mythic); }
+.gen-glow-violet { box-shadow: var(--shadow-violet); }
+.gen-torus-progress { background: conic-gradient(var(--acc-emerald) var(--p,0%), rgba(233,244,255,.08) 0%); border-radius: 50%; }

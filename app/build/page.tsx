@@ -1,5 +1,5 @@
-import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/src/components/genesis/RecursiveCard'
-import { Button } from '@/src/components/ui/button'
+import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/components/genesis/RecursiveCard'
+import { Button } from '@/components/ui/button'
 import { ArrowRight, Hammer, Users, FileText, Cpu } from 'lucide-react'
 import Link from 'next/link'
 

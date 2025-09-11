@@ -1,0 +1,529 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Genesis Reloop - Mythic Tech Theme */ /* Pure black */ /* #E8FFF7 */
+  --card: 168 54% 8%; /* #0B1E1A dark */
+  --card-foreground: 157 100% 97%; /* #E8FFF7 */
+  --popover: 168 54% 8%; /* #0B1E1A */
+  --popover-foreground: 157 100% 97%; /* #E8FFF7 */
+  --primary: 160 100% 38%; /* #00C08B */
+  --primary-foreground: 168 54% 8%; /* #0B1E1A */
+  --secondary: 168 54% 8%; /* #0B1E1A */
+  --secondary-foreground: 157 100% 97%; /* #E8FFF7 */
+  --muted: 163 23% 72%; /* #A7D9C9 */
+  --muted-foreground: 168 54% 8%; /* #0B1E1A */
+  --accent: 163 88% 73%; /* #7EF5CF */
+  --accent-foreground: 168 54% 8%; /* #0B1E1A */
+  --destructive: 348 100% 50%; /* Red */
+  --destructive-foreground: 0 0% 100%;
+  --border: 160 100% 38% / 0.2; /* #00C08B with opacity */
+  --input: 168 54% 8%; /* #0B1E1A */
+  --ring: 160 100% 38%; /* #00C08B */
+  
+  /* Mythic Tech Theme Variables - WCAG AA Compliant */
+  --mythic-primary: #00C97A; /* Matches brand-emerald */
+  --mythic-secondary: #0B1E1A;
+  --mythic-accent: #7EF5CF;
+  --mythic-text-primary: #F0F6F3; /* Matches ink-strong */
+  --mythic-text-muted: #B8CCC3; /* Matches ink-muted */
+  
+  /* Dark mode specific overrides */
+  --mythic-dark-900: #0D0F12;
+  --mythic-dark-800: #12151A;
+  --mythic-dark-700: #1A1F27;
+  
+  /* Loop Colors */
+  --loop-srl: #00C08B; /* Stabilized Recursive Loop */
+  --loop-crl: #ff0044; /* Corrupted Recursive Loop */
+  --loop-unknown: #666666;
+  
+  /* Flow Colors */
+  --flow-feedstock: #0080ff;
+  --flow-byproduct: #ff6600;
+  --flow-credits: #ffcc00;
+  --flow-reputation: #cc00ff;
+  
+  /* WCAG AA Contrast Compliant Colors */
+  --bg-obsidian: #0D0F12;
+  --bg-panel: #12151A;
+  --ink-strong: #F0F6F3; /* Increased contrast from #E6F1EA */
+  --ink: #D8E8E0; /* Increased contrast from #CFE5DA */
+  --ink-muted: #B8CCC3; /* Increased contrast from #A5B9B0 */
+  --brand-emerald: #00C97A; /* Increased brightness from #00B27A */
+  --accent-aqua: #30D4C6; /* Increased brightness from #25C2B4 */
+  --danger: #FF6B70; /* Increased brightness from #FF5A5F */
+  --field-bg: #1F242D; /* Slightly lighter from #1A1F27 */
+  --field-border: #3A4251; /* Increased visibility from #2B3240 */
+  --placeholder: #9EB4B0; /* Better contrast from #8FA3A0 */
+  
+  /* Minimum font sizes for WCAG compliance */
+  --font-size-min: 14px;
+  --line-height-min: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  position: relative;
+  font-size: var(--font-size-min);
+  line-height: var(--line-height-min);
+  color: var(--ink-strong);
+  background-color: var(--bg-obsidian);
+}
+
+/* Mythic Tech Background Pattern - Encrypted Grid & Toroidal Loops */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    /* Toroidal energy loops */
+    radial-gradient(ellipse at 20% 50%, rgba(0, 192, 139, 0.03) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 80%, rgba(126, 245, 207, 0.03) 0%, transparent 40%),
+    radial-gradient(ellipse at 40% 20%, rgba(255, 204, 0, 0.03) 0%, transparent 40%),
+    /* Encrypted grid pattern */
+    linear-gradient(rgba(0, 192, 139, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 192, 139, 0.01) 1px, transparent 1px),
+    /* Cyber organic fractals */
+    repeating-conic-gradient(from 0deg at 50% 50%, 
+      transparent 0deg,
+      rgba(126, 245, 207, 0.02) 10deg,
+      transparent 20deg,
+      rgba(0, 192, 139, 0.02) 30deg,
+      transparent 40deg
+    );
+  background-size: 
+    60% 60%, 60% 60%, 60% 60%,
+    100px 100px, 100px 100px,
+    600px 600px;
+  background-position: 
+    0% 0%, 100% 100%, 50% 50%,
+    0 0, 0 0,
+    center;
+  pointer-events: none;
+  z-index: 0;
+  animation: mythic-flow 60s linear infinite;
+}
+
+@keyframes mythic-flow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--mythic-primary) 0%, var(--mythic-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-gold {
+    background: linear-gradient(135deg, var(--flow-credits) 0%, #ffcc00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-gradient-mythic {
+    background: linear-gradient(135deg, #0B1E1A 0%, #0a3127 50%, #0B1E1A 100%);
+    border: 1px solid rgba(0, 192, 139, 0.1);
+  }
+  
+  .card-shadow {
+    box-shadow: 
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      0 1px 2px 0 rgba(0, 0, 0, 0.05),
+      0 4px 8px -2px rgba(0, 0, 0, 0.05),
+      0 12px 24px -4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .card-shadow-lg {
+    box-shadow: 
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      0 2px 4px 0 rgba(0, 0, 0, 0.05),
+      0 8px 16px -4px rgba(0, 0, 0, 0.1),
+      0 24px 48px -8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .glow-effect {
+    position: relative;
+  }
+  
+  .glow-effect::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #0967d2, #22c55e, #eab308, #0967d2);
+    background-size: 400% 400%;
+    opacity: 0;
+    z-index: -1;
+    border-radius: inherit;
+    animation: glow-rotate 6s ease-in-out infinite;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .glow-effect:hover::after {
+    opacity: 0.8;
+  }
+  
+  @keyframes glow-rotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  /* Flow Animation for SVG Paths */
+  .flow-animation {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;
+    animation: flow 3s linear infinite;
+  }
+  
+  /* Toroidal Network Effect */
+  .toroidal-bg {
+    position: relative;
+    background: #000000;
+    overflow: hidden;
+  }
+  
+  .toroidal-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      /* Toroidal loops */
+      radial-gradient(ellipse at center, transparent 0%, rgba(0, 255, 136, 0.05) 40%, transparent 70%),
+      /* Honeycomb lattice */
+      conic-gradient(from 0deg at 50% 50%, 
+        transparent 0deg,
+        rgba(0, 204, 204, 0.03) 60deg,
+        transparent 120deg,
+        rgba(0, 255, 136, 0.03) 180deg,
+        transparent 240deg,
+        rgba(204, 170, 0, 0.03) 300deg,
+        transparent 360deg
+      );
+    background-size: 100% 100%, 300px 300px;
+    background-position: center;
+    animation: toroidal-rotate 30s linear infinite;
+  }
+  
+  @keyframes toroidal-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Glass Morphism Effect - Polished Obsidian with Neon Veins */
+  .glass {
+    backdrop-filter: blur(12px);
+    background: rgba(11, 30, 26, 0.7);
+    border: 1px solid rgba(0, 192, 139, 0.2);
+    box-shadow: 
+      inset 0 0 20px rgba(0, 192, 139, 0.05),
+      0 0 40px rgba(126, 245, 207, 0.1);
+  }
+  
+  .glass-dark {
+    backdrop-filter: blur(16px);
+    background: rgba(11, 30, 26, 0.9);
+    border: 1px solid rgba(0, 192, 139, 0.1);
+    box-shadow: 
+      inset 0 0 30px rgba(0, 0, 0, 0.5),
+      0 0 60px rgba(0, 192, 139, 0.05);
+  }
+  
+  /* Neon Glow Effects for Different Elements */
+  .glow-srl {
+    box-shadow: 0 0 20px rgba(0, 192, 139, 0.5), inset 0 0 10px rgba(0, 192, 139, 0.2);
+  }
+  
+  .glow-crl {
+    box-shadow: 0 0 20px rgba(255, 0, 68, 0.5), inset 0 0 10px rgba(255, 0, 68, 0.2);
+  }
+  
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(204, 170, 0, 0.5), inset 0 0 10px rgba(204, 170, 0, 0.2);
+  }
+  
+  /* Mythic Typography */
+  .font-mythic {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Data Flow Indicators */
+  .flow-feedstock { color: var(--flow-feedstock); }
+  .flow-byproduct { color: var(--flow-byproduct); }
+  .flow-credits { color: var(--flow-credits); }
+  .flow-reputation { color: var(--flow-reputation); }
+  
+  /* WCAG Contrast Compliant Styles */
+  input, textarea, select {
+    background: var(--field-bg) !important;
+    color: var(--ink-strong) !important;
+    border: 1px solid var(--field-border) !important;
+    caret-color: var(--ink-strong) !important;
+  }
+  
+  input::placeholder, textarea::placeholder {
+    color: var(--placeholder) !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--ink-strong);
+  }
+  
+  p, li, span {
+    color: var(--ink);
+  }
+  
+  /* Footer opacity fix */
+  footer {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  
+  /* Focus ring styles for accessibility */
+  :focus-visible {
+    outline: 3px solid var(--brand-emerald) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 201, 122, 0.3) !important;
+  }
+  
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 3px solid var(--brand-emerald) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 201, 122, 0.3) !important;
+  }
+  
+  /* Ensure minimum font sizes */
+  p, li, span, div, label {
+    font-size: max(var(--font-size-min), 1em);
+    line-height: var(--line-height-min);
+  }
+  
+  /* High contrast for small text */
+  small, .text-xs, .text-sm {
+    color: var(--ink-strong);
+    font-size: max(0.875rem, var(--font-size-min));
+  }
+  
+  /* Error states with proper contrast */
+  .text-red-500, .text-destructive {
+    color: var(--danger) !important;
+  }
+  
+  /* Link styles for better visibility */
+  a {
+    color: var(--brand-emerald);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  
+  a:hover {
+    color: var(--accent-aqua);
+    text-decoration-thickness: 2px;
+  }
+  
+  /* Button contrast fixes */
+  .btn, button {
+    color: var(--ink-strong);
+  }
+  
+  .btn-primary {
+    background: var(--brand-emerald);
+    color: #000000;
+  }
+}
+
+/* Custom Scrollbar - Mythic Tech Style */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--mythic-primary) 0%, var(--mythic-accent) 100%);
+  border-radius: 6px;
+  border: 1px solid rgba(11, 30, 26, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--mythic-accent) 0%, var(--mythic-primary) 100%);
+  box-shadow: 0 0 10px rgba(0, 192, 139, 0.5);
+}
+
+/* Animation Classes */
+.animate-in {
+  animation: animate-in 0.5s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+@keyframes animate-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Focus Styles - Mythic Glow */
+.focus-ring {
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.focus-ring:focus {
+  box-shadow: 
+    0 0 0 2px rgba(0, 0, 0, 0.8),
+    0 0 0 4px rgba(0, 255, 136, 0.5),
+    0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+/* Mythic Button Styles */
+.btn-mythic {
+  background: linear-gradient(135deg, rgba(0, 204, 136, 0.1) 0%, rgba(0, 204, 204, 0.1) 100%);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: var(--mythic-emerald);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-mythic::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0, 255, 136, 0.3) 0%, transparent 70%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-mythic:hover {
+  border-color: rgba(0, 255, 136, 0.6);
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+}
+
+.btn-mythic:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

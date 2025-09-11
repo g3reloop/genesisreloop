@@ -1,6 +1,6 @@
 'use client'
 
-import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/src/components/genesis/RecursiveCard'
+import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/components/genesis/RecursiveCard'
 import { ChevronDown, ChevronUp, Lock, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 

@@ -1,0 +1,20 @@
+{
+  "name":"Waste to Energy (UCO + Food Waste)",
+  "steps":[
+    {"n":1,"op":"List Feedstock","agent":"FeedstockMatcher","out":"matches","ui":"material passport form → JSON schema"},
+    {"n":2,"op":"Simulate Processes","agent":"BuyerDiscoveryBot","out":"routes/yields"},
+    {"n":3,"op":"Lock Offtake + Escrow","agent":"LiquidityBot","out":"escrowId"},
+    {"n":4,"op":"Collect + Verify","agent":"TraceBot","out":"SRL/CRL + ledger"},
+    {"n":5,"op":"Process UCO → Biodiesel; Food → Biogas/Compost","agent":"CarbonVerifier","out":"tCO2e"},
+    {"n":6,"op":"Issue GIRM + Settle","agent":"LoopAuditBot","out":"ipfsCid + payment"}
+  ],
+  "quality": {
+    "uco": {"moisturePctMax": 0.5, "ffaPctMax": 5, "solidsPctMax": 1.5},
+    "food": {"contaminants":"non-toxic only","plastics":"<0.5%"}
+  },
+  "mrp": {
+    "biodiesel":"ASTM D6751/EN14214 targets",
+    "biogas":"CH4 50-65% typical pre-upgrade",
+    "compost":"PAS 100-like targets"
+  }
+}
