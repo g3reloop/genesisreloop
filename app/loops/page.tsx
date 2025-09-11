@@ -1,275 +1,485 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { ArrowRight, Zap, Droplet, Leaf, CircleDollarSign, Factory, TrendingUp, Recycle } from 'lucide-react'
-import Link from 'next/link'
+import { RecursiveCard, CardHeader, CardContent, CardTitle } from '@/src/components/genesis/RecursiveCard'
+import { ChevronDown, ChevronUp, Lock, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
 
-export default function LoopsOverview() {
+// Type definitions for loops data
+interface LoopNote {
+  why?: string
+  throughput?: string
+  safety?: string[]
+  ops?: string
+}
+
+interface Loop {
+  id: string
+  title: string
+  capex_gbp: string
+  kpis: string[]
+  fabricator_packs: string[]
+  notes?: LoopNote
+  governance?: {
+    ops_gate?: string
+  }
+}
+
+interface Tier {
+  id: string
+  title: string
+  description: string
+  loops: Loop[]
+}
+
+// Loops data from warp manifest
+const tiersData: Tier[] = [
+  {
+    id: "tier1",
+    title: "Tier 1 — Community-Safe",
+    description: "Low hazard, high trust loops designed for rapid local deployment.",
+    loops: [
+      {
+        id: "polymer_sand_bricks",
+        title: "Plastic → Polymer–Sand Bricks",
+        capex_gbp: "15,000–50,000",
+        kpis: [
+          "Compressive Strength: 12-27 MPa",
+          "Water Absorption: ≤2.8%",
+          "Fire Resistance: Maintains integrity up to 180°C"
+        ],
+        fabricator_packs: [
+          "molds.dxf",
+          "fractal_heat_jacket.dxf",
+          "static_mixer.stl",
+          "qa_checklist.md"
+        ],
+        notes: {
+          why: "Solve housing fast. No cement clinker. Local plastics.",
+          throughput: "0.8–1.5 t/day",
+          safety: [
+            "Use NIOSH-approved dust mask (silica hazard)",
+            "Ensure melt ventilation",
+            "Wear eye/skin protection",
+            "No PVC feedstock"
+          ]
+        }
+      },
+      {
+        id: "flyash_geopolymer",
+        title: "Fly Ash / Slag → Geopolymer Cement",
+        capex_gbp: "80,000–150,000",
+        kpis: [
+          "28-day Compressive Strength: 30–60 MPa (can exceed 70 MPa)",
+          "Setting Time: Controllable via GGBS ratio",
+          "Alkali Handling SOP required"
+        ],
+        fabricator_packs: [
+          "mix_ratios.json",
+          "mold_sets.dxf",
+          "curing_schedule.md",
+          "fractal_curing_baffles.dxf"
+        ],
+        notes: {
+          safety: [
+            "Highly caustic activators (NaOH, Na₂SiO₃)",
+            "Requires full PPE: gloves, goggles",
+            "Ensure ventilation"
+          ]
+        }
+      },
+      {
+        id: "foamed_glass",
+        title: "Waste Glass → Foamed Glass",
+        capex_gbp: "100,000–200,000",
+        kpis: [
+          "Density: 120–250 kg/m³",
+          "Thermal Conductivity (λ): 0.05–0.08 W/mK",
+          "Closed-cell Structure: >90%"
+        ],
+        fabricator_packs: [
+          "kiln_baffles.dxf",
+          "heat_profile.json",
+          "pellet_die.stl",
+          "qa_foam_cells.md"
+        ],
+        notes: {
+          ops: "Kiln heat profile (700-1000°C) is critical for density control."
+        }
+      },
+      {
+        id: "mycelium_foams",
+        title: "Agri-waste → Mycelium Foams",
+        capex_gbp: "20,000–50,000",
+        kpis: [
+          "Growth Cycle: 10–30 days",
+          "Dry Density: 60–300 kg/m³",
+          "Compressive Strength: 70+ kPa"
+        ],
+        fabricator_packs: [
+          "sterile_box.dxf",
+          "mold_set.stl",
+          "drying_profile.json"
+        ],
+        notes: {
+          ops: "Requires sterile substrate (pasteurization or autoclave) and controlled humidity (65-98%)."
+        }
+      },
+      {
+        id: "bacterial_cellulose",
+        title: "Cotton Waste → Bacterial Cellulose",
+        capex_gbp: "10,000–30,000",
+        kpis: [
+          "High wet tensile strength",
+          "Bioburden control post-fermentation",
+          "Fermentation Time: 7-14 days"
+        ],
+        fabricator_packs: [
+          "fermenter_bill.json",
+          "tray_stacks.dxf",
+          "wash_press.stl"
+        ],
+        notes: {
+          ops: "Purification requires alkaline wash (e.g., 0.1M NaOH) to remove cell debris."
+        }
+      }
+    ]
+  },
+  {
+    id: "tier2",
+    title: "Tier 2 — Regional Chemistry",
+    description: "Container-scale hubs requiring more advanced chemical handling and operational oversight.",
+    loops: [
+      {
+        id: "uco_biodiesel",
+        title: "UCO → Biodiesel + Glycerol",
+        capex_gbp: "50,000–100,000",
+        kpis: [
+          "Biodiesel Quality: Meets EN 14214",
+          "Glycerol Purity (post-purification): ≥95%"
+        ],
+        fabricator_packs: [
+          "reactor_pids.json",
+          "materials_compat.yaml",
+          "glycerol_loop.md"
+        ],
+        governance: {}
+      },
+      {
+        id: "bio_methanol",
+        title: "Food/Cotton Waste → Methanol",
+        capex_gbp: "150,000–250,000",
+        kpis: [
+          "Tar Reduction: −30%",
+          "Single-pass yield w/ plasma: +5–10%",
+          "Syngas Ratio (H₂:CO): ~2:1"
+        ],
+        fabricator_packs: [
+          "gasifier_insert.stl",
+          "shift_heatfoil.dxf",
+          "plasma_grid.svg",
+          "MeOH_SOP.md"
+        ],
+        governance: {}
+      },
+      {
+        id: "digestate_npk_des",
+        title: "Digestate → Fertilizers + DES",
+        capex_gbp: "25,000–50,000",
+        kpis: [
+          "NPK Recovery: ≥60%",
+          "DES Reuse Cycles: ≥7-10×",
+          "Corrosion control for chloride-based DES"
+        ],
+        fabricator_packs: [
+          "plate_stack.stl",
+          "electro_plan.md",
+          "des_recipe.json"
+        ],
+        governance: {}
+      },
+      {
+        id: "pcb_des_metals",
+        title: "E-waste → Au/Ag/Cu (DES + fractal EW)",
+        capex_gbp: "200,000–400,000",
+        kpis: [
+          "Cu Purity: 99.0–99.9%",
+          "Au/Ag Purity: 98%+",
+          "Current Density (Cu): 200-600 A/m²"
+        ],
+        fabricator_packs: [
+          "flowcell_body.stl",
+          "manifold_tree.dxf",
+          "current_program.json",
+          "des_reuse.md"
+        ],
+        governance: {
+          ops_gate: "DAO_LAB_LICENSE"
+        }
+      },
+      {
+        id: "black_mass_recovery",
+        title: "Battery Black Mass → Li/Co/Ni",
+        capex_gbp: "300,000–500,000",
+        kpis: [
+          "Li/Co/Ni Recovery: ≥85-90%",
+          "Process Safety: No HF use (uses H₂SO₄/HCl/Organic Acids)",
+          "Purity via selective precipitation/plating"
+        ],
+        fabricator_packs: [
+          "leach_tank_pids.json",
+          "selective_plate_profiles.json",
+          "wash_loop.md"
+        ],
+        governance: {
+          ops_gate: "DAO_LAB_LICENSE"
+        }
+      },
+      {
+        id: "glycerol_to_pdo",
+        title: "Glycerol → Propanediol",
+        capex_gbp: "25,000–50,000",
+        kpis: [
+          "Yield: ≥70%",
+          "Catalyst Life: ≥500 h"
+        ],
+        fabricator_packs: [
+          "reactor_coil.dxf",
+          "cat_pack.yaml",
+          "cleanup_des.json"
+        ],
+        governance: {}
+      },
+      {
+        id: "pla_loop",
+        title: "PLA → Lactic Acid → PLA",
+        capex_gbp: "50,000–100,000",
+        kpis: [
+          "Lactic Acid Purity: ≥90%",
+          "Cycle Closure: ≥2×"
+        ],
+        fabricator_packs: [
+          "hydrolysis_vessel.dxf",
+          "ferment_profile.json",
+          "repolymer_sop.md"
+        ],
+        governance: {}
+      }
+    ]
+  },
+  {
+    id: "tier3",
+    title: "Tier 3 — Strategic (DAO-Gated)",
+    description: "High-value, high-complexity loops requiring DAO approval and licensed operators.",
+    loops: [
+      {
+        id: "indium_loop",
+        title: "LCD/Solar → Indium Loop-Back",
+        capex_gbp: "500,000–1,000,000",
+        kpis: [
+          "In Recovery (Leaching): >90% (process goal ≥70%)",
+          "Hazard Control: Compliant with strong acid (HCl, H₂SO₄) & toxic dust handling protocols"
+        ],
+        fabricator_packs: [
+          "ito_strip_cell.dxf",
+          "halide_des_recipe.json",
+          "precip_route.md"
+        ],
+        governance: {
+          ops_gate: "DAO_STRATEGIC_LICENSE"
+        }
+      },
+      {
+        id: "rare_earths",
+        title: "E-waste Magnets → Nd/RE",
+        capex_gbp: "400,000–600,000",
+        kpis: [
+          "Nd Recovery: ≥75%",
+          "Reagent Recycle: ≥5×"
+        ],
+        fabricator_packs: [
+          "leach_column.dxf",
+          "precip_map.json"
+        ],
+        governance: {
+          ops_gate: "DAO_STRATEGIC_LICENSE"
+        }
+      },
+      {
+        id: "advanced_des",
+        title: "Advanced DES R&D",
+        capex_gbp: "R&D",
+        kpis: [
+          "Selectivity gains vs baseline",
+          "Corrosion index OK"
+        ],
+        fabricator_packs: [
+          "des_screening_matrix.json"
+        ],
+        governance: {
+          ops_gate: "DAO_STRATEGIC_LICENSE"
+        }
+      }
+    ]
+  }
+]
+
+// Component for individual loop card
+const LoopCard = ({ loop, isExpanded, onToggle }: { 
+  loop: Loop
+  isExpanded: boolean
+  onToggle: () => void 
+}) => {
+  const hasGate = loop.governance?.ops_gate
+
   return (
-    <div className="min-h-screen bg-black pt-24 pb-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 bg-clip-text text-transparent">
-              The Two Core Loops
-            </span>
-          </h1>
-          <p className="text-xl text-mythic-text-muted max-w-3xl mx-auto">
-            SRL = Stabilized Recursive Loop: a loop that pays for itself and strengthens the community.
-            No biomethane upgrading. We run biogas on-site with CHP and heat cascading.
-          </p>
-        </motion.div>
-
-        {/* Food Waste → Biogas Loop */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mb-16"
-        >
-          <div className="glass rounded-2xl p-8 border border-mythic-primary-500/20">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-mythic-primary-500/20 flex items-center justify-center">
-                <Zap className="h-6 w-6 text-mythic-primary-500" />
-              </div>
-              <h2 className="text-3xl font-bold text-mythic-text-primary">
-                Food Waste → Biogas (On-Site CHP)
-              </h2>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold text-mythic-accent-300 mb-4">Technical Specs</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <ArrowRight className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
-                    <span className="text-mythic-text-primary">
-                      1 tonne food waste ≈ ~100 m³ biogas ≈ ~650 kWh energy equivalent
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRight className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
-                    <span className="text-mythic-text-primary">
-                      Electricity + captured heat = ~80–85% total utilization
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRight className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
-                    <span className="text-mythic-text-primary">
-                      Digestate → fertilizer for vertical farms & growers
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRight className="h-5 w-5 text-mythic-primary-500 mt-0.5" />
-                    <span className="text-mythic-text-primary">
-                      <strong>No biomethane upgrading</strong>; we use energy locally
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-semibold text-mythic-accent-300 mb-4">Container Module</h3>
-                <div className="bg-mythic-dark-900 rounded-lg p-6 border border-mythic-primary-500/10">
-                  <div className="space-y-2 font-mono text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Footprint:</span>
-                      <span className="text-mythic-primary-500">40ft container</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Capacity:</span>
-                      <span className="text-mythic-primary-500">1-5 tpd</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Power out:</span>
-                      <span className="text-mythic-primary-500">30-150 kWe</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Heat out:</span>
-                      <span className="text-mythic-primary-500">40-200 kWth</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">CAPEX:</span>
-                      <span className="text-mythic-primary-500">40% lower than fixed</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    <RecursiveCard className="mb-4">
+      <CardHeader className="cursor-pointer" onClick={onToggle}>
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <CardTitle className="text-lg font-medium text-txt-snow flex items-center gap-2">
+              {loop.title}
+              {hasGate && (
+                <Lock className="w-4 h-4 text-acc-amber" />
+              )}
+            </CardTitle>
+            <div className="text-sm text-txt-ash mt-1">
+              CAPEX: £{loop.capex_gbp}
             </div>
           </div>
-        </motion.div>
-
-        {/* UCO → Biodiesel Loop */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-16"
-        >
-          <div className="glass rounded-2xl p-8 border border-mythic-accent-300/20">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-mythic-accent-300/20 flex items-center justify-center">
-                <Droplet className="h-6 w-6 text-mythic-accent-300" />
-              </div>
-              <h2 className="text-3xl font-bold text-mythic-text-primary">
-                UCO → Biodiesel (B100/B20)
-              </h2>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold text-mythic-accent-300 mb-4">Technical Specs</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <ArrowRight className="h-5 w-5 text-mythic-accent-300 mt-0.5" />
-                    <span className="text-mythic-text-primary">
-                      1 L UCO → ~0.9 L biodiesel
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRight className="h-5 w-5 text-mythic-accent-300 mt-0.5" />
-                    <span className="text-mythic-text-primary">
-                      Parity with diesel in engines; immediate fleet use
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRight className="h-5 w-5 text-mythic-accent-300 mt-0.5" />
-                    <span className="text-mythic-text-primary">
-                      Glycerol byproduct → cosmetics, feed, co-digestion
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-semibold text-mythic-accent-300 mb-4">Container Module</h3>
-                <div className="bg-mythic-dark-900 rounded-lg p-6 border border-mythic-accent-300/10">
-                  <div className="space-y-2 font-mono text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Footprint:</span>
-                      <span className="text-mythic-accent-300">20ft container</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Capacity:</span>
-                      <span className="text-mythic-accent-300">500-2000 L/day</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Automation:</span>
-                      <span className="text-mythic-accent-300">Full PLC control</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Lead time:</span>
-                      <span className="text-mythic-accent-300">8-12 weeks</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mythic-text-muted">Quality:</span>
-                      <span className="text-mythic-accent-300">EN 14214 compliant</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {isExpanded ? (
+            <ChevronUp className="w-5 h-5 text-txt-ash" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-txt-ash" />
+          )}
+        </div>
+      </CardHeader>
+      
+      {isExpanded && (
+        <CardContent className="pt-0">
+          {/* KPIs */}
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-acc-emerald mb-2">KPIs</h4>
+            <ul className="space-y-1">
+              {loop.kpis.map((kpi, idx) => (
+                <li key={idx} className="text-sm text-txt-ash">• {kpi}</li>
+              ))}
+            </ul>
           </div>
-        </motion.div>
 
-        {/* Flywheel Effect */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mb-16"
-        >
-          <div className="glass rounded-2xl p-8 border border-flow-credits/20">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-flow-credits/20 flex items-center justify-center">
-                <Recycle className="h-6 w-6 text-flow-credits" />
-              </div>
-              <h2 className="text-3xl font-bold text-mythic-text-primary">
-                The Flywheel Effect
-              </h2>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-mythic-dark-900 rounded-lg p-6 border border-mythic-primary-500/10">
-                <div className="flex items-center gap-2 mb-3">
-                  <Factory className="h-5 w-5 text-mythic-primary-500" />
-                  <h3 className="font-semibold text-mythic-primary-500">Energy Integration</h3>
-                </div>
-                <ul className="space-y-2 text-sm text-mythic-text-muted">
-                  <li>• Biogas heat & CO₂ → greenhouses/vertical farms</li>
-                  <li>• CHP electricity → local microgrid</li>
-                  <li>• Heat cascade → 80-85% efficiency</li>
-                </ul>
-              </div>
-              
-              <div className="bg-mythic-dark-900 rounded-lg p-6 border border-mythic-accent-300/10">
-                <div className="flex items-center gap-2 mb-3">
-                  <Leaf className="h-5 w-5 text-mythic-accent-300" />
-                  <h3 className="font-semibold text-mythic-accent-300">Food Loop Closure</h3>
-                </div>
-                <ul className="space-y-2 text-sm text-mythic-text-muted">
-                  <li>• Digestate fertilizer → local growers</li>
-                  <li>• Reduced input costs → cheaper food</li>
-                  <li>• Local supply chains → resilience</li>
-                </ul>
-              </div>
-              
-              <div className="bg-mythic-dark-900 rounded-lg p-6 border border-flow-credits/10">
-                <div className="flex items-center gap-2 mb-3">
-                  <CircleDollarSign className="h-5 w-5 text-flow-credits" />
-                  <h3 className="font-semibold text-flow-credits">DAO Treasury</h3>
-                </div>
-                <ul className="space-y-2 text-sm text-mythic-text-muted">
-                  <li>• Credits + marketplace fees → DAO</li>
-                  <li>• 60% reinvest in new loops</li>
-                  <li>• Community-owned expansion</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="mt-8 p-6 bg-gradient-to-r from-mythic-primary-500/10 to-mythic-accent-300/10 rounded-lg border border-mythic-primary-500/20">
-              <p className="text-center text-lg">
-                <span className="font-semibold text-mythic-primary-500">Result:</span>{' '}
-                <span className="text-mythic-text-primary">
-                  Each loop strengthens the next. Energy costs drop. Food costs drop. 
-                  Communities capture value instead of corporations.
+          {/* Fabricator Packs */}
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-acc-emerald mb-2">Fabricator Packs</h4>
+            <div className="flex flex-wrap gap-2">
+              {loop.fabricator_packs.map((pack, idx) => (
+                <span 
+                  key={idx} 
+                  className="text-xs bg-earth-obsidian/50 border border-white/10 px-2 py-1 rounded font-mono"
+                >
+                  {pack}
                 </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Notes */}
+          {loop.notes && (
+            <div>
+              {loop.notes.why && (
+                <div className="mb-3">
+                  <h4 className="text-sm font-semibold text-acc-emerald mb-1">Why</h4>
+                  <p className="text-sm text-txt-ash">{loop.notes.why}</p>
+                </div>
+              )}
+              
+              {loop.notes.throughput && (
+                <div className="mb-3">
+                  <h4 className="text-sm font-semibold text-acc-emerald mb-1">Throughput</h4>
+                  <p className="text-sm text-txt-ash">{loop.notes.throughput}</p>
+                </div>
+              )}
+
+              {loop.notes.ops && (
+                <div className="mb-3">
+                  <h4 className="text-sm font-semibold text-acc-emerald mb-1">Operations</h4>
+                  <p className="text-sm text-txt-ash">{loop.notes.ops}</p>
+                </div>
+              )}
+
+              {loop.notes.safety && (
+                <div className="mb-3">
+                  <h4 className="text-sm font-semibold text-acc-amber mb-1 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" /> Safety
+                  </h4>
+                  <ul className="space-y-1">
+                    {loop.notes.safety.map((item, idx) => (
+                      <li key={idx} className="text-sm text-txt-ash">• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Governance Gate */}
+          {hasGate && (
+            <div className="mt-4 p-3 bg-acc-amber/10 border border-acc-amber/20 rounded-lg">
+              <p className="text-sm text-acc-amber font-medium">
+                Requires: {loop.governance.ops_gate.replace(/_/g, ' ')}
               </p>
             </div>
-          </div>
-        </motion.div>
+          )}
+        </CardContent>
+      )}
+    </RecursiveCard>
+  )
+}
 
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center"
-        >
-          <h3 className="text-2xl font-bold text-mythic-text-primary mb-6">
-            Ready to start your community loop?
-          </h3>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/processors"
-              className="px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200"
-            >
-              Find Modular Processors
-            </Link>
-            <Link
-              href="/rfq"
-              className="px-8 py-4 bg-mythic-dark-900 text-mythic-text-primary font-semibold rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800 transition-all duration-200"
-            >
-              Request RFQ
-            </Link>
-          </div>
-        </motion.div>
+export default function LoopsPage() {
+  const [expandedLoops, setExpandedLoops] = useState<string[]>([])
+  
+  const toggleLoop = (loopId: string) => {
+    setExpandedLoops(prev => 
+      prev.includes(loopId) 
+        ? prev.filter(id => id !== loopId)
+        : [...prev, loopId]
+    )
+  }
+
+  return (
+    <div className="min-h-screen py-20">
+      <div className="container mx-auto px-6">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif text-txt-snow mb-6">
+            Production Loops
+          </h1>
+          <p className="text-xl text-txt-ash max-w-3xl mx-auto">
+            Choose by safety and capability. Start at Tier 1; graduate as your DAO matures.
+          </p>
+        </div>
+
+        {/* Tiers */}
+        {tiersData.map((tier) => (
+          <section key={tier.id} id={tier.id} className="mb-16 scroll-mt-20">
+            <div className="mb-8">
+              <h2 className="text-2xl sm:text-3xl font-serif text-acc-emerald mb-2">
+                {tier.title}
+              </h2>
+              <p className="text-txt-ash">{tier.description}</p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {tier.loops.map((loop) => (
+                <LoopCard
+                  key={loop.id}
+                  loop={loop}
+                  isExpanded={expandedLoops.includes(loop.id)}
+                  onToggle={() => toggleLoop(loop.id)}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </div>
   )
