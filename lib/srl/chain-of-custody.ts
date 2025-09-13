@@ -80,3 +80,62 @@ export function calculateTotalQuantity(records: ChainOfCustodyRecord[]): number 
     return total
   }, 0)
 }
+
+// Mock implementation for the chainOfCustody service
+export const chainOfCustody = {
+  async createAssetEntrustment(
+    agreementId: string,
+    entrustorId: string,
+    custodianId: string,
+    declaration: any
+  ): Promise<Asset> {
+    const assetId = `asset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const timestamp = new Date()
+    
+    const asset: Asset = {
+      id: assetId,
+      type: declaration.feedstockType.toLowerCase() as Asset['type'],
+      srlClassification: 'srl', // Default to SRL
+      status: 'pending',
+      currentHandler: entrustorId,
+      quantity: declaration.estimatedWeight || 0,
+      unit: 'kg',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      chainOfCustody: [
+        createChainOfCustodyRecord(
+          assetId,
+          { id: entrustorId, name: 'Entrustor', role: 'supplier' },
+          'created',
+          { lat: 0, lng: 0 }, // Would use real location
+          declaration.estimatedWeight || 0,
+          'kg'
+        )
+      ]
+    }
+    
+    return asset
+  },
+  
+  async getAssetById(assetId: string): Promise<Asset | null> {
+    // Mock implementation - would fetch from database
+    return null
+  },
+  
+  async addCustodyRecord(
+    assetId: string,
+    record: Omit<ChainOfCustodyRecord, 'id' | 'timestamp'>
+  ): Promise<ChainOfCustodyRecord> {
+    // Mock implementation - would update database
+    return {
+      ...record,
+      id: `coc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: new Date()
+    }
+  },
+  
+  async getChainOfCustody(assetId: string): Promise<ChainOfCustodyRecord[]> {
+    // Mock implementation - would fetch from database
+    return []
+  }
+}
