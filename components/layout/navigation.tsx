@@ -5,16 +5,15 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 const navigation = [
-  { path: '/', title: 'Home' },
-  { path: '/build', title: 'Start Building' },
-  { path: '/loops', title: 'Loops' },
-  { path: '/fabricator', title: 'Fractal Fabricator' },
-  { path: '/ops-code', title: 'Ops Code' },
-  { path: '/dao', title: 'DAO & Allocation' },
-  { path: '/docs', title: 'Operator Docs' },
+  { path: '/marketplace', title: 'Marketplace' },
+  { path: '/agents', title: 'Agents' },
+  { path: '/docs', title: 'Docs' },
   { path: '/girm', title: 'GIRM' },
-  { path: '/dashboard', title: 'Dashboard' },
-  { path: '/references', title: 'References' }
+  { path: '/contact', title: 'Contact' },
+  { path: '/join', title: 'Join the Network' },
+  { path: '/girm-dao', title: 'GIRM DAO' },
+  { path: '/wtn', title: 'WTN' },
+  { path: '/login', title: 'Login' }
 ]
 
 export default function Navigation() {

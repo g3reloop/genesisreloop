@@ -24,7 +24,8 @@ const config = {
       borderRadius: { xl: 'var(--radius-xl)', lg: 'var(--radius-lg)', md: 'var(--radius-md)', sm: 'var(--radius-sm)' },
       boxShadow: {
         'gen-emerald': '0 0 0 1px rgba(0,208,132,.15),0 0 24px rgba(0,208,132,.10)',
-        'gen-violet': '0 0 0 1px rgba(142,108,255,.15),0 0 24px rgba(142,108,255,.10)'
+        'gen-violet': '0 0 0 1px rgba(142,108,255,.15),0 0 24px rgba(142,108,255,.10)',
+        'electric-glow': '0 0 20px rgba(44, 125, 160, 0.5), 0 0 40px rgba(44, 125, 160, 0.3)'
       },
       backgroundImage: {
         'gen-radial': 'radial-gradient(1200px 800px at 20% 10%, rgba(40,242,228,0.06), transparent), radial-gradient(1000px 600px at 80% 100%, rgba(0,208,132,0.05), transparent), linear-gradient(#0b0f14,#101828)'
