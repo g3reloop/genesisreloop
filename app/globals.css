@@ -20,14 +20,38 @@
   .dark { /* same as root for now */ }
 }
 
-/* Import Genesis variables + utilities */
-@import url('../styles/genesis.css');
-
+/* Genesis Theme Styles */
 @layer base {
   * {
     border-color: hsl(var(--border));
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Genesis Custom Utilities */
+@layer utilities {
+  .gen-ring {
+    @apply ring-1 ring-white/10;
+  }
+  .gen-blueprint {
+    background-image: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .gen-fractal-lattice {
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+    background-size: 50px 50px, 50px 50px;
+  }
+  .gen-torus-border {
+    background: linear-gradient(135deg, #00D084 0%, #28F2E4 50%, #00D084 100%);
+  }
+  .anim-zoom {
+    animation: gen-zoom 0.35s cubic-bezier(0.4,0,0.2,1) both;
+  }
+  .anim-ring {
+    animation: gen-ring 6s cubic-bezier(0.4,0,0.2,1) infinite;
   }
 }
