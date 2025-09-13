@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Menu, X, Home, Package, Bot, BarChart3, LogIn, LogOut, User, Settings } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/cn'
 
 const navItems = [
