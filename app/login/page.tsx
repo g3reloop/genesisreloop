@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -17,7 +16,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   
   const router = useRouter()
-  const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,8 +23,26 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      await login(email, password)
-      router.push('/') // Redirect to home after login
+      // Mock login for now - in production this would use Supabase auth
+      if (email && password) {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        // For demo purposes, accept any of the demo credentials
+        const validEmails = [
+          'admin@genesisreloop.com',
+          'supplier@example.com',
+          'collector@example.com',
+          'processor@example.com',
+          'buyer@example.com'
+        ]
+        
+        if (validEmails.includes(email) && password === 'password') {
+          router.push('/dashboard')
+        } else {
+          throw new Error('Invalid credentials')
+        }
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.')
     } finally {
