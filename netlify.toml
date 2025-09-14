@@ -1,5 +1,5 @@
 [build]
-  command = "npm install --legacy-peer-deps && npx next build"
+  command = "npm install --legacy-peer-deps && NODE_OPTIONS='--max-old-space-size=4096' npx next build"
   publish = ".next"
 
 [build.environment]
