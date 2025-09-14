@@ -1,14 +1,10 @@
 'use client'
 
-// Force dynamic rendering to avoid Web3Provider issues during build
-export const dynamic = 'force-dynamic'
-
 import { motion } from 'framer-motion'
 import { FileText, AlertCircle, ArrowLeft, Send, Clock, Users, DollarSign, Info } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useWeb3 } from '@/hooks/useWeb3'
 import { toast } from 'sonner'
 
 type ProposalType = 'micro' | 'major' | 'policy' | 'emergency'
@@ -16,8 +12,30 @@ type BoardType = 'Finance' | 'Ops' | 'Community'
 
 export default function ProposePage() {
   const router = useRouter()
-  const { account } = useWeb3()
+  const [account, setAccount] = useState<string | null>(null)
+  const [isWeb3Loading, setIsWeb3Loading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Load Web3 on client side only
+  useEffect(() => {
+    const loadWeb3 = async () => {
+      try {
+        // Dynamically import Web3 hook to avoid SSR issues
+        const { useWeb3 } = await import('@/hooks/useWeb3')
+        // For now, we'll just check if window.ethereum exists
+        if (typeof window !== 'undefined' && window.ethereum) {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+          setAccount(accounts[0] || null)
+        }
+      } catch (error) {
+        console.error('Error loading Web3:', error)
+      } finally {
+        setIsWeb3Loading(false)
+      }
+    }
+    
+    loadWeb3()
+  }, [])
   
   const [formData, setFormData] = useState({
     title: '',
@@ -85,6 +103,24 @@ export default function ProposePage() {
     }
   }
 
+  if (isWeb3Loading) {
+    return (
+      <div className="min-h-screen bg-black pt-24 pb-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="glass rounded-2xl p-12 border border-mythic-primary-500/20">
+              <div className="animate-pulse">
+                <div className="h-16 w-16 bg-mythic-primary-500/20 rounded-full mx-auto mb-6"></div>
+                <div className="h-8 bg-mythic-primary-500/20 rounded w-3/4 mx-auto mb-4"></div>
+                <div className="h-4 bg-mythic-primary-500/20 rounded w-1/2 mx-auto"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  
   if (!account) {
     return (
       <div className="min-h-screen bg-black pt-24 pb-16">
