@@ -2,22 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Keep existing vars and add Genesis */
+/* Genesis Reloop Theme System */
 @layer base {
   :root {
+    /* Base shadcn/ui variables */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%; --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%; --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%; --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%; --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%; --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%; --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%; --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%; --input: 217.2 32.6% 17.5%; --ring: 212.7 26.8% 83.9%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
     --radius: 0.5rem;
+    
+    /* Mythic Tech Theme Variables */
+    --mythic-primary: #00D084;
+    --mythic-secondary: #0B1E1A;
+    --mythic-accent: #7EF5CF;
+    --mythic-accent-300: #28F2E4;
+    --mythic-text-primary: #F0F6F3;
+    --mythic-text-muted: #B8CCC3;
+    --mythic-dark-900: #0D0F12;
+    --mythic-dark-800: #12151A;
+    --mythic-dark-700: #1A1F27;
+    --mythic-primary-500: #00D084;
+    --mythic-primary-600: #00B570;
+    
+    /* Genesis Color System */
+    --earth-obsidian: #0b0f14;
+    --earth-midnight: #101828;
+    --earth-forest: #003B2D;
+    --acc-emerald: #00D084;
+    --acc-cyan: #28F2E4;
+    --acc-gold: #f5c84b;
+    --hi-violet: #8E6CFF;
+    --hi-coral: #FF6C8E;
+    --txt-snow: #E9F4FF;
+    --txt-ash: #A3AAB8;
+    
+    /* Genesis Brand Colors */
+    --brand-emerald: #00C97A;
+    --field-bg: #1F242D;
+    --field-border: #3A4251;
   }
-  .dark { /* same as root for now */ }
+  
+  .dark {
+    /* Dark mode uses same values as root */
+  }
 }
 
 /* Genesis Theme Styles */
@@ -32,6 +75,7 @@
 
 /* Genesis Custom Utilities */
 @layer utilities {
+  /* Genesis Layout Utilities */
   .gen-ring {
     @apply ring-1 ring-white/10;
   }
@@ -48,10 +92,85 @@
   .gen-torus-border {
     background: linear-gradient(135deg, #00D084 0%, #28F2E4 50%, #00D084 100%);
   }
+  
+  /* Genesis Color Classes */
+  .bg-earth-obsidian { background-color: var(--earth-obsidian); }
+  .bg-earth-midnight { background-color: var(--earth-midnight); }
+  .bg-earth-forest { background-color: var(--earth-forest); }
+  .bg-acc-emerald { background-color: var(--acc-emerald); }
+  .bg-acc-cyan { background-color: var(--acc-cyan); }
+  .bg-acc-gold { background-color: var(--acc-gold); }
+  .bg-hi-violet { background-color: var(--hi-violet); }
+  .bg-hi-coral { background-color: var(--hi-coral); }
+  
+  .text-txt-snow { color: var(--txt-snow); }
+  .text-txt-ash { color: var(--txt-ash); }
+  .text-acc-emerald { color: var(--acc-emerald); }
+  .text-acc-cyan { color: var(--acc-cyan); }
+  .text-acc-gold { color: var(--acc-gold); }
+  .text-hi-violet { color: var(--hi-violet); }
+  .text-hi-coral { color: var(--hi-coral); }
+  
+  /* Mythic Color Classes */
+  .bg-mythic-primary { background-color: var(--mythic-primary); }
+  .bg-mythic-secondary { background-color: var(--mythic-secondary); }
+  .bg-mythic-accent { background-color: var(--mythic-accent); }
+  .bg-mythic-dark-900 { background-color: var(--mythic-dark-900); }
+  .bg-mythic-dark-800 { background-color: var(--mythic-dark-800); }
+  .bg-mythic-dark-700 { background-color: var(--mythic-dark-700); }
+  .bg-mythic-primary-500 { background-color: var(--mythic-primary-500); }
+  .bg-mythic-primary-600 { background-color: var(--mythic-primary-600); }
+  
+  .text-mythic-primary { color: var(--mythic-primary); }
+  .text-mythic-secondary { color: var(--mythic-secondary); }
+  .text-mythic-accent { color: var(--mythic-accent); }
+  .text-mythic-accent-300 { color: var(--mythic-accent-300); }
+  .text-mythic-text-primary { color: var(--mythic-text-primary); }
+  .text-mythic-text-muted { color: var(--mythic-text-muted); }
+  
+  .border-mythic-primary { border-color: var(--mythic-primary); }
+  .border-mythic-accent { border-color: var(--mythic-accent); }
+  .border-mythic-accent-300 { border-color: var(--mythic-accent-300); }
+  
+  /* Opacity variants */
+  .bg-mythic-dark-900\/50 { background-color: rgb(13 15 18 / 0.5); }
+  .border-mythic-primary\/20 { border-color: rgb(0 208 132 / 0.2); }
+  .border-mythic-primary\/50 { border-color: rgb(0 208 132 / 0.5); }
+  .border-mythic-accent-300\/50 { border-color: rgb(40 242 228 / 0.5); }
+  .text-mythic-primary\/30 { color: rgb(0 208 132 / 0.3); }
+  
+  /* Background gradients */
+  .bg-fractal-gradient {
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(0, 192, 139, 0.03) 0%, transparent 40%),
+                      radial-gradient(ellipse at 80% 80%, rgba(126, 245, 207, 0.03) 0%, transparent 40%);
+  }
+  
+  /* Glass effects */
+  .glass {
+    backdrop-filter: blur(12px);
+    background: rgba(11, 30, 26, 0.7);
+    border: 1px solid rgba(0, 192, 139, 0.2);
+    box-shadow: inset 0 0 20px rgba(0, 192, 139, 0.05), 0 0 40px rgba(126, 245, 207, 0.1);
+  }
+  
+  /* Animations */
   .anim-zoom {
     animation: gen-zoom 0.35s cubic-bezier(0.4,0,0.2,1) both;
   }
   .anim-ring {
     animation: gen-ring 6s cubic-bezier(0.4,0,0.2,1) infinite;
+  }
+  .animate-glyph-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+  }
+  
+  @keyframes loopRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 }
