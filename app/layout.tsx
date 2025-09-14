@@ -1,15 +1,9 @@
 import './globals.css'
 import React from 'react'
-import dynamic from 'next/dynamic'
 import GenesisThemeProvider from '../components/theme/GenesisThemeProvider'
 import { QuintupleLayer } from '../components/theme/QuintupleLayer'
 import Navigation from '../components/layout/navigation'
-
-// Dynamically import AuthProvider to prevent SSR issues
-const AuthProvider = dynamic(
-  () => import('@/contexts/AuthContext').then(mod => ({ default: mod.AuthProvider })),
-  { ssr: false }
-)
+import ClientAuthProvider from '@/components/providers/ClientAuthProvider'
 
 export const metadata = { 
   title: 'Genesis Reloop', 
@@ -20,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="dark">
       <body>
-        <AuthProvider>
+        <ClientAuthProvider>
           <GenesisThemeProvider>
             <QuintupleLayer>
               <Navigation />
@@ -29,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </main>
             </QuintupleLayer>
           </GenesisThemeProvider>
-        </AuthProvider>
+        </ClientAuthProvider>
       </body>
     </html>
   )
