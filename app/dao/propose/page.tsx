@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid Web3Provider issues during build
+export const dynamic = 'force-dynamic'
+
 import { motion } from 'framer-motion'
 import { FileText, AlertCircle, ArrowLeft, Send, Clock, Users, DollarSign, Info } from 'lucide-react'
 import Link from 'next/link'
