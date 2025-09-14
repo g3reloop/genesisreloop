@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Test - Genesis Reloop</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            margin: 0;
+        }
+        h1 {
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <h1>Static HTML Test Page</h1>
+    <p>If you can see this, static files are being served correctly.</p>
+    <p>Time rendered: <span id="time"></span></p>
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

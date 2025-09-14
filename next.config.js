@@ -25,6 +25,8 @@ const nextConfig = {
   reactStrictMode: true,
   // Ensure proper module transpilation
   transpilePackages: ['framer-motion'],
+  // Try static export
+  output: 'export',
 };
 
 module.exports = nextConfig;
