@@ -1,21 +1,12 @@
-import dynamic from 'next/dynamic'
-
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
-
-// Dynamically import the dashboard content without SSR
-const DashboardContent = dynamic(
-  () => import('@/components/dashboard/DashboardContent'),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center min-h-screen bg-mythic-obsidian">
-        <div className="text-white">Loading dashboard...</div>
-      </div>
-    )
-  }
-)
+'use client'
 
 export default function DashboardPage() {
-  return <DashboardContent />
+  return (
+    <div className="min-h-screen pt-20">
+      <div className="container mx-auto px-4 py-6">
+        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+        <p className="text-gray-600">Welcome to your dashboard. Content is being loaded...</p>
+      </div>
+    </div>
+  )
 }
