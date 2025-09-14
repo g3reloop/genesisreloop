@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import type { RemedyCase, BreachType } from '@/types/srl-domain'
+import { type RemedyCase, BreachType } from '@/types/srl-domain'
 
 // Mock data for demo
 const mockCases: RemedyCase[] = [
