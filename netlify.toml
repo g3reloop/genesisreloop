@@ -1,6 +1,5 @@
 [build]
   command = "npm install --legacy-peer-deps && NODE_OPTIONS='--max-old-space-size=4096' npx next build"
-  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
@@ -8,9 +7,6 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[[plugins]]
-  package = "netlify-plugin-cache-nextjs"
 
 [[headers]]
   for = "/*"
