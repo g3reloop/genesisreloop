@@ -1,12 +1,12 @@
 [build]
-  command = "npm install --legacy-peer-deps && NODE_OPTIONS='--max-old-space-size=4096' npx next build"
-  publish = "out"
+  command = "npm ci --legacy-peer-deps && npx next build"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
-  SECRETS_SCAN_ENABLED = "false"
+  NEXT_TELEMETRY_DISABLED = "1"
 
-# Removed Next.js plugin for static export
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [[headers]]
   for = "/*"
