@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+set -e
+
 echo "Starting build process..."
 
 # Check if DATABASE_URL is set
@@ -16,3 +19,6 @@ fi
 
 echo "Building Next.js application..."
 npx next build
+
+# Exit successfully
+exit 0
