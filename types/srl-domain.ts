@@ -100,10 +100,10 @@ export interface NuisanceEvent {
 
 // Breach Types
 export enum BreachType {
-  SPILL_CONTAMINATION = 'spill_contamination',
-  BROKEN_CHAIN_OF_CUSTODY = 'broken_chain_of_custody',
-  MATERIAL_MISREPRESENTATION = 'material_misrepresentation',
-  NUISANCE_VIOLATION = 'nuisance_violation'
+  SPILL_CONTAMINATION = 'SPILL_CONTAMINATION',
+  BROKEN_CHAIN_OF_CUSTODY = 'BROKEN_CHAIN_OF_CUSTODY',
+  MATERIAL_MISREPRESENTATION = 'MATERIAL_MISREPRESENTATION',
+  NUISANCE_VIOLATION = 'NUISANCE_VIOLATION'
 }
 
 // Remedy Process
