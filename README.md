@@ -188,4 +188,3 @@ For questions or partnerships, contact us at: hello@reloop.eco
 ---
 
 Built with 💚 for a sustainable future by the Genesis Protocol team.
-# Authentication test
