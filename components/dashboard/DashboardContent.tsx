@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { LoopVisualization } from '@/components/visualization/loop-visualization'
+// import { LoopVisualization } from '@/components/visualization/loop-visualization'
 import { cn } from '@/lib/cn'
 import { 
   TrendingUp, 
@@ -23,7 +23,6 @@ import {
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 interface MetricCard {
   title: string
@@ -299,7 +298,9 @@ export default function DashboardContent() {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <LoopVisualization />
+            <div className="h-64 flex items-center justify-center text-mythic-text-muted">
+              Loop visualization loading...
+            </div>
           </CardContent>
         </Card>
 
