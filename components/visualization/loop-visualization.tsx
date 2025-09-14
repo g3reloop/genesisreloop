@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 import { LoopNode, LoopFlow } from '@/lib/types'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 
 // Define the loop network structure
 const loopNodes: LoopNode[] = [
@@ -39,7 +39,7 @@ export function LoopVisualization() {
   const [activeAgents, setActiveAgents] = useState<string[]>([])
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [realTimeFlows, setRealTimeFlows] = useState<RealTimeFlow[]>([])
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
   // Load real-time transaction data
   useEffect(() => {

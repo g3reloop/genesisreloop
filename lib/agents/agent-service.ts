@@ -1,6 +1,6 @@
 import { createChatCompletion, isOpenRouterConfigured, MODEL_PRESETS, TEMPERATURE_PRESETS } from '@/lib/openrouter'
 import type { ChatCompletionMessageParam } from '@/lib/openrouter'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 
 export interface AgentContext {
   userId?: string
@@ -270,7 +270,7 @@ Key responsibilities:
 export type AgentType = keyof typeof AGENTS
 
 export class AgentService {
-  private supabase = createClientComponentClient()
+  private supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
   
   constructor() {}
 
