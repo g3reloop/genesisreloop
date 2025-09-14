@@ -15,4 +15,4 @@ else
 fi
 
 echo "Building Next.js application..."
-next build
+npx next build

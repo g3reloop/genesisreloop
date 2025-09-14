@@ -25,6 +25,8 @@ const nextConfig = {
   reactStrictMode: true,
   // Ensure proper module transpilation
   transpilePackages: ['framer-motion'],
+  // Disable static optimization for problematic pages
+  generateStaticParams: false,
 };
 
 module.exports = nextConfig;
